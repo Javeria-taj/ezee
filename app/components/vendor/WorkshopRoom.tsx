@@ -401,6 +401,7 @@ const CSS = `
 .ws-btn.ghost{background:#fff;color:var(--ink-2);border-color:var(--paper-edge)}
 .ws-btn.ghost:hover{color:var(--ink)}
 .ws-btn.sm{padding:6px 11px;font-size:12px}
+.ws-btn.icon-only{padding:6px!important;width:34px!important;height:34px!important;flex:none!important}
 /* side panels */
 .ws-side{display:flex;flex-direction:column;gap:16px;position:sticky;top:84px}
 .ws-panel{border-radius:var(--r);background:linear-gradient(165deg,#fffdf8,#f1ebdf);box-shadow:var(--rest);border:1px solid var(--paper-edge);overflow:hidden}
@@ -721,6 +722,15 @@ table.ws-table tbody tr:last-child td{border-bottom:none}
   }
   .ws-ledger-head h3 {
     font-size: 18px !important;
+  }
+  .ws-btn.icon-only {
+    width: 40px !important;
+    height: 40px !important;
+    padding: 8px !important;
+  }
+  .ws-avatar {
+    width: 40px !important;
+    height: 40px !important;
   }
 }
 `;
@@ -1631,6 +1641,7 @@ export default function WorkshopRoom() {
 
             {/* Profile Avatar Button */}
             <div 
+              className="ws-avatar"
               onClick={() => setSection('settings')}
               style={{ 
                 width: '34px', height: '34px', borderRadius: '50%', 

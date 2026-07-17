@@ -594,6 +594,7 @@ table.ws-table tbody tr:last-child td{border-bottom:none}
     width: 280px !important;
     padding: 24px 20px !important;
     gap: 22px !important;
+    z-index: 50 !important;
   }
   .ws-app.ws-closed .ws-rail {
     width: 96px !important;
@@ -733,6 +734,139 @@ table.ws-table tbody tr:last-child td{border-bottom:none}
     height: 40px !important;
   }
 }
+
+/* Custom modal styles */
+.ws-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(42, 41, 40, 0.45);
+  backdrop-filter: blur(4px);
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: ws-fadein 0.25s ease-out;
+}
+
+@keyframes ws-fadein {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.ws-modal-card {
+  background: var(--paper);
+  border: 1px solid var(--paper-edge);
+  border-radius: var(--r);
+  box-shadow: 0 20px 50px rgba(42, 41, 40, 0.15);
+  padding: 24px 28px;
+  width: 420px;
+  max-width: 90vw;
+  animation: ws-popin 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  background-image: radial-gradient(circle, rgba(0,0,0,0.02) 1px, transparent 1px);
+  background-size: 16px 16px;
+}
+
+@keyframes ws-popin {
+  from { transform: scale(0.95) translateY(10px); opacity: 0; }
+  to { transform: scale(1) translateY(0); opacity: 1; }
+}
+
+.ws-modal-title {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 19px;
+  font-weight: 600;
+  color: var(--ink);
+  margin: 0 0 10px 0;
+}
+
+.ws-modal-message {
+  font-size: 14px;
+  color: var(--ink-2);
+  line-height: 1.5;
+  margin: 0 0 24px 0;
+}
+
+.ws-modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.ws-modal-btn {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 13.5px;
+  font-weight: 600;
+  padding: 10px 18px;
+  border-radius: 9px;
+  cursor: pointer;
+  border: none;
+  transition: all 0.2s ease;
+}
+
+.ws-modal-btn.cancel {
+  background: linear-gradient(165deg, #34322e, var(--ink));
+  color: var(--paper);
+}
+
+.ws-modal-btn.cancel:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--hover);
+}
+
+.ws-modal-btn.confirm {
+  background: transparent;
+  color: #7A6D8C;
+  border: none;
+}
+
+.ws-modal-btn.confirm:hover {
+  color: var(--ink);
+}
+
+.ws-modal-btn.confirm.destructive {
+  background: transparent;
+  color: var(--crimson);
+  border: none;
+}
+
+.ws-modal-btn.confirm.destructive:hover {
+  color: #c2674a;
+}
+
+/* Night Mode Modal Overrides */
+.ws-root.night .ws-modal-card {
+  background: var(--paper);
+  border-color: var(--paper-edge);
+  background-image: radial-gradient(circle, rgba(255,255,255,0.015) 1px, transparent 1px);
+}
+
+.ws-root.night .ws-modal-btn.cancel {
+  background: #3E3A49;
+  color: #FAF7F1;
+  border: 1px solid var(--paper-edge);
+}
+
+.ws-root.night .ws-modal-btn.cancel:hover {
+  background: var(--paper-edge);
+  color: var(--ink);
+}
+
+.ws-root.night .ws-modal-btn.confirm {
+  color: #8A8392 !important;
+}
+
+.ws-root.night .ws-modal-btn.confirm:hover {
+  color: #FAF7F1 !important;
+}
+
+.ws-root.night .ws-modal-btn.confirm.destructive {
+  color: #ff8b8b !important;
+}
+
+.ws-root.night .ws-modal-btn.confirm.destructive:hover {
+  color: #FAF7F1 !important;
+}
+}
 `;
 
 // ── Toast ─────────────────────────────────────────────────────────────────────
@@ -774,6 +908,36 @@ export default function WorkshopRoom() {
   const [earnedToday, setEarnedToday] = useState(1290);
   const [doneCount, setDoneCount] = useState(3);
   const toastCounter = useRef(0);
+  const [confirmModal, setConfirmModal] = useState<{
+    isOpen: boolean;
+    title: string;
+    message: string;
+    actionLabel: string;
+    cancelLabel: string;
+    isDestructive: boolean;
+    onConfirm: () => void;
+  }>({
+    isOpen: false,
+    title: '',
+    message: '',
+    actionLabel: '',
+    cancelLabel: 'Cancel',
+    isDestructive: false,
+    onConfirm: () => {}
+  });
+
+  const triggerConfirm = (title: string, message: string, actionLabel: string, cancelLabel: string, isDestructive: boolean, onConfirm: () => void) => {
+    setConfirmModal({
+      isOpen: true,
+      title,
+      message,
+      actionLabel,
+      cancelLabel,
+      isDestructive,
+      onConfirm
+    });
+  };
+
   const [mounted, setMounted] = useState(false);
 
   const [isEditingShop, setIsEditingShop] = useState(false);
@@ -1377,10 +1541,17 @@ export default function WorkshopRoom() {
             <div style={{ padding: '14px 17px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
               <button 
                 onClick={() => {
-                  if (confirm('Are you sure you want to sign out from the workshop?')) {
-                    document.cookie = "ezee_vendor_session=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-                    window.location.href = '/workshop/login';
-                  }
+                  triggerConfirm(
+                    'Sign Out',
+                    'Are you sure you want to sign out from the workshop?',
+                    'Yes, logout',
+                    'Stay here',
+                    false,
+                    () => {
+                      document.cookie = "ezee_vendor_session=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+                      window.location.href = '/workshop/login';
+                    }
+                  );
                 }}
                  style={{ width: '100%', padding: '12px', background: night ? 'rgba(255, 255, 255, 0.08)' : '#f5efe7', border: night ? '1px solid rgba(255, 255, 255, 0.15)' : '1px solid var(--paper-edge)', borderRadius: '8px', color: night ? '#FAF7F1' : '#232221', fontWeight: 600, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', cursor: 'pointer', fontFamily: 'Space Grotesk', fontSize: '13.5px' }}
               >
@@ -1388,10 +1559,17 @@ export default function WorkshopRoom() {
               </button>
               <button 
                 onClick={() => {
-                  if (confirm('Are you sure you want to permanently delete this shop workshop account? This cannot be undone.')) {
-                    document.cookie = "ezee_vendor_session=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-                    window.location.href = '/workshop/login';
-                  }
+                  triggerConfirm(
+                    'Delete Account',
+                    'Are you sure you want to permanently delete this shop workshop account? This cannot be undone.',
+                    'Delete everything',
+                    'Keep my memories',
+                    true,
+                    () => {
+                      document.cookie = "ezee_vendor_session=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+                      window.location.href = '/workshop/login';
+                    }
+                  );
                 }}
                 style={{ width: '100%', padding: '12px', background: night ? 'rgba(255, 99, 99, 0.12)' : 'rgba(155, 44, 44, 0.08)', border: night ? '1px solid rgba(255, 99, 99, 0.35)' : '1px solid rgba(155, 44, 44, 0.25)', borderRadius: '8px', color: night ? '#ff8b8b' : 'var(--crimson)', fontWeight: 600, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', cursor: 'pointer', fontFamily: 'Space Grotesk', fontSize: '13.5px' }}
               >
@@ -1679,6 +1857,28 @@ export default function WorkshopRoom() {
       <div className="ws-toasts">
         {toasts.map(t => <ToastEl key={t.id} t={t} onRemove={removeToast} />)}
       </div>
+
+      {/* Custom Confirmation Modal */}
+      {confirmModal.isOpen && (
+        <div className="ws-modal-overlay" onClick={e => { if (e.target === e.currentTarget) setConfirmModal(prev => ({ ...prev, isOpen: false })); }}>
+          <div className="ws-modal-card">
+            <h3 className="ws-modal-title">{confirmModal.title}</h3>
+            <p className="ws-modal-message">{confirmModal.message}</p>
+            <div className="ws-modal-actions">
+              <button className="ws-modal-btn cancel" onClick={() => setConfirmModal(prev => ({ ...prev, isOpen: false }))}>{confirmModal.cancelLabel}</button>
+              <button 
+                className={`ws-modal-btn confirm ${confirmModal.isDestructive ? 'destructive' : 'primary'}`} 
+                onClick={() => {
+                  confirmModal.onConfirm();
+                  setConfirmModal(prev => ({ ...prev, isOpen: false }));
+                }}
+              >
+                {confirmModal.actionLabel}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

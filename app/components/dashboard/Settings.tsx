@@ -578,17 +578,17 @@ export default function Settings({
               <p style={{ fontFamily: 'Instrument Sans', color: '#2A2928', margin: '0 0 1rem 0' }}>
                 Are you sure you want to leave the desk?
               </p>
-              <div style={{ display: 'flex', gap: '0.8rem' }}>
+              <div style={{ display: 'flex', gap: '0.8rem', alignItems: 'center' }}>
                 <button
                   onClick={handleLogout}
+                  style={{ background: 'none', border: 'none', color: '#7A6D8C', cursor: 'pointer', fontFamily: 'Space Grotesk' }}
+                >Yes, logout</button>
+                <button
+                  onClick={() => setShowLogoutConfirm(false)}
                   style={{
                     padding: '0.7rem 1.2rem', background: '#2A2928', color: '#FAF7F1',
                     border: 'none', borderRadius: '4px', cursor: 'pointer', fontFamily: 'Space Grotesk',
                   }}
-                >Yes, logout</button>
-                <button
-                  onClick={() => setShowLogoutConfirm(false)}
-                  style={{ background: 'none', border: 'none', color: '#7A6D8C', cursor: 'pointer', fontFamily: 'Space Grotesk' }}
                 >Stay here</button>
               </div>
             </motion.div>
@@ -621,17 +621,17 @@ export default function Settings({
               <p style={{ fontFamily: 'Instrument Sans', color: '#2A2928', fontSize: '0.9rem', margin: '0 0 1rem 0' }}>
                 All your print history, shelf memories, and wallet balance will be permanently erased. The desk will forget you.
               </p>
-              <div style={{ display: 'flex', gap: '0.8rem' }}>
+              <div style={{ display: 'flex', gap: '0.8rem', alignItems: 'center' }}>
                 <button
                   onClick={handleDelete}
+                  style={{ background: 'none', border: 'none', color: '#7A6D8C', cursor: 'pointer', fontFamily: 'Space Grotesk' }}
+                >Delete everything</button>
+                <button
+                  onClick={() => setShowDeleteConfirm(false)}
                   style={{
                     padding: '0.7rem 1.2rem', background: '#C2674A', color: '#FAF7F1',
                     border: 'none', borderRadius: '4px', cursor: 'pointer', fontFamily: 'Space Grotesk',
                   }}
-                >Delete everything</button>
-                <button
-                  onClick={() => setShowDeleteConfirm(false)}
-                  style={{ background: 'none', border: 'none', color: '#7A6D8C', cursor: 'pointer', fontFamily: 'Space Grotesk' }}
                 >Keep my memories</button>
               </div>
             </motion.div>

@@ -228,3 +228,15 @@ body {
     grid-template-columns: 1fr !important;
   }
 }
+
+@media (max-width: 768px) {
+  .partner-grid {
+    grid-template-columns: 1fr !important;
+    gap: 40px !important;
+    text-align: center !important;
+  }
+  .partner-grid p {
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+}

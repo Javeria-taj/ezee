@@ -14,6 +14,7 @@ interface SettingsProps {
   plantStage: number;
   newBookIdx: number;
   night: boolean;
+  onToggleNight: () => void;
   shelfOrders: number;
   shelfPages: number;
 }
@@ -25,6 +26,7 @@ export default function Settings({
   plantStage,
   newBookIdx,
   night,
+  onToggleNight,
   shelfOrders,
   shelfPages
 }: SettingsProps) {
@@ -38,7 +40,6 @@ export default function Settings({
 
   const [activeTab, setActiveTab] = useState<'settings' | 'history'>(initialTab);
   const [soundEnabled, setSoundEnabled] = useState(true);
-  const [darkMode, setDarkMode] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [showReport, setShowReport] = useState(false);
   const [reportText, setReportText] = useState('');
@@ -431,11 +432,11 @@ export default function Settings({
               <p style={{ fontFamily: 'Instrument Sans', fontSize: '0.9rem', color: '#7A6D8C', margin: 0 }}>Golden light for late evenings</p>
             </div>
             <div
-              onClick={() => setDarkMode(!darkMode)}
-              style={togglePill(darkMode)}
+              onClick={onToggleNight}
+              style={togglePill(night)}
             >
               <motion.div
-                animate={{ x: darkMode ? 24 : 2 }}
+                animate={{ x: night ? 24 : 2 }}
                 transition={{ type: 'spring', stiffness: 500, damping: 30 }}
                 style={{
                   width: '24px', height: '24px',

@@ -189,6 +189,12 @@ export default function StudentDesk() {
     applyNight();
   }, [applyNight]);
 
+  const toggleNight = () => {
+    const next = !night;
+    setNightOverride(next);
+    toast(next ? 'Lamp on. The desk goes golden.' : 'Lamp off. Daylight it is.');
+  };
+
   /* --- Clock tick --- */
   useEffect(() => {
     const tick = () => {
@@ -423,7 +429,9 @@ export default function StudentDesk() {
 
       {/* ========== HEADER ========== */}
       <header className={styles.header}>
-        <div className={styles.wordmark}><b>EZEE</b><span>the desk</span></div>
+        <div className={styles.wordmark}>
+          <img src="/logo.png" alt="Ezee Logo" style={{ height: 26, width: 'auto', objectFit: 'contain' }} />
+        </div>
         <div className={styles.grow} />
 
         {/* Weather + clock chip */}
@@ -444,11 +452,7 @@ export default function StudentDesk() {
         <button
           className={styles.headerIcon}
           title="Lamp"
-          onClick={() => {
-            const next = !night;
-            setNightOverride(next);
-            toast(next ? 'Lamp on. The desk goes golden.' : 'Lamp off. Daylight it is.');
-          }}
+          onClick={toggleNight}
         >
           <span className={styles.glowdot} />
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"><path d="M8 3h8l3 8H5l3-8zM12 11v7M8 21h8" /></svg>
@@ -839,6 +843,7 @@ export default function StudentDesk() {
               plantStage={plantStage}
               newBookIdx={newBookIdx}
               night={night}
+              onToggleNight={toggleNight}
               shelfOrders={shelfOrders}
               shelfPages={shelfPages}
             />

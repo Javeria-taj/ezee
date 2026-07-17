@@ -219,24 +219,26 @@ export default function WorkshopLogin() {
               />
             </div>
 
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', position: 'relative' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
               <label style={{ fontSize: '0.9rem', fontWeight: 600, color: '#444' }}>Password</label>
-              <input 
-                type={showPassword ? "text" : "password"} 
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                disabled={loginState === 'loading' || loginState === 'success'}
-                style={{ padding: '0.8rem', border: '1px solid #DDD', borderRadius: '6px', background: '#FAF9F7', fontSize: '1rem', outline: 'none', paddingRight: '40px' }}
-                placeholder="••••••••"
-              />
-              {/* Custom Desk Lamp Password Toggle */}
-              <button 
-                type="button" 
-                onClick={() => setShowPassword(!showPassword)}
-                style={{ position: 'absolute', right: '10px', top: '35px', background: 'none', border: 'none', cursor: 'pointer', outline: 'none' }}
-              >
-                <div style={{ width: '16px', height: '16px', borderRadius: '8px 8px 0 0', background: showPassword ? '#D4AF37' : '#999', transition: 'background 0.3s', boxShadow: showPassword ? '0 -4px 10px rgba(212,175,55,0.8)' : 'none' }} />
-              </button>
+              <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+                <input 
+                  type={showPassword ? "text" : "password"} 
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  disabled={loginState === 'loading' || loginState === 'success'}
+                  style={{ width: '100%', padding: '0.8rem', border: '1px solid #DDD', borderRadius: '6px', background: '#FAF9F7', fontSize: '1rem', outline: 'none', paddingRight: '40px' }}
+                  placeholder="••••••••"
+                />
+                {/* Custom Desk Lamp Password Toggle */}
+                <button 
+                  type="button" 
+                  onClick={() => setShowPassword(!showPassword)}
+                  style={{ position: 'absolute', right: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'none', border: 'none', cursor: 'pointer', outline: 'none', padding: 0 }}
+                >
+                  <div style={{ width: '16px', height: '16px', borderRadius: '8px 8px 0 0', background: showPassword ? '#D4AF37' : '#999', transition: 'background 0.3s', boxShadow: showPassword ? '0 -4px 10px rgba(212,175,55,0.8)' : 'none' }} />
+                </button>
+              </div>
             </div>
 
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>

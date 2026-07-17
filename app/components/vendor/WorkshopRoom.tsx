@@ -39,10 +39,10 @@ function Ic({ name, size = 18 }: { name: string; size?: number }) {
 }
 
 // ── Ezi SVG ─────────────────────────────────────────────────────────────────
-function eziSVG(mood: 'calm' | 'focused' | 'happy' | 'sleepy') {
+function eziSVG(mood: 'calm' | 'focused' | 'happy' | 'sleepy', isNight: boolean) {
   const eyes: Record<string, string> = {
-    calm: '<circle cx="84" cy="104" r="5" fill="#2A2928"/><circle cx="116" cy="104" r="5" fill="#2A2928"/>',
-    focused: '<circle cx="84" cy="104" r="14" fill="none" stroke="#2A2928" stroke-width="3"/><circle cx="116" cy="104" r="14" fill="none" stroke="#2A2928" stroke-width="3"/><circle cx="84" cy="104" r="4" fill="#2A2928"/><circle cx="116" cy="104" r="4" fill="#2A2928"/>',
+    calm: '<circle cx="84" cy="104" r="5.5" fill="#2A2928"/><circle cx="85.6" cy="102.4" r="1.6" fill="#fff"/><circle cx="116" cy="104" r="5.5" fill="#2A2928"/><circle cx="117.6" cy="102.4" r="1.6" fill="#fff"/>',
+    focused: '<circle cx="84" cy="104" r="5.5" fill="#2A2928"/><circle cx="85.6" cy="102.4" r="1.6" fill="#fff"/><circle cx="116" cy="104" r="5.5" fill="#2A2928"/><circle cx="117.6" cy="102.4" r="1.6" fill="#fff"/>',
     happy: '<path d="M74 105 Q84 95 90 105" stroke="#2A2928" stroke-width="4" fill="none" stroke-linecap="round"/><path d="M110 105 Q116 95 126 105" stroke="#2A2928" stroke-width="4" fill="none" stroke-linecap="round"/>',
     sleepy: '<path d="M76 105 Q84 109 92 105" stroke="#2A2928" stroke-width="3.5" fill="none" stroke-linecap="round"/><path d="M108 105 Q116 109 124 105" stroke="#2A2928" stroke-width="3.5" fill="none" stroke-linecap="round"/>',
   };
@@ -54,21 +54,27 @@ function eziSVG(mood: 'calm' | 'focused' | 'happy' | 'sleepy') {
   const zzz = mood === 'sleepy'
     ? '<text x="150" y="40" font-family="Space Grotesk" font-size="16" fill="#9A9183">z</text><text x="162" y="26" font-family="Space Grotesk" font-size="20" fill="#9A9183">z</text>'
     : '';
+  const hat = isNight
+    ? `<g transform="translate(0,-6)"><path d="M60 45 C80 15 130 15 140 45 C158 66 168 104 178 116 C184 122 183 132 173 131 C163 130 158 116 149 98 C139 70 110 40 80 50 Z" fill="#7A6D8C"/><ellipse cx="100" cy="45" rx="40" ry="10" fill="#EAE4DD"/><circle cx="177" cy="125" r="8" fill="#EAE4DD"/></g>`
+    : `<g transform="translate(12,-9) rotate(-10 100 40)"><ellipse cx="100" cy="40" rx="34" ry="14" fill="#A9B59D"/><path d="M100 26 L102 19 L98 19 Z" fill="#7E8C6F"/></g><g transform="translate(128,44) rotate(45)"><rect width="7" height="34" rx="2" fill="#F4D03F"/><polygon points="0,34 7,34 3.5,43" fill="#E5E7E9"/><polygon points="2,39 5,39 3.5,43" fill="#2A2928"/><rect y="-4" width="7" height="4" rx="1" fill="#E74C3C"/></g>`;
   return `<svg viewBox="0 0 200 250" width="74" height="90">
     <defs><filter id="ss2" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="6" stdDeviation="5" flood-color="#2A2928" flood-opacity=".15"/></filter></defs>
     ${zzz}
     <g filter="url(#ss2)">
+      <!-- Body -->
       <path d="M100 30 C140 30 170 80 180 150 C185 190 160 230 100 230 C40 230 15 190 20 150 C30 80 60 30 100 30 Z" fill="#2A2928"/>
+      <!-- Cup Handle on the right -->
+      <path d="M150 90 C188 90 205 110 202 135 C199 160 180 172 145 165 L145 150 C170 150 185 140 185 135 C185 125 174 112 150 110 Z" fill="#2A2928"/>
+      <!-- Face -->
       <ellipse cx="100" cy="108" rx="58" ry="44" fill="#FAF7F1"/>
       ${eyes[mood] || eyes.calm}
       <ellipse cx="66" cy="120" rx="11" ry="7" fill="#D48A70" opacity=".55"/>
       <ellipse cx="134" cy="120" rx="11" ry="7" fill="#D48A70" opacity=".55"/>
       ${mouth}
-      <path d="M72 150 L128 150 L138 205 L62 205 Z" fill="#5C3D1D"/>
-      <path d="M72 150 L58 124 M128 150 L142 124" stroke="#36220E" stroke-width="5" fill="none" stroke-linecap="round"/>
-      <rect x="90" y="168" width="20" height="16" rx="2" fill="#36220E"/>
-      <line x1="96" y1="160" x2="96" y2="172" stroke="#D4AF37" stroke-width="3" stroke-linecap="round"/>
-      <g transform="translate(12,-8) rotate(-10 100 40)"><ellipse cx="100" cy="40" rx="34" ry="14" fill="#A9B59D"/><path d="M100 26 L102 19 L98 19 Z" fill="#A9B59D"/></g>
+      <!-- Purple muffler/scarf -->
+      <path d="M60 148 C80 162 120 162 140 148 C145 158 135 172 100 177 C65 172 55 158 60 148 Z" fill="#7A6D8C"/>
+      <path d="M125 158 Q135 182 120 196 Q110 182 125 158 Z" fill="#7A6D8C"/>
+      ${hat}
     </g>
   </svg>`;
 }
@@ -116,13 +122,13 @@ function newOrder(forceStatus?: Order['status']): Order {
   const o: Partial<Order> = {
     id: 'A'+(SEQ++), student: t[0], avatar: t[6], color: t[7], title: t[1],
     pages: t[2], mode: t[3] as 'bw'|'color', binding: t[4] as Order['binding'], copies: t[5],
-    urgent: !!t[8], paid: Math.random() > 0.25,
+    urgent: !!t[8], paid: true,
     status: forceStatus || 'new', station: null, progress: 0,
     createdAt: Date.now() - (forceStatus ? Math.random()*2.4e6 : 0),
     pickup: null,
   };
   o.price = priceOf(o as Order);
-  o.payLabel = o.paid ? 'Paid' : 'COD';
+  o.payLabel = 'Paid';
   return o as Order;
 }
 
@@ -176,7 +182,7 @@ const CSS = `
 @import url('https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400;0,500;0,600;1,400&family=Space+Grotesk:wght@400;500;600;700&display=swap');
 .ws-root{
   --paper:#FAF7F1;--paper-2:#F3EDE3;--paper-3:#EAE2D4;--paper-edge:#E0D6C5;
-  --ink:#2A2928;--ink-2:#6E665B;--ink-3:#9A9183;
+  --ink:#2A2928;--ink-2:#5A5248;--ink-3:#9A9183;
   --terracotta:#C2674A;--terracotta-soft:#D48A70;--plum:#7A6D8C;
   --sage:#7E8C6F;--sage-soft:#A9B59D;--brass:#B8912E;--brass-soft:#D4AF37;
   --wood:#4A3219;--wood-deep:#36220E;--crimson:#9B2C2C;
@@ -184,19 +190,79 @@ const CSS = `
   --hover:0 1px 0 rgba(255,255,255,.7) inset,0 4px 10px rgba(42,41,40,.09),0 14px 30px rgba(42,41,40,.08);
   --press:inset 0 2px 6px rgba(42,41,40,.18);
   --well:inset 0 2px 5px rgba(42,41,40,.10);
-  --spring:520ms cubic-bezier(.34,1.4,.5,1);--soft:400ms cubic-bezier(.25,1,.5,1);
+  --spring:400ms cubic-bezier(.25,1,.5,1);--soft:400ms cubic-bezier(.25,1,.5,1);
   --r:14px;--r-sm:9px;
   font-family:'Instrument Sans',system-ui,sans-serif;color:var(--ink);
-  background:linear-gradient(180deg,var(--paper) 0%,var(--paper-2) 100%);
+  background:
+    radial-gradient(1100px 640px at 82% -6%, rgba(212, 175, 55, .22) 0%, transparent 58%),
+    radial-gradient(900px 620px at 50% 118%, rgba(42, 41, 40, .20) 0%, transparent 60%),
+    linear-gradient(180deg, #E9E3D6 0%, #DFD7C6 100%);
+  background-attachment: fixed;
+  transition: background 1.4s ease, color 1.4s ease;
   min-height:100vh;overflow-x:hidden;-webkit-font-smoothing:antialiased;
   box-sizing:border-box;
+}
+.ws-root.night {
+  --paper:#2E2A36;--paper-2:#23202D;--paper-3:#3E3A49;--paper-edge:#4F4A5E;
+  --ink:#FAF7F1;--ink-2:#C0BAC8;--ink-3:#8A8392;
+  --rest:0 1px 0 rgba(255,255,255,.05) inset,0 2px 5px rgba(0,0,0,.35),0 8px 18px rgba(0,0,0,.25);
+  --hover:0 1px 0 rgba(255,255,255,.1) inset,0 4px 10px rgba(0,0,0,.45),0 14px 30px rgba(0,0,0,.35);
+  --well:inset 0 2px 5px rgba(0,0,0,.4);
+  background: #23202D !important;
+}
+.ws-root.night .ws-grain {
+  display:none;
+}
+.ws-root.night .ws-rail {
+  background:linear-gradient(180deg,rgba(30,28,38,.88),rgba(24,22,30,.72)) !important;
+}
+.ws-root.night .ws-topbar {
+  background:linear-gradient(180deg,rgba(35,32,45,.96),rgba(35,32,45,.85)) !important;
+}
+.ws-root.night .ws-ezi-card,
+.ws-root.night .ws-ledger,
+.ws-root.night .ws-panel,
+.ws-root.night .ws-stat {
+  background:linear-gradient(165deg,#3A3545,#2E2A37) !important;
+}
+.ws-root.night .ws-clockchip,
+.ws-root.night .ws-tab.on,
+.ws-root.night .ws-btn.ghost,
+.ws-root.night .xbtn {
+  background:#3E3A49 !important;
+  color:#FAF7F1 !important;
+  border-color:#4F4A5E !important;
+}
+.ws-root.night .ws-docket {
+  background:linear-gradient(180deg,#3E3A49,#2E2A36) !important;
+}
+.ws-root.night .ws-docket.urgent-card {
+  background:linear-gradient(180deg,#4E2A2A,#3A1E1E) !important;
+}
+.ws-root.night .ws-stub {
+  background:repeating-linear-gradient(180deg,#3A3545 0 7px,#2D2A37 7px 14px) !important;
+  border-right-color:rgba(255,255,255,.08) !important;
+}
+.ws-root.night .ws-drawer-foot {
+  background:rgba(0,0,0,.35) !important;
+}
+.ws-root.night .ws-nav button:hover,
+.ws-root.night .ws-tab:hover {
+  background:rgba(255,255,255,.05) !important;
+}
+.ws-root.night input,
+.ws-root.night select,
+.ws-root.night textarea {
+  background:#23202D !important;
+  color:#FAF7F1 !important;
+  border:1px solid #4F4A5E !important;
 }
 .ws-root *{box-sizing:border-box;margin:0;padding:0}
 .ws-root button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
 .ws-root ::selection{background:var(--terracotta-soft);color:var(--paper)}
 .ws-grain{position:fixed;inset:0;pointer-events:none;z-index:9999;opacity:.035;
   background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 220 220' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
-.ws-app{display:grid;grid-template-columns:236px 1fr;min-height:100vh;transition:grid-template-columns var(--spring)}
+.ws-app{display:grid;grid-template-columns:262px 1fr;min-height:100vh;transition:grid-template-columns var(--spring)}
 .ws-app.ws-closed{grid-template-columns:68px 1fr}
 /* rail */
 .ws-rail{position:sticky;top:0;align-self:start;height:100vh;padding:22px 16px;
@@ -232,9 +298,9 @@ const CSS = `
 .ws-chiming{animation:ws-chime 1.4s ease-out}
 .ws-nav{display:flex;flex-direction:column;gap:2px;margin-top:2px}
 .ws-nav button{display:flex;align-items:center;gap:11px;padding:9px 11px;border-radius:10px;
-  font-size:13.5px;color:var(--ink-2);font-weight:500;transition:background var(--soft),color var(--soft);
+  font-size:14.5px;color:var(--ink-2);font-weight:600;transition:background var(--soft),color var(--soft);
   text-align:left;width:100%}
-.ws-nav button .ic{width:17px;height:17px;flex:none;color:var(--ink-3);transition:color var(--soft)}
+.ws-nav button .ic{width:17px;height:17px;flex:none;color:var(--ink-2);transition:color var(--soft)}
 .ws-nav button:hover{background:rgba(42,41,40,.045);color:var(--ink)}
 .ws-nav button.on{background:linear-gradient(120deg,rgba(122,109,140,.16),rgba(122,109,140,.07));color:var(--ink);box-shadow:var(--rest)}
 .ws-nav button.on .ic{color:var(--plum)}
@@ -459,6 +525,10 @@ export default function WorkshopRoom() {
   const [section, setSection] = useState<string>('queue');
   const [vendorTab, setVendorTab] = useState<string>('new');
   const [shopOpen, setShopOpen] = useState(true);
+  const [night, setNight] = useState(() => {
+    const h = new Date().getHours();
+    return h >= 19 || h < 6;
+  });
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeId, setActiveId] = useState<string | null>(null);
   const [drawerOrder, setDrawerOrder] = useState<Order | null>(null);
@@ -472,9 +542,39 @@ export default function WorkshopRoom() {
   const toastCounter = useRef(0);
   const [mounted, setMounted] = useState(false);
 
+  const [isEditingShop, setIsEditingShop] = useState(false);
+  const [shopDetails, setShopDetails] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const stored = localStorage.getItem('ezee_shop_details');
+      if (stored) {
+        try { return JSON.parse(stored); } catch { }
+      }
+    }
+    return {
+      id: 'WK-1024',
+      name: 'Morning Star Press',
+      email: 'morningstar@ezee.prints',
+      college: 'Ezee Institute of Technology',
+      joined: 'March 2026'
+    };
+  });
+
+  const saveShopDetails = (newDetails: typeof shopDetails) => {
+    setShopDetails(newDetails);
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('ezee_shop_details', JSON.stringify(newDetails));
+    }
+  };
+
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  useEffect(() => {
+    if (typeof document !== 'undefined') {
+      document.body.classList.toggle('night', night);
+    }
+  }, [night]);
 
   // Assign printing orders to stations on mount
   useEffect(() => {
@@ -731,7 +831,7 @@ export default function WorkshopRoom() {
             {o.pages}pp <span className="x">·</span> {o.mode === 'color' ? 'Colour' : 'B/W'} <span className="x">·</span> {BIND_LABEL[o.binding]} <span className="x">·</span> ×{o.copies}
           </div>
           <div className="ws-dmeta">
-            <span className={`ws-pay ${o.paid ? 'paid' : 'cod'}`}>{o.paid ? 'Paid' : 'Pay on pickup'}</span>
+            <span className="ws-pay paid">Paid</span>
             <span>{o.status === 'done' ? 'collected' : `waiting ${waited(o)}`}</span>
             {o.status === 'printing' && <span className="mono" style={{ fontFamily: 'Space Grotesk' }}>{Math.round(o.progress * 100)}%</span>}
             {o.status === 'ready' && <span className="mono" style={{ fontFamily: 'Space Grotesk' }}>code {o.pickup}</span>}
@@ -958,7 +1058,63 @@ export default function WorkshopRoom() {
     return (
       <div className="ws-two-col">
         <div>
-          <div className="ws-ledger">
+          {/* Shop Information */}
+          <div className="ws-ledger" style={{ marginBottom: '18px' }}>
+            <div className="ws-ledger-head" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <h3>Shop Information</h3>
+              <button 
+                onClick={() => {
+                  if (isEditingShop) {
+                    saveShopDetails(shopDetails);
+                  }
+                  setIsEditingShop(!isEditingShop);
+                }} 
+                style={{ fontSize: '13px', color: 'var(--terracotta)', fontWeight: 600, background: 'none', border: 'none', cursor: 'pointer' }}
+              >
+                {isEditingShop ? 'Save' : 'Edit'}
+              </button>
+            </div>
+            <div style={{ padding: '14px 17px' }}>
+              {isEditingShop ? (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                    <label style={{ fontSize: '11px', fontWeight: 600, color: 'var(--ink-3)', textTransform: 'uppercase', fontFamily: 'Space Grotesk' }}>Shop Name</label>
+                    <input 
+                      type="text" 
+                      value={shopDetails.name} 
+                      onChange={e => setShopDetails({ ...shopDetails, name: e.target.value })}
+                      style={{ padding: '8px', border: '1px solid var(--paper-edge)', borderRadius: '6px', fontSize: '13px', background: '#fff', color: 'var(--ink)', outline: 'none' }}
+                    />
+                  </div>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                    <label style={{ fontSize: '11px', fontWeight: 600, color: 'var(--ink-3)', textTransform: 'uppercase', fontFamily: 'Space Grotesk' }}>Partner Email</label>
+                    <input 
+                      type="email" 
+                      value={shopDetails.email} 
+                      onChange={e => setShopDetails({ ...shopDetails, email: e.target.value })}
+                      style={{ padding: '8px', border: '1px solid var(--paper-edge)', borderRadius: '6px', fontSize: '13px', background: '#fff', color: 'var(--ink)', outline: 'none' }}
+                    />
+                  </div>
+                </div>
+              ) : (
+                <div className="ws-kv">
+                  <span className="k">Shop ID</span>
+                  <span className="v mono" style={{ fontFamily: 'Space Grotesk' }}>{shopDetails.id}</span>
+                  <span className="k">Shop Name</span>
+                  <span className="v">{shopDetails.name}</span>
+                  <span className="k">Email</span>
+                  <span className="v">{shopDetails.email}</span>
+                  <span className="k">College</span>
+                  <span className="v">{shopDetails.college}</span>
+                  <span className="k">Joined</span>
+                  <span className="v">{shopDetails.joined}</span>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Hours & Status */}
+          <div className="ws-ledger" style={{ marginBottom: '18px' }}>
             <div className="ws-ledger-head"><h3>Hours &amp; status</h3></div>
             <div style={{ padding: '14px 17px' }}>
               {[['Accept new orders', true], ['Auto-assign to free press', true], ['Pause colour jobs (ink low)', false]].map(([label, on]) => (
@@ -969,7 +1125,9 @@ export default function WorkshopRoom() {
               ))}
             </div>
           </div>
-          <div className="ws-ledger">
+
+          {/* Pricing */}
+          <div className="ws-ledger" style={{ marginBottom: '18px' }}>
             <div className="ws-ledger-head"><h3>Pricing</h3></div>
             <table className="ws-table"><tbody>
               <tr><td>B/W per page</td><td className="ws-rowact"><span className="mono" style={{ fontFamily: 'Space Grotesk' }}>₹1.20</span></td></tr>
@@ -978,7 +1136,37 @@ export default function WorkshopRoom() {
               <tr><td>Soft binding</td><td className="ws-rowact"><span className="mono" style={{ fontFamily: 'Space Grotesk' }}>₹80</span></td></tr>
             </tbody></table>
           </div>
+
+          {/* Account Actions */}
+          <div className="ws-ledger">
+            <div className="ws-ledger-head"><h3>Account Actions</h3></div>
+            <div style={{ padding: '14px 17px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              <button 
+                onClick={() => {
+                  if (confirm('Are you sure you want to sign out from the workshop?')) {
+                    document.cookie = "ezee_vendor_session=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+                    window.location.href = '/workshop/login';
+                  }
+                }}
+                 style={{ width: '100%', padding: '12px', background: night ? 'rgba(255, 255, 255, 0.08)' : '#f5efe7', border: night ? '1px solid rgba(255, 255, 255, 0.15)' : '1px solid var(--paper-edge)', borderRadius: '8px', color: night ? '#FAF7F1' : '#232221', fontWeight: 600, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', cursor: 'pointer', fontFamily: 'Space Grotesk', fontSize: '13.5px' }}
+              >
+                🚪 Sign Out
+              </button>
+              <button 
+                onClick={() => {
+                  if (confirm('Are you sure you want to permanently delete this shop workshop account? This cannot be undone.')) {
+                    document.cookie = "ezee_vendor_session=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+                    window.location.href = '/workshop/login';
+                  }
+                }}
+                style={{ width: '100%', padding: '12px', background: night ? 'rgba(255, 99, 99, 0.12)' : 'rgba(155, 44, 44, 0.08)', border: night ? '1px solid rgba(255, 99, 99, 0.35)' : '1px solid rgba(155, 44, 44, 0.25)', borderRadius: '8px', color: night ? '#ff8b8b' : 'var(--crimson)', fontWeight: 600, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', cursor: 'pointer', fontFamily: 'Space Grotesk', fontSize: '13.5px' }}
+              >
+                🗑️ Delete Account
+              </button>
+            </div>
+          </div>
         </div>
+
         <div className="ws-owl-card">
           <div className="ws-label" style={{ color: 'rgba(250,247,241,.55)' }}>Ezi&apos;s note</div>
           <div className="ws-insight">Your colour ink is at <b>18%</b>. Three colour jobs are queued today — consider pausing colour or reordering so nothing stalls mid-run.</div>
@@ -1055,7 +1243,7 @@ export default function WorkshopRoom() {
             <span className="k">Colour</span><span className="v">{o.mode === 'color' ? 'Full colour' : 'Black & white'}</span>
             <span className="k">Binding</span><span className="v" style={{ textTransform: 'capitalize' }}>{BIND_LABEL[o.binding]}</span>
             <span className="k">Copies</span><span className="v">×{o.copies}</span>
-            <span className="k">Payment</span><span className="v">{o.paid ? 'Paid online' : 'Pay on pickup'}</span>
+            <span className="k">Payment</span><span className="v">Paid online</span>
           </div>
           <div className="ws-bill">
             <div className="ln"><span>Printing ({o.pages}pp {o.mode==='color'?'colour':'b/w'} ×{o.copies})</span><span className="mono" style={{ fontFamily: 'Space Grotesk' }}>₹{printCost}</span></div>
@@ -1119,27 +1307,35 @@ export default function WorkshopRoom() {
   );
 
   return (
-    <div className="ws-root">
+    <div className={`ws-root ${night ? 'night' : ''}`}>
       <div className="ws-grain" />
       <div className={`ws-app ${isMenuOpen ? '' : 'ws-closed'}`}>
         {/* RAIL */}
         <aside className="ws-rail">
-          <div className="ws-brand" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '10px' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <div className="ws-brand" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '10px', padding: '4px 8px 14px' }}>
+            <button 
+              onClick={() => { if (!isMenuOpen) setIsMenuOpen(true); }}
+              style={{ display: 'flex', alignItems: 'center', gap: '10px', cursor: !isMenuOpen ? 'pointer' : 'default', border: 'none', background: 'none', padding: 0 }}
+              aria-label="Workshop Brand"
+              disabled={isMenuOpen}
+            >
               <img src="/logo.png" alt="Ezee Logo" style={{ height: 34, width: 'auto', objectFit: 'contain', borderRadius: '22%' }} />
               <div><small>Workshop</small></div>
-            </div>
-            <button 
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
-              style={{ padding: '4px', cursor: 'pointer', opacity: 0.7 }}
-            >
-              <Ic name={isMenuOpen ? "x" : "menu"} size={22} />
             </button>
+            {isMenuOpen && (
+              <button 
+                onClick={() => setIsMenuOpen(false)}
+                style={{ padding: '4px', cursor: 'pointer', opacity: 0.7, display: 'flex', alignItems: 'center', justifyContent: 'center', border: 'none', background: 'none' }}
+                aria-label="Close sidebar"
+              >
+                <Ic name="x" size={20} />
+              </button>
+            )}
           </div>
 
           <div className="ws-ezi-card">
             <div className="ws-ezi-glow" />
-            <div className="ws-ezi-breathe" dangerouslySetInnerHTML={{ __html: eziSVG(eziMoodState) }} />
+            <div className="ws-ezi-breathe" dangerouslySetInnerHTML={{ __html: eziSVG(eziMoodState, night) }} />
             <div className="ws-ezi-say">{eziSayText}</div>
           </div>
 
@@ -1151,21 +1347,10 @@ export default function WorkshopRoom() {
                 {key === 'queue' && <span className="ws-count">{counts.new}</span>}
               </button>
             ))}
-            <button onClick={() => {
-              document.cookie = "ezee_vendor_session=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-              window.location.href = '/workshop/login';
-            }} style={{ marginTop: '2rem', opacity: 0.6 }}>
-              <span className="ic"><Ic name="x" size={17} /></span>
-              <span>Sign out</span>
-            </button>
           </nav>
 
           <div style={{ flex: 1 }} />
           <div className="ws-rail-foot">
-            <div className="ws-toggle">
-              <span>{shopOpen ? 'Shop open' : 'Shop closed'}</span>
-              <button className={`ws-sw${shopOpen ? ' on' : ''}`} onClick={toggleOpen} />
-            </div>
             <div className="ws-toggle">
               <span>Ambient sound</span>
               <button className="ws-sw brass" onClick={e => (e.currentTarget as HTMLButtonElement).classList.toggle('on')} />
@@ -1185,9 +1370,54 @@ export default function WorkshopRoom() {
               <span>{wx}</span>
               <span className="mono">{clock}</span>
             </div>
-            <div className={`ws-openchip${shopOpen ? '' : ' closed'}`}>
-              <span className="dot" />
-              <span>{shopOpen ? 'Open' : 'Closed'}</span>
+            {/* Shop status toggle */}
+            <div className="ws-clockchip" style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '7px 12px' }}>
+              <span style={{ fontWeight: 600, color: 'var(--ink)', fontFamily: 'Space Grotesk' }}>Shop Status</span>
+              <button className={`ws-sw${shopOpen ? ' on' : ''}`} onClick={toggleOpen} aria-label="Toggle shop status" />
+              <span style={{ minWidth: '28px', fontSize: '12px', fontWeight: 700, color: shopOpen ? 'var(--sage)' : 'var(--ink-3)', fontFamily: 'Space Grotesk' }}>
+                {shopOpen ? 'ON' : 'OFF'}
+              </span>
+            </div>
+            {/* Lamp (night toggle) */}
+            <button
+              className="ws-btn icon-only"
+              style={{ 
+                position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', 
+                cursor: 'pointer', padding: '6px', borderRadius: '50%', border: 'none', background: 'none',
+                width: '34px', height: '34px', color: 'var(--ink)'
+              }}
+              title="Lamp"
+              onClick={() => {
+                const next = !night;
+                setNight(next);
+                addToast(next ? 'Lamp on. The workshop goes golden.' : 'Lamp off. Daylight it is.', 'clock');
+              }}
+            >
+              <span 
+                style={{ 
+                  position: 'absolute', inset: 0, borderRadius: '50%', 
+                  background: 'radial-gradient(circle, rgba(212, 175, 55, .45), transparent 70%)', 
+                  opacity: night ? 1 : 0, transition: 'opacity 0.8s ease', pointerEvents: 'none' 
+                }} 
+              />
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
+                <path d="M8 3h8l3 8H5l3-8zM12 11v7M8 21h8" />
+              </svg>
+            </button>
+
+            {/* Profile Avatar Button */}
+            <div 
+              onClick={() => setSection('settings')}
+              style={{ 
+                width: '34px', height: '34px', borderRadius: '50%', 
+                background: 'var(--plum)', color: '#FAF7F1', 
+                display: 'grid', placeItems: 'center', cursor: 'pointer', 
+                fontFamily: 'Space Grotesk', fontWeight: 600, fontSize: '15px',
+                boxShadow: 'var(--rest)', marginLeft: '4px'
+              }}
+              title="Shop Settings"
+            >
+              {shopDetails.name.charAt(0).toUpperCase()}
             </div>
           </div>
 

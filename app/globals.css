@@ -318,102 +318,7 @@ body {
     display: none !important;
   }
 
-  /* ── Vendor Dashboard (WorkshopRoom) ── */
-  .ws-app {
-    display: flex !important;
-    flex-direction: column !important;
-    min-height: 100vh;
-  }
-  .ws-rail {
-    position: relative !important;
-    width: 100% !important;
-    height: auto !important;
-    min-height: auto !important;
-    border-right: none !important;
-    border-bottom: 1px solid rgba(42,41,40,.12) !important;
-    padding: 12px 16px !important;
-  }
-  .ws-ezi-card {
-    display: none !important;
-  }
-  .ws-nav {
-    flex-direction: row !important;
-    flex-wrap: wrap !important;
-    gap: 6px !important;
-  }
-  .ws-nav button {
-    width: auto !important;
-    padding: 7px 11px !important;
-    font-size: 12px !important;
-    flex: 0 0 auto !important;
-  }
-  .ws-rail-foot {
-    flex-direction: row !important;
-    justify-content: flex-start !important;
-    align-items: center !important;
-    border-top: none !important;
-    margin-top: 8px !important;
-    padding-top: 8px !important;
-    gap: 12px;
-  }
-  .ws-main {
-    min-height: 0 !important;
-    overflow-x: hidden;
-  }
-  .ws-topbar {
-    flex-wrap: wrap !important;
-    gap: 10px !important;
-    padding: 14px 16px !important;
-  }
-  .ws-clockchip {
-    font-size: 12px !important;
-    padding: 5px 10px !important;
-  }
-  .ws-canvas {
-    padding: 14px 16px !important;
-  }
-  .ws-stats {
-    grid-template-columns: 1fr 1fr !important;
-    gap: 10px !important;
-  }
-  .ws-work {
-    grid-template-columns: 1fr !important;
-    gap: 16px !important;
-  }
-  .ws-side {
-    display: none !important; /* Side panel hidden on mobile — shown in separate tab */
-  }
-  /* Docket cards */
-  .ws-docket {
-    flex-direction: column !important;
-    gap: 10px !important;
-  }
-  .ws-stub {
-    display: none !important;
-  }
-  .ws-dact {
-    flex-direction: row !important;
-    justify-content: space-between !important;
-    align-items: center !important;
-    width: 100% !important;
-  }
-  /* Tables — horizontal scroll */
-  .ws-table-wrap {
-    overflow-x: auto !important;
-    -webkit-overflow-scrolling: touch;
-  }
-  table.ws-table {
-    min-width: 480px;
-  }
-  /* Two-col layout */
-  .ws-two-col {
-    grid-template-columns: 1fr !important;
-  }
-  /* Ledger */
-  .ws-ledger-head {
-    flex-wrap: wrap !important;
-    gap: 8px !important;
-  }
+
 
   /* ── Student Dashboard header ── */
   .header {
@@ -466,17 +371,7 @@ body {
     font-size: 1.6rem !important;
   }
 
-  /* Vendor topbar — hide sub-text */
-  .ws-sub {
-    display: none !important;
-  }
-  .ws-stats {
-    grid-template-columns: 1fr 1fr !important;
-    gap: 8px !important;
-  }
-  .ws-stat .big {
-    font-size: 22px !important;
-  }
+
 }
 
 /* ── Partner banner ── */

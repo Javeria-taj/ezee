@@ -498,107 +498,82 @@ table.ws-table tbody tr:last-child td{border-bottom:none}
 .ws-tick .tk-main small{color:var(--ink-3);font-size:11.5px}
 /* ── WorkshopRoom Mobile — all inside @media, desktop untouched ── */
 @media(max-width:820px){
-  /* Override grid-column layout with flex column regardless of open/close state */
   .ws-app,.ws-app.ws-closed{display:flex!important;flex-direction:column!important;grid-template-columns:none!important}
   
-  /* Make the rail a fixed rightbar */
-  .ws-rail{
-    position:fixed!important;
-    top:0!important;
-    right:0!important;
-    bottom:0!important;
-    width:280px!important;
-    height:100vh!important;
-    min-height:100vh!important;
-    border-bottom:none!important;
-    border-left:1px solid var(--paper-edge)!important;
-    padding:16px!important;
-    z-index:9999!important;
-    transform:translateX(0)!important;
-    transition:transform var(--spring)!important;
-    background:var(--paper)!important;
-  }
-  .ws-app.ws-closed .ws-rail{
-    transform:translateX(100%)!important;
-  }
+  /* Make the sidebar a static top header */
+  .ws-rail{position:static!important;width:100%!important;height:auto!important;min-height:auto!important;border:none!important;padding:0!important;flex-shrink:0}
   
-  /* Mobile overlay when rightbar is open */
-  .ws-mobile-overlay {
-    position: fixed;
-    inset: 0;
-    z-index: 9998;
-    background: rgba(42,41,40,.4);
-    backdrop-filter: blur(2px);
-    -webkit-backdrop-filter: blur(2px);
-    opacity: 1;
-    transition: opacity var(--spring);
-    pointer-events: auto;
-  }
-  .ws-app.ws-closed .ws-mobile-overlay {
-    opacity: 0;
-    pointer-events: none;
-  }
+  /* Top brand header */
+  .ws-brand{display:flex!important;justify-content:center!important;padding:16px!important;border-bottom:1px solid var(--paper-edge)!important}
+  .ws-brand button[aria-label="Workshop Brand"]{cursor:default!important} /* no need to toggle sidebar on mobile */
+  .ws-brand button[aria-label="Close sidebar"]{display:none!important} /* hide close button */
+  .ws-app.ws-closed .ws-brand div{display:block!important}
   
-  /* Ensure closed-state hiding of labels doesn't apply on mobile nav (since we want full nav when open) */
+  /* Hide unnecessary sidebar items */
+  .ws-ezi-card{display:none!important}
+  .ws-rail-foot{display:none!important}
+  
+  /* Bottom Navigation */
+  .ws-nav{position:fixed!important;bottom:0!important;left:0!important;right:0!important;height:64px!important;background:rgba(255,255,255,.96)!important;backdrop-filter:blur(10px)!important;border-top:1px solid var(--paper-edge)!important;z-index:9000!important;display:flex!important;flex-direction:row!important;justify-content:space-around!important;align-items:center!important;padding:0 8px!important;margin:0!important;gap:0!important}
+  
+  .ws-nav button{flex:1!important;display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;height:100%!important;border-radius:0!important;background:none!important;gap:4px!important;padding:0!important;font-size:10px!important;color:var(--ink-3)!important;position:relative!important;white-space:nowrap!important}
+  .ws-nav button.on{color:var(--ink)!important}
+  .ws-nav button.on .ic{color:var(--terracotta)!important}
+  
+  /* Ensure closed-state hiding of labels doesn't apply on mobile nav */
   .ws-app.ws-closed .ws-nav span:not(.ic){display:inline!important}
-  .ws-app.ws-closed .ws-brand div{display:flex!important}
-  .ws-ezi-card{display:block!important;margin-bottom:12px!important}
+  .ws-app.ws-closed .ws-nav button{justify-content:center!important;padding:0!important}
   
-  /* Mobile nav styling inside rightbar */
-  .ws-nav{flex-direction:column!important;flex-wrap:nowrap!important;gap:4px!important}
-  .ws-nav button{width:100%!important;padding:10px 14px!important;font-size:14px!important;justify-content:flex-start!important}
-  .ws-app.ws-closed .ws-nav button{justify-content:flex-start!important;padding:10px 14px!important}
-  .ws-rail-foot{flex-direction:row!important;gap:12px!important;border-top:1px solid var(--paper-edge)!important;margin-top:auto!important;padding-top:16px!important}
+  /* Nav badge (count) */
+  .ws-count{position:absolute!important;top:8px!important;right:calc(50% - 20px)!important;padding:2px 5px!important;font-size:9px!important}
   
-  .ws-main{min-height:100vh!important;overflow-x:hidden}
-  .ws-topbar{flex-wrap:wrap!important;gap:8px!important;padding:12px 16px!important}
+  /* Main content area */
+  .ws-main{min-height:0!important;overflow-x:hidden;padding-bottom:80px!important} /* padding for bottom nav */
+  
+  /* Topbar (Title, clock, toggles) */
+  .ws-topbar{display:flex!important;flex-direction:row!important;flex-wrap:wrap!important;gap:12px!important;justify-content:flex-start!important;padding:16px!important;align-items:center!important}
+  .ws-topbar > div:first-child{width:100%!important} /* Title full width */
+  .ws-topbar > div:nth-child(2){display:none!important} /* Hide spacer */
   .ws-sub{display:none!important}
-  .ws-clockchip{font-size:12px!important;padding:5px 9px!important}
-  .ws-canvas{padding:12px 14px!important}
+  
+  /* Toggles & Chips */
+  .ws-clockchip{font-size:12px!important;padding:6px 12px!important;border-radius:12px!important}
+  
+  /* Work canvas */
+  .ws-canvas{padding:16px 12px!important}
+  
+  /* Stats grid */
   .ws-stats{grid-template-columns:1fr 1fr!important;gap:10px!important}
-  .ws-work{grid-template-columns:1fr!important}
-  .ws-side{display:none!important}
-  /* Docket card: remove side-by-side, stack cleanly */
-  .ws-docket{flex-direction:column!important;gap:8px!important;padding:14px!important}
-  .ws-stub{display:none!important}
-  .ws-dbody{min-width:0}
-  .ws-dact{flex-direction:row!important;justify-content:space-between!important;align-items:center!important;width:100%!important;padding-top:8px;border-top:1px dashed var(--paper-edge)}
-  /* Queue grid */
-  .ws-queue{gap:10px!important}
-  /* Tables — horizontal scroll wrapper */
-  .ws-ledger{overflow-x:auto!important;-webkit-overflow-scrolling:touch}
-  table.ws-table{min-width:440px}
-  .ws-table-wrap{overflow-x:auto!important;-webkit-overflow-scrolling:touch}
-  /* Ledger head */
-  .ws-ledger-head{flex-wrap:wrap!important;gap:6px!important}
-  /* Drawer: full width on mobile */
-  .ws-drawer{width:100%!important;max-width:100vw!important}
-  /* Stat cards */
   .ws-stat{padding:14px!important}
   .ws-stat .big{font-size:24px!important}
   
-  /* Hamburger button in topbar */
-  .ws-mobile-menu-btn {
-    display:flex!important;
-    align-items:center;
-    justify-content:center;
-    width:36px;
-    height:36px;
-    border-radius:50%;
-    background:rgba(42,41,40,.05);
-    cursor:pointer;
-  }
-}
-@media(min-width:821px){
-  .ws-mobile-overlay { display: none !important; }
-  .ws-mobile-menu-btn { display: none !important; }
+  /* Queue tabs & grid */
+  .ws-work{grid-template-columns:1fr!important}
+  .ws-side{display:none!important}
+  .ws-queue{gap:12px!important}
+  
+  /* Docket cards (Orders) */
+  .ws-docket{flex-direction:column!important;gap:8px!important;padding:16px!important}
+  .ws-stub{display:none!important}
+  .ws-dbody{min-width:0}
+  .ws-dact{flex-direction:row!important;justify-content:space-between!important;align-items:center!important;width:100%!important;padding-top:12px;border-top:1px dashed var(--paper-edge)}
+  
+  /* Tables (Stations / Stock) */
+  .ws-ledger{overflow-x:auto!important;-webkit-overflow-scrolling:touch}
+  table.ws-table{min-width:480px}
+  .ws-table-wrap{overflow-x:auto!important;-webkit-overflow-scrolling:touch}
+  .ws-ledger-head{flex-wrap:wrap!important;gap:8px!important}
+  
+  /* Drawer (Order details overlay) */
+  .ws-drawer{width:100%!important;max-width:100vw!important}
 }
 @media(max-width:480px){
   .ws-stats{grid-template-columns:1fr 1fr!important;gap:8px!important}
   .ws-stat .big{font-size:20px!important}
   .ws-stat .trail{display:none!important}
-  .ws-tabs{flex-wrap:wrap!important;gap:4px!important}
-  .ws-tab{padding:7px 10px!important;font-size:12px!important}
+  .ws-tabs{flex-wrap:wrap!important;gap:6px!important}
+  .ws-tab{padding:8px 12px!important;font-size:12.5px!important}
+  .ws-dact .ws-btn{flex:1!important;justify-content:center!important}
 }
 `;
 
@@ -1414,8 +1389,7 @@ export default function WorkshopRoom() {
     <div className={`ws-root ${night ? 'night' : ''}`}>
       <div className="ws-grain" />
       <div className={`ws-app ${isMenuOpen ? '' : 'ws-closed'}`}>
-        <div className="ws-mobile-overlay" onClick={() => setIsMenuOpen(false)} />
-        {/* RAIL (Rightbar on Mobile, Sidebar on Desktop) */}
+        {/* RAIL */}
         <aside className="ws-rail">
           <div className="ws-brand" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '10px', padding: '4px 8px 14px' }}>
             <button 
@@ -1427,14 +1401,15 @@ export default function WorkshopRoom() {
               <img src="/logo.png" alt="Ezee Logo" style={{ height: 34, width: 'auto', objectFit: 'contain', borderRadius: '22%' }} />
               <div><small>Workshop</small></div>
             </button>
-            {/* We only show the close button if menu is open on desktop, OR always hide it on desktop and let it handle closing on mobile? Actually, on mobile, the overlay closes it. Let's just keep the close button. */}
-            <button 
-              onClick={() => setIsMenuOpen(false)}
-              style={{ padding: '4px', cursor: 'pointer', opacity: 0.7, display: 'flex', alignItems: 'center', justifyContent: 'center', border: 'none', background: 'none' }}
-              aria-label="Close sidebar"
-            >
-              <Ic name="x" size={20} />
-            </button>
+            {isMenuOpen && (
+              <button 
+                onClick={() => setIsMenuOpen(false)}
+                style={{ padding: '4px', cursor: 'pointer', opacity: 0.7, display: 'flex', alignItems: 'center', justifyContent: 'center', border: 'none', background: 'none' }}
+                aria-label="Close sidebar"
+              >
+                <Ic name="x" size={20} />
+              </button>
+            )}
           </div>
 
           <div className="ws-ezi-card">
@@ -1470,11 +1445,6 @@ export default function WorkshopRoom() {
               <div className="ws-sub">{pageSub}</div>
             </div>
             <div style={{ flex: 1 }} />
-            
-            {/* Mobile Rightbar Hamburger Button */}
-            <button className="ws-btn icon-only ws-mobile-menu-btn" onClick={() => setIsMenuOpen(true)}>
-              <Ic name="menu" size={18} />
-            </button>
             <div className="ws-clockchip">
               <span>{wx}</span>
               <span className="mono">{clock}</span>

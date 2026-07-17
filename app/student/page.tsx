@@ -507,10 +507,7 @@ export default function StudentDesk() {
                   <div>
                     <div className={styles.dzHint}>Place your notes on the desk</div>
                     <div className={styles.dzSub}>
-                      drop a file here, or tap to browse ·{' '}
-                      <u onClick={e => { e.stopPropagation(); placeFile({ name: 'DBMS Unit 3 — Notes.pdf', size: 24 * 46 * 1024 }); }}>
-                        no file handy? try a sample
-                      </u>
+                      drop a file here, or tap to browse
                     </div>
                   </div>
                 </div>

@@ -387,6 +387,13 @@ body {
     width: 100% !important;
     height: 100% !important;
   }
+
+  /* Vendor login/signup mobile scroll support */
+  .workshop-login-container {
+    height: auto !important;
+    min-height: 100vh !important;
+    overflow-y: auto !important;
+  }
 }
 
 /* ── 480px — extra-small phones ── */
@@ -427,7 +434,12 @@ body {
     font-size: 1.6rem !important;
   }
 
-
+  /* Vendor login remember/forgot spacing on small phones */
+  .remember-forgot-row {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 8px !important;
+  }
 }
 
 /* ── Partner banner ── */

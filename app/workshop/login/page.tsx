@@ -62,7 +62,7 @@ export default function WorkshopLogin() {
   if (!mounted) return null;
 
   return (
-    <div className="mobile-stack" style={{ display: 'flex', width: '100vw', height: '100vh', overflow: 'hidden', background: '#3E2A14' }}>
+    <div className="mobile-stack workshop-login-container" style={{ display: 'flex', width: '100vw', height: '100vh', overflow: 'hidden', background: '#3E2A14' }}>
       
       {/* LEFT SIDE: The Workshop Scene */}
       <div className="mobile-hide" style={{ flex: 1, position: 'relative', borderRight: '4px solid #2A1A0B', background: '#2E2218', overflow: 'hidden' }}>
@@ -241,7 +241,7 @@ export default function WorkshopLogin() {
               </div>
             </div>
 
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <div className="remember-forgot-row" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '10px' }}>
               <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.9rem', color: '#555', cursor: 'pointer' }}>
                 <input type="checkbox" style={{ accentColor: '#3E2A14' }} />
                 Remember this device
@@ -259,7 +259,7 @@ export default function WorkshopLogin() {
               type="submit" 
               disabled={loginState === 'loading' || loginState === 'success'}
               style={{ 
-                marginTop: '1rem', padding: '1rem', background: loginState === 'success' ? '#5CB85C' : '#3E2A14', color: '#FFF', 
+                marginTop: '1rem', padding: '1rem', background: loginState === 'success' ? '#7E8C6F' : '#3E2A14', color: '#FFF', 
                 border: 'none', borderRadius: '6px', fontSize: '1.1rem', fontWeight: 600, cursor: 'pointer', transition: 'background 0.3s' 
               }}
             >

@@ -541,6 +541,7 @@
     padding-bottom: 40px !important;
     overflow-y: auto !important;
     min-height: 100svh;
+    height: auto !important;
   }
 
   /* Make the paper card fill the mobile screen width gracefully */

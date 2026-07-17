@@ -1105,3 +1105,40 @@
   background: #EAE4DD;
   color: #2A2928;
 }
+
+/* Animated street lamps styling (transitional SignatureMoment phase) */
+.movingLamp {
+  position: absolute;
+  bottom: 30%;
+  width: 6px;
+  height: 80px;
+  background: rgba(42, 41, 40, 0.3);
+  animation: cloudDrift linear infinite;
+  z-index: 5;
+}
+
+.movingLampBulb {
+  position: absolute;
+  top: -6px;
+  left: -8px;
+  width: 22px;
+  height: 12px;
+  border-radius: 50%;
+  background: rgba(244, 208, 63, 0.4);
+}
+
+/* Mobile responsive fixes for animated street lights (attaching them to road) */
+@media (max-width: 820px) {
+  .movingLamp {
+    bottom: 20vw !important; /* sit on the road based on proportional viewport width */
+    height: 52px !important;  /* scale height down for mobile */
+    width: 4px !important;    /* scale width down for mobile */
+  }
+  .movingLampBulb {
+    top: -4px !important;
+    left: -6px !important;
+    width: 16px !important;
+    height: 9px !important;
+  }
+}
+

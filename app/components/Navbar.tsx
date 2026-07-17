@@ -43,6 +43,8 @@ export default function Navbar() {
           left: "50%",
           transform: "translateX(-50%)",
           zIndex: 8000,
+          opacity: menuOpen ? 0 : 1,
+          pointerEvents: menuOpen ? "none" : "auto",
           display: "flex",
           alignItems: "center",
           gap: "clamp(12px, 1.8vw, 24px)",
@@ -53,7 +55,7 @@ export default function Navbar() {
           borderRadius: 24,
           boxShadow:
             "inset 0 1px 0 rgba(255,255,255,.9), 0 10px 30px -12px rgba(42,41,40,.08), 0 2px 6px rgba(42,41,40,.02)",
-          transition: "box-shadow .4s ease, background .4s ease, transform .4s cubic-bezier(.16, 1, .3, 1)",
+          transition: "opacity .3s ease, box-shadow .4s ease, background .4s ease, transform .4s cubic-bezier(.16, 1, .3, 1)",
         }}
       >
         <a
@@ -183,6 +185,13 @@ export default function Navbar() {
         aria-hidden={!menuOpen}
       >
         <div className="mob-menu-panel" onClick={(e) => e.stopPropagation()}>
+          <button className="mob-close-icon-btn" onClick={closeMenu} aria-label="Close menu">
+            <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+              <line x1="18" y1="6" x2="6" y2="18" />
+              <line x1="6" y1="6" x2="18" y2="18" />
+            </svg>
+          </button>
+          
           <div style={{ marginBottom: 8, paddingBottom: 16, borderBottom: "1px solid rgba(42,41,40,.1)" }}>
             <Image src="/logo.png" alt="Ezee" width={80} height={26} style={{ height: 26, width: "auto" }} />
           </div>
@@ -201,10 +210,6 @@ export default function Navbar() {
           <Link href="/auth" className="mob-cta" onClick={closeMenu}>
             Start Printing →
           </Link>
-
-          <button className="mob-close" onClick={closeMenu}>
-            Close menu
-          </button>
         </div>
       </div>
     </>

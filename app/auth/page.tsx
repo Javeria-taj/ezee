@@ -190,14 +190,19 @@ export default function AuthPage() {
 
         {/* Right: Forms */}
         <div style={{ flex: 1, display: 'flex', justifyContent: 'flex-start' }}>
-          <AuthForms state={authState} setState={setAuthState} />
+          <AuthForms 
+            state={authState} 
+            setState={setAuthState} 
+            passwordVisible={passwordVisible}
+            setPasswordVisible={setPasswordVisible}
+          />
         </div>
 
       </div>
 
       {/* Desk Lamp Invisible Toggle Overlay (triggers password visible) */}
       <button 
-        style={{ position: 'absolute', bottom: '25vh', right: '25%', width: '80px', height: '180px', opacity: 0, zIndex: 100, cursor: 'pointer' }}
+        className={styles.lampToggle}
         onClick={() => setPasswordVisible(!passwordVisible)}
         aria-label="Toggle Desk Lamp"
       />

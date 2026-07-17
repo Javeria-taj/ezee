@@ -3,14 +3,16 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import styles from '../auth/auth.module.css';
-import { BookOpen, Key, Mail, User, Phone, GraduationCap, Building2, Calendar, Check } from 'lucide-react';
+import { BookOpen, Key, Mail, User, Phone, GraduationCap, Building2, Calendar, Check, Eye, EyeOff } from 'lucide-react';
 
 interface AuthFormsProps {
   state: 'login' | 'signup' | 'otp' | 'forgot' | 'loading' | 'success' | 'error';
   setState: (state: 'login' | 'signup' | 'otp' | 'forgot' | 'loading' | 'success' | 'error') => void;
+  passwordVisible: boolean;
+  setPasswordVisible: (visible: boolean) => void;
 }
 
-export default function AuthForms({ state, setState }: AuthFormsProps) {
+export default function AuthForms({ state, setState, passwordVisible, setPasswordVisible }: AuthFormsProps) {
   const [rememberMe, setRememberMe] = useState(false);
   const [signupStep, setSignupStep] = useState(0); // 0: About You, 1: College, 2: Password, 3: Finish
   const [otp, setOtp] = useState(['', '', '', '']);
@@ -84,7 +86,21 @@ export default function AuthForms({ state, setState }: AuthFormsProps) {
             
             <div style={{ position: 'relative' }}>
               <Key style={{ position: 'absolute', top: '12px', left: '0', color: '#A9B59D' }} size={20} />
-              <input type="password" placeholder="Passcode" className={styles.inputField} style={{ paddingLeft: '2rem', background: 'transparent', fontFamily: 'Instrument Sans' }} required />
+              <input 
+                type="password" 
+                placeholder="Passcode" 
+                className={styles.inputField} 
+                style={{ paddingLeft: '2rem', paddingRight: '2.5rem', background: 'transparent', fontFamily: 'Instrument Sans' }} 
+                required 
+              />
+              <button
+                type="button"
+                onClick={() => setPasswordVisible(!passwordVisible)}
+                style={{ position: 'absolute', right: '4px', top: '12px', background: 'none', border: 'none', cursor: 'pointer', color: '#A9B59D', padding: 0 }}
+                aria-label={passwordVisible ? "Hide password" : "Show password"}
+              >
+                {passwordVisible ? <EyeOff size={20} /> : <Eye size={20} />}
+              </button>
             </div>
             
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '0.5rem' }}>
@@ -170,11 +186,40 @@ export default function AuthForms({ state, setState }: AuthFormsProps) {
                   <motion.div key="step2" variants={variants} initial="initial" animate="animate" exit="exit" style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
                     <div style={{ position: 'relative' }}>
                       <Key style={{ position: 'absolute', top: '12px', left: '0', color: '#A9B59D' }} size={20} />
-                      <input type="password" placeholder="Passcode" className={styles.inputField} style={{ paddingLeft: '2rem', background: 'transparent' }} required autoFocus />
+                      <input 
+                        type="password" 
+                        placeholder="Passcode" 
+                        className={styles.inputField} 
+                        style={{ paddingLeft: '2rem', paddingRight: '2.5rem', background: 'transparent' }} 
+                        required 
+                        autoFocus 
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setPasswordVisible(!passwordVisible)}
+                        style={{ position: 'absolute', right: '4px', top: '12px', background: 'none', border: 'none', cursor: 'pointer', color: '#A9B59D', padding: 0 }}
+                        aria-label={passwordVisible ? "Hide password" : "Show password"}
+                      >
+                        {passwordVisible ? <EyeOff size={20} /> : <Eye size={20} />}
+                      </button>
                     </div>
                     <div style={{ position: 'relative' }}>
                       <Check style={{ position: 'absolute', top: '12px', left: '0', color: '#A9B59D' }} size={20} />
-                      <input type="password" placeholder="Confirm Passcode" className={styles.inputField} style={{ paddingLeft: '2rem', background: 'transparent' }} required />
+                      <input 
+                        type="password" 
+                        placeholder="Confirm Passcode" 
+                        className={styles.inputField} 
+                        style={{ paddingLeft: '2rem', paddingRight: '2.5rem', background: 'transparent' }} 
+                        required 
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setPasswordVisible(!passwordVisible)}
+                        style={{ position: 'absolute', right: '4px', top: '12px', background: 'none', border: 'none', cursor: 'pointer', color: '#A9B59D', padding: 0 }}
+                        aria-label={passwordVisible ? "Hide password" : "Show password"}
+                      >
+                        {passwordVisible ? <EyeOff size={20} /> : <Eye size={20} />}
+                      </button>
                     </div>
                   </motion.div>
                 )}

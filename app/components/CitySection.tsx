@@ -294,10 +294,11 @@ export default function CitySection() {
       </div>
 
       {/* city skyline */}
-      <div style={{ position: "relative", height: 200, marginTop: 10 }}>
+      <div className="city-skyline-wrap" style={{ position: "relative", height: 200, marginTop: 10 }}>
         <svg
           viewBox="0 0 1440 220"
           preserveAspectRatio="xMidYMax slice"
+          className="city-skyline-svg"
           style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }}
         >
           {/* road */}

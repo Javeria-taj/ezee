@@ -163,18 +163,14 @@ export default function SignatureMoment({ shopName, isNight, onComplete }: Signa
       {[0, 1, 2].map(i => (
         <div
           key={i}
+          className={styles.movingLamp}
           style={{
-            position: 'absolute',
-            bottom: '30%',
             left: `${20 + i * 30}%`,
-            width: '6px',
-            height: '80px',
-            background: 'rgba(42,41,40,0.3)',
-            animation: `${styles.cloudDrift} ${8 + i * 3}s linear infinite`,
             animationDelay: `${i * 2}s`,
+            animationDuration: `${8 + i * 3}s`,
           }}
         >
-          <div style={{ position: 'absolute', top: '-6px', left: '-8px', width: '22px', height: '12px', borderRadius: '50%', background: 'rgba(244,208,63,0.4)' }} />
+          <div className={styles.movingLampBulb} />
         </div>
       ))}
 

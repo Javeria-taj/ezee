@@ -460,7 +460,7 @@ export default function Settings({
           <span style={{ fontFamily: 'Space Grotesk', fontSize: '1.2rem', color: '#A29884' }}>→</span>
         </div>
 
-        {/* ════════ 6. Add to Cart ════════ */}
+        {/* ════════ 6. Cart ════════ */}
         <div
           style={settingsItem}
           onClick={() => {
@@ -471,7 +471,7 @@ export default function Settings({
           }}
         >
           <div>
-            <h4 style={{ fontFamily: 'Space Grotesk', fontSize: '1rem', color: '#2A2928', margin: '0 0 0.2rem 0' }}>🛒 Add to Cart</h4>
+            <h4 style={{ fontFamily: 'Space Grotesk', fontSize: '1rem', color: '#2A2928', margin: '0 0 0.2rem 0' }}>🛒 Cart</h4>
             <p style={{ fontFamily: 'Instrument Sans', fontSize: '0.85rem', color: '#7A6D8C', margin: 0 }}>Queue files before sending them together</p>
           </div>
           <span style={{ fontFamily: 'Space Grotesk', fontSize: '1.2rem', color: '#A29884' }}>→</span>

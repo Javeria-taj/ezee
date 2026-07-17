@@ -136,7 +136,7 @@
   display: flex;
   align-items: center;
   gap: 14px;
-  padding: 13px clamp(16px, 5vw, 44px);
+  padding: 24px clamp(16px, 5vw, 44px);
   background: linear-gradient(180deg, rgba(233, 227, 214, .94), rgba(233, 227, 214, .72));
   backdrop-filter: blur(8px);
   border-bottom: 1px solid var(--edge);
@@ -2057,7 +2057,7 @@
 @media (max-width: 820px) {
   .header {
     gap: 8px;
-    padding: 10px 16px;
+    padding: 18px 16px;
     flex-wrap: wrap;
   }
 

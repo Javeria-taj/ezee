@@ -553,10 +553,12 @@ table.ws-table tbody tr:last-child td{border-bottom:none}
   .ws-queue{gap:12px!important}
   
   /* Docket cards (Orders) */
-  .ws-docket{flex-direction:column!important;gap:8px!important;padding:16px!important}
+  .ws-docket{display:flex!important;flex-direction:column!important;gap:10px!important;padding:14px!important}
   .ws-stub{display:none!important}
-  .ws-dbody{min-width:0}
-  .ws-dact{flex-direction:row!important;justify-content:space-between!important;align-items:center!important;width:100%!important;padding-top:12px;border-top:1px dashed var(--paper-edge)}
+  .ws-dbody{padding:0!important;min-width:0!important;gap:4px!important}
+  .ws-drow1{padding-right:75px!important}
+  .ws-dact{flex-direction:row!important;justify-content:space-between!important;align-items:center!important;width:100%!important;padding:10px 0 0 0!important;margin-top:0!important;border-top:1px dashed var(--paper-edge)!important}
+  .ws-stamp{top:12px!important;right:12px!important}
   
   /* Tables (Stations / Stock) */
   .ws-ledger{overflow-x:auto!important;-webkit-overflow-scrolling:touch}

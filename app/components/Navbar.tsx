@@ -48,11 +48,11 @@ export default function Navbar() {
           display: "flex",
           alignItems: "center",
           gap: "clamp(12px, 1.8vw, 24px)",
-          padding: "8px 8px 8px 18px",
+          padding: "16px 16px 16px 26px",
           backdropFilter: "blur(16px)",
           WebkitBackdropFilter: "blur(16px)",
           border: "1px solid rgba(255, 255, 255, 0.5)",
-          borderRadius: 24,
+          borderRadius: 32,
           boxShadow:
             "inset 0 1px 0 rgba(255,255,255,.9), 0 10px 30px -12px rgba(42,41,40,.08), 0 2px 6px rgba(42,41,40,.02)",
           transition: "opacity .3s ease, box-shadow .4s ease, background .4s ease, transform .4s cubic-bezier(.16, 1, .3, 1)",

@@ -2058,6 +2058,7 @@
   .header {
     gap: 8px;
     padding: 10px 16px;
+    flex-wrap: wrap;
   }
 
   .chip {
@@ -2066,6 +2067,69 @@
 
   .shops {
     grid-template-columns: 1fr;
+  }
+
+  /* Header actions: wrap icon buttons */
+  .headerRight {
+    gap: 6px;
+  }
+
+  /* Main content: reduce outer padding */
+  .main {
+    padding: 0 clamp(12px, 4vw, 24px) 80px;
+  }
+
+  /* Upload drop zone: full width, comfortable touch target */
+  .dropZone {
+    padding: 32px 20px !important;
+  }
+
+  /* Slip paper form */
+  .slip {
+    max-width: 100% !important;
+    padding: 20px 16px 18px !important;
+  }
+
+  /* Option pills: allow wrapping on narrow screens */
+  .opts {
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  /* Shop cards grid — already 1 column, also tighten gap */
+  .shops {
+    gap: 12px;
+  }
+
+  /* Journey / confirmation section */
+  .journey {
+    padding: 20px 16px !important;
+  }
+
+  /* Modal overlays — full screen on mobile */
+  .modalOverlay {
+    padding: 0 !important;
+    align-items: flex-end !important;
+  }
+  .modalPanel {
+    border-radius: 20px 20px 0 0 !important;
+    max-height: 85svh !important;
+    overflow-y: auto !important;
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  /* Spine dots hidden already at 760px */
+
+  /* Topbar / section header */
+  .stepEyebrow {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  /* Tally section — prevent overflow */
+  .tally {
+    overflow-x: auto;
   }
 }
 
@@ -2078,6 +2142,7 @@
     font-size: 22px;
   }
 
+  /* Form rows with label + control: stack on tiny screens */
   .frow {
     flex-direction: column;
     align-items: flex-start;
@@ -2086,5 +2151,21 @@
 
   .bigCode {
     font-size: 32px;
+  }
+
+  /* Option pills: slightly smaller text on tiny screens */
+  .opt {
+    font-size: 12px;
+    padding: 6px 10px;
+  }
+
+  /* Confirmation code display */
+  .bigCode {
+    letter-spacing: 0.15em;
+  }
+
+  /* Shelf files list — tighter */
+  .shelfItem {
+    padding: 10px 12px;
   }
 }

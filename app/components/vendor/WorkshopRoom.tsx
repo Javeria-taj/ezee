@@ -496,6 +496,54 @@ table.ws-table tbody tr:last-child td{border-bottom:none}
 .ws-tick:last-child{border-bottom:none}
 .ws-tick .tk-main{flex:1;min-width:0}.ws-tick .tk-main b{font-weight:600;display:block;font-size:13.5px}
 .ws-tick .tk-main small{color:var(--ink-3);font-size:11.5px}
+/* ── WorkshopRoom Mobile — all inside @media, desktop untouched ── */
+@media(max-width:820px){
+  /* Override grid-column layout with flex column regardless of open/close state */
+  .ws-app,.ws-app.ws-closed{display:flex!important;flex-direction:column!important;grid-template-columns:none!important}
+  .ws-rail{position:relative!important;width:100%!important;height:auto!important;min-height:auto!important;border-right:none!important;border-bottom:1px solid var(--paper-edge)!important;padding:12px 16px!important;flex-shrink:0}
+  /* Ensure closed-state hiding of labels doesn't apply on mobile nav */
+  .ws-app.ws-closed .ws-nav span:not(.ic){display:inline!important}
+  .ws-app.ws-closed .ws-brand div{display:block!important}
+  .ws-ezi-card{display:none!important}
+  .ws-nav{flex-direction:row!important;flex-wrap:wrap!important;gap:6px!important}
+  .ws-nav button{width:auto!important;padding:7px 11px!important;font-size:12px!important;flex:0 0 auto!important}
+  .ws-app.ws-closed .ws-nav button{justify-content:flex-start!important;padding:7px 11px!important}
+  .ws-rail-foot{flex-direction:row!important;gap:12px!important;border-top:none!important;margin-top:8px!important;padding-top:8px!important}
+  .ws-main{min-height:0!important;overflow-x:hidden}
+  .ws-topbar{flex-wrap:wrap!important;gap:8px!important;padding:12px 16px!important}
+  .ws-sub{display:none!important}
+  .ws-clockchip{font-size:12px!important;padding:5px 9px!important}
+  .ws-canvas{padding:12px 14px!important}
+  .ws-stats{grid-template-columns:1fr 1fr!important;gap:10px!important}
+  .ws-work{grid-template-columns:1fr!important}
+  .ws-side{display:none!important}
+  /* Docket card: remove side-by-side, stack cleanly */
+  .ws-docket{flex-direction:column!important;gap:8px!important;padding:14px!important}
+  .ws-stub{display:none!important}
+  .ws-dbody{min-width:0}
+  .ws-dact{flex-direction:row!important;justify-content:space-between!important;align-items:center!important;width:100%!important;padding-top:8px;border-top:1px dashed var(--paper-edge)}
+  /* Queue grid */
+  .ws-queue{gap:10px!important}
+  /* Tables — horizontal scroll wrapper */
+  .ws-ledger{overflow-x:auto!important;-webkit-overflow-scrolling:touch}
+  table.ws-table{min-width:440px}
+  .ws-table-wrap{overflow-x:auto!important;-webkit-overflow-scrolling:touch}
+  /* Ledger head */
+  .ws-ledger-head{flex-wrap:wrap!important;gap:6px!important}
+  /* Two-col already handled above */
+  /* Drawer: full width on mobile */
+  .ws-drawer{width:100%!important;max-width:100vw!important}
+  /* Stat cards */
+  .ws-stat{padding:14px!important}
+  .ws-stat .big{font-size:24px!important}
+}
+@media(max-width:480px){
+  .ws-stats{grid-template-columns:1fr 1fr!important;gap:8px!important}
+  .ws-stat .big{font-size:20px!important}
+  .ws-stat .trail{display:none!important}
+  .ws-tabs{flex-wrap:wrap!important;gap:4px!important}
+  .ws-tab{padding:7px 10px!important;font-size:12px!important}
+}
 `;
 
 // ── Toast ─────────────────────────────────────────────────────────────────────

@@ -137,6 +137,7 @@ export default function StoriesSection() {
               <Reveal
                 key={i}
                 delay={t.delay}
+                className="mobile-stories-card"
               >
                 <div
                   style={{
@@ -189,6 +190,7 @@ export default function StoriesSection() {
             <Reveal
               key={i}
               delay={t.delay}
+              className="mobile-stories-card"
               style={{
                 marginTop: (t as any).marginTop ?? 0,
               }}

@@ -178,7 +178,8 @@ export default function AuthPage() {
         style={{ position: 'relative', zIndex: 30, display: 'flex', width: '100%', maxWidth: '900px', padding: '2rem', gap: '4rem', alignItems: 'center' }}>
         
         {/* Left: Ezi with relative tracking and password postures */}
-        <div style={{ flex: 1, position: 'relative', height: '400px', display: 'flex', justifyContent: 'center' }}>
+        {/* mobile-auth-ezi-hide hides this container on ≤820px screens only */}
+        <div className="mobile-auth-ezi-hide" style={{ flex: 1, position: 'relative', height: '400px', display: 'flex', justifyContent: 'center' }}>
           <EziCharacter 
             state={authState} 
             mousePos={mousePos}

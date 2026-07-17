@@ -106,129 +106,380 @@ body {
   50% { transform: translateY(8px); }
 }
 
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   MOBILE RESPONSIVENESS — All rules inside @media max-width.
+   Desktop (≥ 821 px) is completely untouched.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ── Hamburger button (hidden on desktop via inline style in Navbar.tsx) ── */
+.mob-menu-btn {
+  display: none;
+}
+.mob-menu-overlay {
+  display: none;
+}
+
 @media (max-width: 820px) {
-  .nav-links {
-    display: none !important;
-  }
-  
-  /* ── 1. General Utilities ── */
-  .mobile-stack {
-    display: flex !important;
-    flex-direction: column !important;
-  }
-  .mobile-hide {
-    display: none !important;
-  }
-  .mobile-text-center {
-    text-align: center !important;
-  }
-  .mobile-center-items {
-    align-items: center !important;
-    justify-content: center !important;
-  }
-  .mobile-align-center {
-    align-self: center !important;
-    margin: 0 auto !important;
-  }
-  
-  /* ── 2. Padding/Margin Reductions ── */
-  .mobile-p-sm {
-    padding: 20px 16px !important;
-  }
-  .mobile-p-md {
-    padding: 40px 20px !important;
-  }
-  .mobile-p-lg {
-    padding: 60px 24px !important;
-  }
-  .mobile-gap-sm {
-    gap: 16px !important;
-  }
-  
-  /* ── 3. Grid to Column Overrides ── */
+
+  /* ── Utility classes ── */
+  .nav-links        { display: none !important; }
+  .nav-divider      { display: none !important; }
+  .mobile-hide      { display: none !important; }
+
+  .mobile-stack         { display: flex !important; flex-direction: column !important; }
+  .mobile-text-center   { text-align: center !important; }
+  .mobile-center-items  { align-items: center !important; justify-content: center !important; }
+  .mobile-align-center  { align-self: center !important; margin: 0 auto !important; }
+  .mobile-full-w        { width: 100% !important; max-width: 100% !important; flex: none !important; }
+
+  /* Padding helpers */
+  .mobile-p-sm  { padding: 20px 16px !important; }
+  .mobile-p-md  { padding: 40px 20px !important; }
+  .mobile-p-lg  { padding: 60px 24px !important; }
+  .mobile-gap-sm { gap: 16px !important; }
+
+  /* Grid-to-column override */
   .mobile-col-1 {
     display: flex !important;
     flex-direction: column !important;
-  }
-  
-  /* ── 4. Typography Tweaks ── */
-  .mobile-text-xl {
-    font-size: clamp(36px, 10vw, 48px) !important;
-  }
-  .mobile-text-lg {
-    font-size: clamp(24px, 8vw, 32px) !important;
-  }
-  
-  /* ── 5. Specific Component Overrides ── */
-  .mobile-auth-card {
-    width: 100% !important;
-    max-width: 90vw !important;
-    padding: 32px 20px !important;
-    margin: 0 auto !important;
-  }
-  .mobile-hero-pad {
-    padding: 100px 20px 60px 20px !important;
-  }
-  
-  /* ── 6. Dashboards Layout ── */
-  .ws-app, .obs-app {
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-  }
-  .ws-rail, .obs-rail {
-    position: relative;
-    height: auto;
-    width: 100%;
-    border-right: none;
-    border-bottom: 1px solid var(--paper-edge);
-    padding: 16px;
-    z-index: 40;
-  }
-  .ws-brand {
-    padding-bottom: 8px;
-  }
-  .ws-ezi-card {
-    display: none; /* Hide character on mobile to save space */
-  }
-  .ws-nav, .obs-nav {
-    flex-direction: row;
-    flex-wrap: wrap;
-    gap: 8px;
-  }
-  .ws-nav button, .obs-nav button {
-    width: auto;
-    padding: 8px 12px;
-    font-size: 12px;
-  }
-  .ws-rail-foot {
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-    border-top: none;
-    margin-top: 0;
-    padding-top: 8px;
-  }
-  .ws-queue-grid, .ws-board-grid {
+    /* Reset grid span so children don't keep old gridColumn values */
     grid-template-columns: 1fr !important;
   }
-  .ws-topbar, .obs-topbar {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 12px;
-    padding: 16px;
+  .mobile-col-1 > * { grid-column: 1 / -1 !important; }
+
+  /* ── Typography ── */
+  .mobile-text-xl { font-size: clamp(36px, 10vw, 48px) !important; }
+  .mobile-text-lg { font-size: clamp(24px, 8vw, 32px)  !important; }
+
+  /* ── Navbar (floating pill) ── */
+  #main-nav {
+    top: 12px !important;
+    width: calc(100% - 32px) !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    padding: 8px 12px !important;
+    gap: 0 !important;
+    justify-content: space-between !important;
   }
-  .ws-canvas, .obs-canvas {
-    padding: 16px !important;
+
+  /* Hamburger button — visible only on mobile */
+  .mob-menu-btn {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    border: 1.5px solid rgba(42,41,40,.14);
+    border-radius: 12px;
+    background: rgba(250,247,241,.7);
+    cursor: pointer;
+    flex-direction: column;
+    gap: 5px;
+    padding: 0;
+    flex-shrink: 0;
+  }
+  .mob-menu-btn span {
+    display: block;
+    width: 18px;
+    height: 2px;
+    background: #2A2928;
+    border-radius: 2px;
+    transition: transform .3s ease, opacity .3s ease;
+  }
+
+  /* Mobile nav overlay */
+  .mob-menu-overlay {
+    display: flex !important;
+    position: fixed;
+    inset: 0;
+    z-index: 7999;
+    background: rgba(42,41,40,.55);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .3s ease;
+  }
+  .mob-menu-overlay.open {
+    opacity: 1;
+    pointer-events: all;
+  }
+  .mob-menu-panel {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: min(300px, 80vw);
+    background: #FAF7F1;
+    display: flex;
+    flex-direction: column;
+    padding: 28px 24px;
+    gap: 8px;
+    transform: translateX(100%);
+    transition: transform .35s cubic-bezier(.16,1,.3,1);
+  }
+  .mob-menu-overlay.open .mob-menu-panel {
+    transform: translateX(0);
+  }
+  .mob-menu-panel a, .mob-menu-panel button.mob-close {
+    display: block;
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 600;
+    font-size: 17px;
+    color: #2A2928;
+    text-decoration: none;
+    padding: 14px 0;
+    border-bottom: 1px solid rgba(42,41,40,.08);
+    background: none;
+    border-left: none;
+    border-right: none;
+    border-top: none;
+    cursor: pointer;
+    text-align: left;
+    width: 100%;
+    transition: color .2s;
+  }
+  .mob-menu-panel a:hover { color: #D48A70; }
+  .mob-menu-panel .mob-cta {
+    margin-top: 16px;
+    display: block;
+    width: 100%;
+    text-align: center;
+    background: #2A2928;
+    color: #FAF7F1 !important;
+    padding: 16px 24px;
+    border-radius: 14px;
+    border: none !important;
+  }
+  .mob-menu-panel .mob-close {
+    font-size: 13px;
+    color: #9a9085;
+    border: none !important;
+    margin-top: 4px;
+    padding: 10px 0;
+  }
+
+  /* ── HeroSection ── */
+  .mobile-hero-pad {
+    padding: 100px 20px 60px !important;
+    min-height: auto !important;
+  }
+  /* Hero SVG illustration: shrink on small screens */
+  .mobile-hero-pad [style*="flex: \"1 1 440px\""],
+  .mobile-hero-pad [style*="flex: 1 1 440px"] {
+    flex: 1 1 100% !important;
+    max-width: 100% !important;
+  }
+
+  /* ── FeaturesSection ── */
+  /* mobile-col-1 is already on the grid wrapper — just ensure children stretch */
+  .mobile-col-1 > [style*="gridColumn"] {
+    grid-column: auto !important;
+    width: 100% !important;
+  }
+
+  /* ── HowItWorks step cards — don't overflow on narrow ── */
+  .mobile-align-center {
+    max-width: min(340px, calc(100vw - 40px)) !important;
+  }
+
+  /* ── CitySection shop cards ── */
+  /* flex-wrap is already on the container; just limit card min-width */
+  [style*="flex: \"1 1 290px\""],
+  [style*="flex: 1 1 290px"] {
+    flex: 1 1 100% !important;
+    max-width: 100% !important;
+  }
+
+  /* ── StoriesSection polaroid / sticky cards ── */
+  .mobile-stories-card {
+    width: min(264px, 88vw) !important;
+  }
+
+  /* ── CTA footer links — wrap gracefully ── */
+  #cta [style*="display: \"flex\""] {
+    gap: 10px !important;
+  }
+
+  /* ── Auth Page ── */
+  /* The Ezi character on the auth page (left side, height: 400px) */
+  .mobile-auth-ezi-hide {
+    display: none !important;
+  }
+  .mobile-auth-card {
+    width: 100% !important;
+    max-width: 92vw !important;
+    padding: 28px 20px !important;
+    margin: 0 auto !important;
+  }
+  /* Auth page outer container row → column */
+  .mobile-stack [style*="height: '400px'"] {
+    display: none !important;
+  }
+
+  /* ── Vendor Dashboard (WorkshopRoom) ── */
+  .ws-app {
+    display: flex !important;
+    flex-direction: column !important;
+    min-height: 100vh;
+  }
+  .ws-rail {
+    position: relative !important;
+    width: 100% !important;
+    height: auto !important;
+    min-height: auto !important;
+    border-right: none !important;
+    border-bottom: 1px solid rgba(42,41,40,.12) !important;
+    padding: 12px 16px !important;
+  }
+  .ws-ezi-card {
+    display: none !important;
+  }
+  .ws-nav {
+    flex-direction: row !important;
+    flex-wrap: wrap !important;
+    gap: 6px !important;
+  }
+  .ws-nav button {
+    width: auto !important;
+    padding: 7px 11px !important;
+    font-size: 12px !important;
+    flex: 0 0 auto !important;
+  }
+  .ws-rail-foot {
+    flex-direction: row !important;
+    justify-content: flex-start !important;
+    align-items: center !important;
+    border-top: none !important;
+    margin-top: 8px !important;
+    padding-top: 8px !important;
+    gap: 12px;
+  }
+  .ws-main {
+    min-height: 0 !important;
+    overflow-x: hidden;
+  }
+  .ws-topbar {
+    flex-wrap: wrap !important;
+    gap: 10px !important;
+    padding: 14px 16px !important;
+  }
+  .ws-clockchip {
+    font-size: 12px !important;
+    padding: 5px 10px !important;
+  }
+  .ws-canvas {
+    padding: 14px 16px !important;
   }
   .ws-stats {
-    grid-template-columns: 1fr 1fr !important; /* 2x2 grid for stats on mobile */
+    grid-template-columns: 1fr 1fr !important;
+    gap: 10px !important;
   }
   .ws-work {
+    grid-template-columns: 1fr !important;
+    gap: 16px !important;
+  }
+  .ws-side {
+    display: none !important; /* Side panel hidden on mobile — shown in separate tab */
+  }
+  /* Docket cards */
+  .ws-docket {
+    flex-direction: column !important;
+    gap: 10px !important;
+  }
+  .ws-stub {
+    display: none !important;
+  }
+  .ws-dact {
+    flex-direction: row !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    width: 100% !important;
+  }
+  /* Tables — horizontal scroll */
+  .ws-table-wrap {
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch;
+  }
+  table.ws-table {
+    min-width: 480px;
+  }
+  /* Two-col layout */
+  .ws-two-col {
+    grid-template-columns: 1fr !important;
+  }
+  /* Ledger */
+  .ws-ledger-head {
+    flex-wrap: wrap !important;
+    gap: 8px !important;
+  }
+
+  /* ── Student Dashboard header ── */
+  .header {
+    gap: 8px;
+    padding: 10px 16px;
+  }
+  .chip {
+    display: none;
+  }
+  .shops {
     grid-template-columns: 1fr !important;
   }
 }
 
+/* ── 480px — extra-small phones ── */
+@media (max-width: 480px) {
+  /* Navbar even more compact */
+  #main-nav {
+    width: calc(100% - 24px) !important;
+    top: 10px !important;
+  }
+
+  /* Hero: hide scroll cue on very small screens */
+  #hero [style*="position: \"absolute\""][style*="bottom: 28"] {
+    display: none !important;
+  }
+
+  /* Features cards — tighter padding */
+  .mobile-col-1 > [style*="minHeight"] {
+    min-height: auto !important;
+  }
+
+  /* FAQ font size */
+  [style*="fontSize: 18.5"] {
+    font-size: 16px !important;
+  }
+
+  /* CTA heading */
+  #cta h2 {
+    font-size: clamp(34px, 11vw, 50px) !important;
+  }
+
+  /* Auth OTP stamps — fit 4 across on small phones */
+  .otpContainer {
+    gap: 6px !important;
+  }
+  .otpStamp {
+    width: 52px !important;
+    height: 70px !important;
+    font-size: 1.6rem !important;
+  }
+
+  /* Vendor topbar — hide sub-text */
+  .ws-sub {
+    display: none !important;
+  }
+  .ws-stats {
+    grid-template-columns: 1fr 1fr !important;
+    gap: 8px !important;
+  }
+  .ws-stat .big {
+    font-size: 22px !important;
+  }
+}
+
+/* ── Partner banner ── */
 @media (max-width: 768px) {
   .partner-grid {
     grid-template-columns: 1fr !important;

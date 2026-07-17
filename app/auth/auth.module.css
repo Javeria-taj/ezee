@@ -518,3 +518,67 @@
   user-select: none;
 }
 
+/* ═══════════════════════════════════════════════════════════════════
+   AUTH PAGE — MOBILE ONLY
+   All rules inside @media max-width. Desktop untouched.
+   ═══════════════════════════════════════════════════════════════════ */
+@media (max-width: 820px) {
+  /* Hide the full decorative room scene elements on mobile */
+  .window,
+  .curtainLeft,
+  .curtainRight,
+  .plant,
+  .lamp,
+  .lampLight,
+  .desk {
+    display: none !important;
+  }
+
+  /* Room container: center vertically and provide safe padding */
+  .room {
+    align-items: flex-start !important;
+    padding-top: 80px !important;
+    padding-bottom: 40px !important;
+    overflow-y: auto !important;
+    min-height: 100svh;
+  }
+
+  /* Make the paper card fill the mobile screen width gracefully */
+  .paperCard {
+    max-width: 92vw !important;
+    padding: 2rem 1.25rem !important;
+    margin: 0 auto !important;
+    border-radius: 14px 14px 14px 14px !important; /* remove desktop left-border feel for narrow screens */
+  }
+
+  /* OTP stamps: fit 4 in a row on narrow screens */
+  .otpContainer {
+    gap: 8px !important;
+    justify-content: center !important;
+  }
+  .otpStamp {
+    width: 56px !important;
+    height: 72px !important;
+    font-size: 1.8rem !important;
+  }
+
+  /* Ezi character container — hidden via .mobile-auth-ezi-hide in page.tsx */
+  .eziContainer {
+    display: none !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .room {
+    padding-top: 60px !important;
+  }
+  .paperCard {
+    max-width: 96vw !important;
+    padding: 1.5rem 1rem !important;
+  }
+  .otpStamp {
+    width: 48px !important;
+    height: 64px !important;
+    font-size: 1.5rem !important;
+  }
+}

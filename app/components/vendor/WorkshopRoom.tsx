@@ -577,6 +577,152 @@ table.ws-table tbody tr:last-child td{border-bottom:none}
   .ws-tab{padding:8px 12px!important;font-size:12.5px!important}
   .ws-dact .ws-btn{flex:1!important;justify-content:center!important}
 }
+
+@media (min-width: 821px) {
+  /* Scale up layout & spacing */
+  .ws-main {
+    padding: 0 !important; /* Reset wrapper padding, spacing is handled by topbar/canvas */
+  }
+  .ws-canvas {
+    padding: 30px 40px 80px !important;
+    max-width: 1440px !important;
+  }
+  
+  /* Sidebar (opened vs closed sizes) */
+  .ws-rail {
+    width: 280px !important;
+    padding: 24px 20px !important;
+    gap: 22px !important;
+  }
+  .ws-app.ws-closed .ws-rail {
+    width: 96px !important;
+    padding: 24px 14px !important;
+  }
+  
+  /* Sidebar brand & nav */
+  .ws-brand b {
+    font-size: 19px !important;
+  }
+  .ws-brand small {
+    font-size: 11px !important;
+  }
+  .ws-nav button {
+    font-size: 16px !important;
+    padding: 11px 13px !important;
+    gap: 14px !important;
+  }
+  .ws-nav button .ic {
+    width: 20px !important;
+    height: 20px !important;
+  }
+  
+  /* Topbar */
+  .ws-topbar {
+    padding: 18px 40px !important;
+    gap: 24px !important;
+  }
+  .ws-topbar h1 {
+    font-size: 24px !important;
+  }
+  .ws-sub {
+    font-size: 14px !important;
+  }
+  .ws-clockchip {
+    font-size: 14.5px !important;
+    padding: 9px 15px !important;
+  }
+
+  /* Stats cards */
+  .ws-stats {
+    gap: 20px !important;
+    margin-bottom: 30px !important;
+  }
+  .ws-stat {
+    padding: 20px 22px !important;
+  }
+  .ws-stat .label {
+    font-size: 12px !important;
+    margin-bottom: 10px !important;
+  }
+  .ws-stat .big {
+    font-size: 36px !important;
+  }
+  .ws-stat .big small {
+    font-size: 16px !important;
+  }
+  .ws-stat .trail {
+    font-size: 13.5px !important;
+    margin-top: 8px !important;
+  }
+
+  /* Workspace Layout & Tabs */
+  .ws-work {
+    grid-template-columns: 1fr 360px !important;
+    gap: 28px !important;
+  }
+  .ws-tabs {
+    gap: 6px !important;
+    margin-bottom: 20px !important;
+  }
+  .ws-tab {
+    font-size: 15px !important;
+    padding: 10px 18px !important;
+  }
+  .ws-tab .pill {
+    font-size: 12px !important;
+    min-width: 22px !important;
+    height: 22px !important;
+  }
+
+  /* Docket cards (Orders) */
+  .ws-queue {
+    gap: 16px !important;
+  }
+  .ws-dbody {
+    gap: 8px !important;
+    padding: 16px 20px !important;
+  }
+  .ws-dtitle {
+    font-size: 18.5px !important;
+  }
+  .ws-dwho {
+    font-size: 14.5px !important;
+  }
+  .ws-dspec {
+    font-size: 14.5px !important;
+    gap: 9px !important;
+  }
+  .ws-dmeta {
+    font-size: 13.5px !important;
+    gap: 16px !important;
+    margin-top: 3px !important;
+  }
+  .ws-dact {
+    padding: 16px 20px 16px 8px !important;
+    gap: 12px !important;
+  }
+  .ws-price {
+    font-size: 20px !important;
+  }
+  .ws-stamp {
+    font-size: 11px !important;
+    padding: 4px 10px !important;
+    right: 120px !important;
+  }
+
+  /* General buttons & tables */
+  .ws-btn {
+    font-size: 15px !important;
+    padding: 10px 18px !important;
+  }
+  table.ws-table th, table.ws-table td {
+    font-size: 15px !important;
+    padding: 14px 16px !important;
+  }
+  .ws-ledger-head h3 {
+    font-size: 18px !important;
+  }
+}
 `;
 
 // ── Toast ─────────────────────────────────────────────────────────────────────

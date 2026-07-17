@@ -13,12 +13,22 @@ interface EziLetter {
   stampEmoji: string;
   message: string;
   from: string;
+  date: string;
+  time: string;
 }
 
 const getContextualLetters = (): EziLetter[] => {
   const hour = new Date().getHours();
   const isLate = hour >= 22 || hour <= 5;
   const isMorning = hour >= 6 && hour <= 10;
+
+  const now = new Date();
+  const options: Intl.DateTimeFormatOptions = { month: 'short', day: 'numeric', year: 'numeric' };
+  const todayStr = now.toLocaleDateString('en-US', options);
+  
+  const yesterday = new Date();
+  yesterday.setDate(now.getDate() - 1);
+  const yesterdayStr = yesterday.toLocaleDateString('en-US', options);
 
   return [
     {
@@ -31,6 +41,8 @@ const getContextualLetters = (): EziLetter[] => {
         : isMorning
           ? 'Good morning. The window light is soft today. A quiet one.'
           : 'Looks peaceful in here. I\'ll stay nearby.',
+      date: todayStr,
+      time: '11:15 PM',
     },
     {
       id: 'letter-2',
@@ -38,6 +50,8 @@ const getContextualLetters = (): EziLetter[] => {
       stampEmoji: '📮',
       from: 'Ezee Prints',
       message: 'Your notes are resting at the counter. Ezi wrapped them carefully. Whenever you\'re ready.',
+      date: todayStr,
+      time: '8:45 PM',
     },
     {
       id: 'letter-3',
@@ -45,6 +59,8 @@ const getContextualLetters = (): EziLetter[] => {
       stampEmoji: '🌧️',
       from: 'Ezi',
       message: 'Rain sounds nice today. I left the window open a little. The plant seems to like it.',
+      date: yesterdayStr,
+      time: '10:15 AM',
     },
   ];
 };
@@ -163,8 +179,9 @@ export default function Notifications({ onClose }: NotificationsProps) {
                   </div>
 
                   <div style={{ flex: 1 }}>
-                    <div style={{ fontFamily: 'Instrument Sans', fontSize: '0.8rem', color: 'rgba(42,41,40,0.5)', marginBottom: '0.2rem' }}>
-                      From <span style={{ fontWeight: 'bold', color: '#2A2928' }}>{letter.from}</span>
+                    <div style={{ fontFamily: 'Instrument Sans', fontSize: '0.8rem', color: 'rgba(42,41,40,0.5)', marginBottom: '0.2rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <span>From <span style={{ fontWeight: 'bold', color: '#2A2928' }}>{letter.from}</span></span>
+                      <span style={{ fontSize: '0.75rem', fontStyle: 'italic', color: 'rgba(42,41,40,0.4)', fontFamily: 'Space Grotesk' }}>{letter.date} · {letter.time}</span>
                     </div>
                     <p style={{
                       fontFamily: 'Instrument Sans',
@@ -224,11 +241,17 @@ export default function Notifications({ onClose }: NotificationsProps) {
                           {letter.message}
                         </p>
                         <div style={{
-                          marginTop: '1rem', textAlign: 'right',
-                          fontFamily: 'Space Grotesk', fontSize: '0.8rem', color: 'rgba(42,41,40,0.4)',
+                          marginTop: '1rem',
+                          display: 'flex',
+                          justifyContent: 'space-between',
+                          alignItems: 'center',
+                          fontFamily: 'Space Grotesk',
+                          fontSize: '0.8rem',
+                          color: 'rgba(42,41,40,0.4)',
                           fontStyle: 'italic',
                         }}>
-                          — {letter.from}
+                          <span>{letter.date} · {letter.time}</span>
+                          <span>— {letter.from}</span>
                         </div>
                       </div>
                     </motion.div>

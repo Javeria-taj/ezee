@@ -28,9 +28,9 @@ const ICONS: Record<string, string> = {
   alert: 'M12 9v4M12 17h.01M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z',
 };
 
-function Ic({ name, size = 18 }: { name: string; size?: number }) {
+function Ic({ name, size }: { name: string; size?: number | string }) {
   return (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="none"
+    <svg width={size || '100%'} height={size || '100%'} viewBox="0 0 24 24" fill="none"
       stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"
       style={{ display: 'block', flexShrink: 0 }}>
       <path d={ICONS[name] || ''} />
@@ -300,7 +300,7 @@ const CSS = `
 .ws-nav button{display:flex;align-items:center;gap:11px;padding:9px 11px;border-radius:10px;
   font-size:14.5px;color:var(--ink-2);font-weight:600;transition:background var(--soft),color var(--soft);
   text-align:left;width:100%}
-.ws-nav button .ic{width:17px;height:17px;flex:none;color:var(--ink-2);transition:color var(--soft)}
+.ws-nav button .ic{width:20px;height:20px;flex:none;color:var(--ink-2);transition:color var(--soft)}
 .ws-nav button:hover{background:rgba(42,41,40,.045);color:var(--ink)}
 .ws-nav button.on{background:linear-gradient(120deg,rgba(122,109,140,.16),rgba(122,109,140,.07));color:var(--ink);box-shadow:var(--rest)}
 .ws-nav button.on .ic{color:var(--plum)}
@@ -358,7 +358,7 @@ const CSS = `
 @keyframes ws-dropin{from{opacity:0;transform:translateY(10px) rotate(-.4deg)}to{opacity:1;transform:none}}
 .ws-docket:hover{box-shadow:var(--hover);transform:translateY(-2px)}
 .ws-docket.sel{border-color:var(--plum);box-shadow:var(--hover),0 0 0 1px var(--plum)}
-.ws-docket.urgent-card{background:linear-gradient(180deg,#fff7f3,#f8ece5)}
+.ws-docket.urgent-card{background:linear-gradient(180deg,#fde4d8,#f1ccbb)}
 .ws-stub{position:relative;background:repeating-linear-gradient(180deg,#efe6d6 0 7px,#e9dfcd 7px 14px);
   display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;padding:10px 6px;
   border-right:2px dashed rgba(42,41,40,.16)}
@@ -520,6 +520,7 @@ table.ws-table tbody tr:last-child td{border-bottom:none}
   .ws-nav button{flex:1!important;display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;height:100%!important;border-radius:0!important;background:none!important;gap:4px!important;padding:0!important;font-size:10px!important;color:var(--ink-3)!important;position:relative!important;white-space:nowrap!important}
   .ws-nav button.on{color:var(--ink)!important}
   .ws-nav button.on .ic{color:var(--terracotta)!important}
+  .ws-nav button .ic{width:17px!important;height:17px!important}
   
   /* Ensure closed-state hiding of labels doesn't apply on mobile nav */
   .ws-app.ws-closed .ws-nav span:not(.ic){display:inline!important}
@@ -614,8 +615,8 @@ table.ws-table tbody tr:last-child td{border-bottom:none}
     gap: 14px !important;
   }
   .ws-nav button .ic {
-    width: 20px !important;
-    height: 20px !important;
+    width: 24px !important;
+    height: 24px !important;
   }
   
   /* Topbar */
@@ -1754,7 +1755,7 @@ export default function WorkshopRoom() {
           <nav className="ws-nav">
             {navItems.map(([ic, label, key]) => (
               <button key={key} className={section === key ? 'on' : ''} onClick={() => setSection(key)}>
-                <span className="ic"><Ic name={ic} size={17} /></span>
+                <span className="ic"><Ic name={ic} /></span>
                 <span>{label}</span>
                 {key === 'queue' && <span className="ws-count">{counts.new}</span>}
               </button>

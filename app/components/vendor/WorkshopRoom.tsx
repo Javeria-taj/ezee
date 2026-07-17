@@ -604,10 +604,7 @@ export default function WorkshopRoom() {
   const [section, setSection] = useState<string>('queue');
   const [vendorTab, setVendorTab] = useState<string>('new');
   const [shopOpen, setShopOpen] = useState(true);
-  const [night, setNight] = useState(() => {
-    const h = new Date().getHours();
-    return h >= 19 || h < 6;
-  });
+  const [night, setNight] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeId, setActiveId] = useState<string | null>(null);
   const [drawerOrder, setDrawerOrder] = useState<Order | null>(null);

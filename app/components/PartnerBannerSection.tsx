@@ -3,6 +3,7 @@
 import React from "react";
 import Link from "next/link";
 import { Reveal } from "./Reveal";
+import PartnerShopArt from "./PartnerShopArt";
 
 export default function PartnerBannerSection() {
   return (
@@ -102,45 +103,7 @@ export default function PartnerBannerSection() {
               alignItems: "center",
             }}
           >
-            <svg
-              viewBox="0 0 300 180"
-              width="100%"
-              height="auto"
-              style={{
-                maxWidth: 380,
-                stroke: "rgba(250, 247, 241, 0.45)",
-                fill: "none",
-                strokeWidth: 1.5,
-                strokeLinecap: "round",
-                strokeLinejoin: "round",
-              }}
-            >
-              {/* Ground line */}
-              <line x1="10" y1="170" x2="290" y2="170" />
-              {/* Outer building outline */}
-              <path d="M 40 170 L 40 105 L 150 48 L 260 105 L 260 170" />
-              {/* Top rectangular window */}
-              <rect x="141" y="70" width="18" height="28" />
-              <line x1="150" y1="70" x2="150" y2="98" />
-              {/* Garage door frame */}
-              <path d="M 70 170 L 70 112 L 230 112 L 230 170" />
-              {/* Left inner window (terracotta border) */}
-              <rect
-                x="92"
-                y="130"
-                width="38"
-                height="26"
-                style={{ stroke: "#D48A70", strokeWidth: 1.8 }}
-              />
-              {/* Right inner window (sage green border) */}
-              <rect
-                x="166"
-                y="130"
-                width="38"
-                height="26"
-                style={{ stroke: "#7E8C6F", strokeWidth: 1.8 }}
-              />
-            </svg>
+            <PartnerShopArt />
           </div>
         </Reveal>
       </div>

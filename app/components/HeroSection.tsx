@@ -297,27 +297,28 @@ export default function HeroSection() {
                 </clipPath>
               </defs>
               {/* wall */}
-              <rect x="0" y="0" width="560" height="440" rx="26" fill="#F3ECE1" />
+              <rect x="0" y="0" width="560" height="440" rx="26" fill="#F3ECE1" className="hero-wall" />
               {/* window */}
-              <rect x="48" y="28" width="274" height="274" rx="26" fill="#cdbfa9" />
+              <rect x="48" y="28" width="274" height="274" rx="26" fill="#cdbfa9" className="hero-window-border" />
               <g clipPath="url(#winclip)">
-                <rect x="60" y="40" width="250" height="250" fill="#F3DCC0" />
-                <circle cx="225" cy="120" r="46" fill="#F0C79B" />
+                <rect x="60" y="40" width="250" height="250" fill="#F3DCC0" className="hero-window-sky" />
+                <circle cx="225" cy="120" r="46" fill="#F0C79B" className="hero-sun" />
                 <circle
                   cx="225"
                   cy="120"
                   r="62"
                   fill="#F0C79B"
                   opacity=".35"
+                  className="hero-sun-glow"
                   style={{ animation: "sunpulse 8s ease-in-out infinite", transformOrigin: "225px 120px" }}
                 />
-                <path d="M60 250 Q120 210 185 240 T310 235 V290 H60Z" fill="#cdbf9f" opacity=".7" />
-                <path d="M60 268 Q140 238 220 262 T310 258 V290 H60Z" fill="#bdb091" opacity=".6" />
+                <path d="M60 250 Q120 210 185 240 T310 235 V290 H60Z" fill="#cdbf9f" opacity=".7" className="hero-mountain-1" />
+                <path d="M60 268 Q140 238 220 262 T310 258 V290 H60Z" fill="#bdb091" opacity=".6" className="hero-mountain-2" />
               </g>
               {/* window frame bars */}
-              <rect x="48" y="28" width="274" height="274" rx="26" fill="none" stroke="#bfae93" strokeWidth="12" />
-              <rect x="181" y="34" width="8" height="262" fill="#bfae93" />
-              <rect x="54" y="161" width="262" height="8" fill="#bfae93" />
+              <rect x="48" y="28" width="274" height="274" rx="26" fill="none" stroke="#bfae93" strokeWidth="12" className="hero-window-frame" />
+              <rect x="181" y="34" width="8" height="262" fill="#bfae93" className="hero-window-bars" />
+              <rect x="54" y="161" width="262" height="8" fill="#bfae93" className="hero-window-bars" />
               {/* plant swaying */}
               <g style={{ transformOrigin: "96px 318px", animation: "sway 5s ease-in-out infinite" }}>
                 <path d="M96 318 C96 300 84 286 78 274 C90 280 96 292 99 304 C100 290 100 276 108 266 C108 282 104 298 100 312 C108 304 118 300 128 300 C120 312 110 318 100 322Z" fill="#A9B59D" />
@@ -347,7 +348,8 @@ export default function HeroSection() {
                 <ellipse cx="437" cy="392" rx="40" ry="9" fill="#5b554f" />
                 <path d="M437 256 L470 214" stroke="#5b554f" strokeWidth="11" strokeLinecap="round" />
                 <path d="M470 214 L500 230 L488 256 L456 240Z" fill="#2A2928" />
-                <ellipse cx="476" cy="250" rx="34" ry="14" fill="#F0C79B" opacity=".55" style={{ animation: "lampglow 4s ease-in-out infinite" }} />
+                <polygon points="476,250 380,392 550,392" fill="#F0C79B" className="hero-lamp-beam" />
+                <ellipse cx="476" cy="250" rx="34" ry="14" fill="#F0C79B" opacity=".55" className="hero-lamp-bulb" style={{ animation: "lampglow 4s ease-in-out infinite" }} />
               </g>
               {/* coffee cup + steam */}
               <g>

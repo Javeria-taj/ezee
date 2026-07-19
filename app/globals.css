@@ -52,6 +52,54 @@
   --nav-border: rgba(234, 228, 221, 0.15);
 }
 
+/* Mobile menu drawer & logo overrides in dark mode */
+.dark .mob-menu-panel {
+  background: var(--bg-primary) !important;
+}
+.dark .mob-menu-panel a,
+.dark .mob-menu-panel button.mob-close {
+  color: var(--text-primary) !important;
+  border-bottom: 1px solid var(--border-subtle) !important;
+}
+.dark .mob-menu-panel a:hover {
+  color: var(--accent-primary) !important;
+}
+.dark .mob-menu-panel .mob-cta {
+  background: var(--accent-primary) !important;
+  color: #FAF7F1 !important;
+}
+.dark .mob-menu-panel .mob-close {
+  color: var(--accent-tertiary) !important;
+}
+.dark .mob-menu-panel .mob-close-icon-btn {
+  background: var(--bg-card-gray) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--border-subtle) !important;
+}
+.dark .mob-menu-panel .mob-close-icon-btn:hover {
+  background: var(--accent-primary) !important;
+  color: #FAF7F1 !important;
+  border-color: var(--accent-primary) !important;
+}
+.dark .mob-menu-btn {
+  border-color: var(--border-subtle) !important;
+  background: rgba(30, 30, 42, .7) !important;
+}
+.dark .mob-menu-btn span {
+  background: var(--text-primary) !important;
+}
+.dark img[src*="logo.png"] {
+  filter: invert(1) brightness(1.8) contrast(1.2);
+}
+.mob-menu-logo-container {
+  margin-bottom: 8px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid rgba(42, 41, 40, 0.1);
+}
+.dark .mob-menu-logo-container {
+  border-bottom: 1px solid rgba(234, 228, 221, 0.15);
+}
+
 html {
   scroll-behavior: smooth;
 }
@@ -728,4 +776,70 @@ body {
   50% {
     transform: rotate(35deg);
   }
+}
+
+/* Hero SVG Night Mode Overrides */
+.hero-wall,
+.hero-window-border,
+.hero-window-sky,
+.hero-sun,
+.hero-sun-glow,
+.hero-mountain-1,
+.hero-mountain-2,
+.hero-window-frame,
+.hero-window-bars,
+.hero-lamp-bulb {
+  transition: fill 0.8s ease, stroke 0.8s ease, opacity 0.8s ease;
+}
+
+.hero-lamp-beam {
+  opacity: 0;
+  transition: opacity 0.8s ease;
+  pointer-events: none;
+}
+
+.dark .hero-wall {
+  fill: #22202B !important; /* Matches our dark landing page theme */
+}
+
+.dark .hero-window-border {
+  fill: #2B2836 !important;
+}
+
+.dark .hero-window-sky {
+  fill: #0F0E17 !important; /* Night sky */
+}
+
+.dark .hero-sun {
+  fill: #EAE6DF !important; /* Pale moon */
+}
+
+.dark .hero-sun-glow {
+  fill: #EAE6DF !important;
+  opacity: 0.15 !important;
+}
+
+.dark .hero-mountain-1 {
+  fill: #252230 !important;
+}
+
+.dark .hero-mountain-2 {
+  fill: #1A1822 !important;
+}
+
+.dark .hero-window-frame {
+  stroke: #3E394A !important;
+}
+
+.dark .hero-window-bars {
+  fill: #3E394A !important;
+}
+
+.dark .hero-lamp-beam {
+  opacity: 0.35 !important; /* Cast a warm light beam on the desk */
+}
+
+.dark .hero-lamp-bulb {
+  fill: #FFE5B4 !important;
+  opacity: 0.85 !important;
 }

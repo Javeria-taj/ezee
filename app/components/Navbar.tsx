@@ -264,7 +264,7 @@ export default function Navbar() {
             </svg>
           </button>
           
-          <div style={{ marginBottom: 8, paddingBottom: 16, borderBottom: "1px solid rgba(42,41,40,.1)" }}>
+          <div className="mob-menu-logo-container">
             <Image src="/logo.png" alt="Ezee" width={80} height={26} style={{ height: 26, width: "auto" }} />
           </div>
 

@@ -394,6 +394,7 @@ export default function CitySection() {
             lineHeight: 1.02,
             letterSpacing: "-.03em",
             margin: "14px 0 16px",
+            color: "var(--text-primary)",
           }}
         >
           Find your corner shop

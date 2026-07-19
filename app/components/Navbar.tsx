@@ -11,17 +11,10 @@ export default function Navbar() {
   const [isDark, setIsDark] = useState(false);
 
   useEffect(() => {
-    // Check initial theme
-    if (document.documentElement.classList.contains("dark")) {
-      setIsDark(true);
-    } else {
-      // Check local storage or system preference
-      const storedTheme = localStorage.getItem("theme");
-      if (storedTheme === "dark" || (!storedTheme && window.matchMedia("(prefers-color-scheme: dark)").matches)) {
-        setIsDark(true);
-        document.documentElement.classList.add("dark");
-      }
-    }
+    // Force light mode on load
+    document.documentElement.classList.remove("dark");
+    localStorage.setItem("theme", "light");
+    setIsDark(false);
   }, []);
 
   const toggleTheme = () => {

@@ -58,6 +58,7 @@ function ShopCard({ shop, delay }: { shop: Shop; delay: number }) {
       }}
     >
       <div
+        className="shop-card"
         style={{
           background: "var(--bg-card-white)",
           backdropFilter: "blur(12px)",

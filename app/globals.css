@@ -843,3 +843,8 @@ body {
   fill: #FFE5B4 !important;
   opacity: 0.85 !important;
 }
+
+.dark .shop-card {
+  background: var(--bg-card-gray) !important;
+  border-color: var(--border-subtle) !important;
+}

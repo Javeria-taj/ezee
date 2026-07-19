@@ -1,13 +1,24 @@
 "use client";
 
-import React from "react";
+import React, { useRef } from "react";
 import Link from "next/link";
 import { Reveal } from "./Reveal";
+import { motion, useScroll, useTransform } from "framer-motion";
 
 export default function CtaSection() {
+  const ref = useRef<HTMLElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ["start end", "end end"]
+  });
+  
+  const orbScale = useTransform(scrollYProgress, [0, 1], [0.8, 2.5]);
+  const orbOpacity = useTransform(scrollYProgress, [0, 1], [0.1, 0.6]);
+
   return (
     <section
       id="cta"
+      ref={ref}
       style={{
         position: "relative",
         padding:
@@ -43,18 +54,20 @@ export default function CtaSection() {
       ))}
 
       {/* desk lamp glow */}
-      <div
+      <motion.div
         style={{
           position: "absolute",
           bottom: 0,
           left: "50%",
-          transform: "translateX(-50%)",
+          x: "-50%",
           width: 560,
           height: 360,
+          scale: orbScale,
+          opacity: orbOpacity,
           background:
             "radial-gradient(circle at 50% 100%, rgba(240,199,155,.4), rgba(240,199,155,0) 64%)",
           pointerEvents: "none",
-          animation: "lampglow 5s ease-in-out infinite",
+          transformOrigin: "bottom center",
         }}
       />
 

@@ -9,7 +9,7 @@ export default function FeaturesSection() {
       style={{
         position: "relative",
         padding: "clamp(90px,12vw,150px) clamp(22px,6vw,110px)",
-        background: "linear-gradient(180deg,#EFD8BE 0%, #E7D6C2 22%, #EAE0D2 100%)",
+        background: "var(--bg-secondary)",
       }}
     >
       <Reveal
@@ -25,7 +25,7 @@ export default function FeaturesSection() {
             fontWeight: 600,
             letterSpacing: ".2em",
             textTransform: "uppercase",
-            color: "#8a7196",
+            color: "var(--accent-tertiary)",
           }}
         >
           Everything in the drawer
@@ -38,6 +38,7 @@ export default function FeaturesSection() {
             lineHeight: 1.02,
             letterSpacing: "-.03em",
             margin: "14px 0 16px",
+            color: "var(--text-primary)"
           }}
         >
           Everything you need,
@@ -66,15 +67,16 @@ export default function FeaturesSection() {
             style={{
               position: "relative",
               minHeight: 230,
-              background: "#FAF7F1",
+              background: "var(--bg-tertiary)",
+              backdropFilter: "blur(12px)",
               borderRadius: 24,
               padding: 30,
               overflow: "hidden",
-              boxShadow: "0 26px 46px -26px rgba(42,41,40,.5)",
-              border: "1px solid rgba(42,41,40,.06)",
-              transition: "transform .5s cubic-bezier(.2,.9,.3,1.2)",
+              boxShadow: "0 26px 46px -26px var(--shadow-color)",
+              border: "1px solid var(--border-subtle)",
+              transition: "transform 0.6s var(--anim-easing)",
             }}
-            onMouseEnter={(e) => (e.currentTarget.style.transform = "translateY(-6px)")}
+            onMouseEnter={(e) => (e.currentTarget.style.transform = "translateY(-8px) scale(1.02)")}
             onMouseLeave={(e) => (e.currentTarget.style.transform = "")}
           >
             {/* notebook spiral */}
@@ -173,17 +175,17 @@ export default function FeaturesSection() {
           <div
             style={{
               minHeight: 230,
-              background: "#2A2928",
-              color: "#FAF7F1",
+              background: "var(--text-primary)",
+              color: "var(--bg-primary)",
               borderRadius: 24,
               padding: 28,
-              boxShadow: "0 26px 46px -26px rgba(42,41,40,.6)",
-              transition: "transform .5s cubic-bezier(.2,.9,.3,1.2)",
+              boxShadow: "0 26px 46px -26px var(--shadow-color)",
+              transition: "transform 0.6s var(--anim-easing)",
               display: "flex",
               flexDirection: "column",
               justifyContent: "space-between",
             }}
-            onMouseEnter={(e) => (e.currentTarget.style.transform = "translateY(-6px)")}
+            onMouseEnter={(e) => (e.currentTarget.style.transform = "translateY(-8px) scale(1.02)")}
             onMouseLeave={(e) => (e.currentTarget.style.transform = "")}
           >
             <svg width="40" height="40" viewBox="0 0 48 48" fill="none">
@@ -243,17 +245,18 @@ export default function FeaturesSection() {
           <div
             style={{
               minHeight: 210,
-              background: "#FAF7F1",
+              background: "var(--bg-tertiary)",
+              backdropFilter: "blur(12px)",
               borderRadius: 24,
               padding: 28,
-              boxShadow: "0 26px 46px -26px rgba(42,41,40,.5)",
-              border: "1px solid rgba(42,41,40,.06)",
-              transition: "transform .5s cubic-bezier(.2,.9,.3,1.2)",
+              boxShadow: "0 26px 46px -26px var(--shadow-color)",
+              border: "1px solid var(--border-subtle)",
+              transition: "transform 0.6s var(--anim-easing)",
               display: "flex",
               flexDirection: "column",
               justifyContent: "space-between",
             }}
-            onMouseEnter={(e) => (e.currentTarget.style.transform = "translateY(-6px)")}
+            onMouseEnter={(e) => (e.currentTarget.style.transform = "translateY(-8px) scale(1.02)")}
             onMouseLeave={(e) => (e.currentTarget.style.transform = "")}
           >
             <svg width="40" height="40" viewBox="0 0 48 48" fill="none">
@@ -278,17 +281,18 @@ export default function FeaturesSection() {
             style={{
               position: "relative",
               minHeight: 210,
-              background: "#EAE4DD",
+              background: "var(--bg-card-gray)",
               borderRadius: 24,
               padding: 28,
-              boxShadow: "0 26px 46px -26px rgba(42,41,40,.5)",
-              transition: "transform .5s cubic-bezier(.2,.9,.3,1.2)",
+              boxShadow: "0 26px 46px -26px var(--shadow-color)",
+              border: "1px solid var(--border-subtle)",
+              transition: "transform 0.6s var(--anim-easing)",
               display: "flex",
               flexDirection: "column",
               justifyContent: "space-between",
             }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.transform = "translateY(-6px) rotate(1deg)";
+              e.currentTarget.style.transform = "translateY(-8px) rotate(2deg) scale(1.02)";
             }}
             onMouseLeave={(e) => (e.currentTarget.style.transform = "")}
           >

@@ -6,14 +6,17 @@ import styles from './print.module.css';
 interface SettingsObjectsProps {
   paperSize: 'A4' | 'A3' | 'A5';
   binding: 'none' | 'spiral' | 'staple' | 'hardcover';
-  colorMode: 'bw' | 'color';
+  colorMode: 'bw' | 'color' | 'custom';
+  customColorPages: string;
   lamination: boolean;
   copies: number;
   onPaperSize: (v: 'A4' | 'A3' | 'A5') => void;
   onBinding: (v: 'none' | 'spiral' | 'staple' | 'hardcover') => void;
-  onColorMode: (v: 'bw' | 'color') => void;
+  onColorMode: (v: 'bw' | 'color' | 'custom') => void;
+  onCustomColorPages: (v: string) => void;
   onLamination: (v: boolean) => void;
   onCopies: (v: number) => void;
+  pageCount: number;
 }
 
 // Spiral binding rings SVG
@@ -63,7 +66,7 @@ function HardcoverIcon() {
 }
 
 // Ink bottle SVG
-function InkBottle({ color, isColor }: { color: string; isColor: boolean }) {
+function InkBottle({ color, isColor, isMixed }: { color: string; isColor: boolean; isMixed?: boolean }) {
   return (
     <svg width="36" height="52" viewBox="0 0 36 52" style={{ display: 'block' }}>
       {/* Cap */}
@@ -71,11 +74,31 @@ function InkBottle({ color, isColor }: { color: string; isColor: boolean }) {
       {/* Neck */}
       <rect x="15" y="10" width="6" height="8" fill="rgba(42,41,40,0.3)" />
       {/* Body */}
-      <rect x="4" y="18" width="28" height="28" rx="4" fill={color} stroke="rgba(42,41,40,0.2)" strokeWidth="1" />
+      {isMixed ? (
+        <>
+          <clipPath id="splitClip">
+            <rect x="4" y="18" width="28" height="28" rx="4" />
+          </clipPath>
+          <g clipPath="url(#splitClip)">
+            <rect x="4" y="18" width="14" height="28" fill="#2A2928" />
+            <rect x="18" y="18" width="14" height="28" fill="#D48A70" />
+          </g>
+          <rect x="4" y="18" width="28" height="28" rx="4" fill="none" stroke="rgba(42,41,40,0.2)" strokeWidth="1" />
+        </>
+      ) : (
+        <rect x="4" y="18" width="28" height="28" rx="4" fill={color} stroke="rgba(42,41,40,0.2)" strokeWidth="1" />
+      )}
       {/* Label */}
       <rect x="7" y="24" width="22" height="14" rx="2" fill="rgba(255,255,255,0.5)" />
       {/* Ink level */}
-      <rect x="4" y={isColor ? 30 : 38} width="28" height={isColor ? 16 : 8} rx="4" fill={color} opacity="0.7" />
+      {isMixed ? (
+        <g clipPath="url(#splitClip)">
+          <rect x="4" y="30" width="14" height="16" fill="#2A2928" opacity="0.7" />
+          <rect x="18" y="30" width="14" height="16" fill="#D48A70" opacity="0.7" />
+        </g>
+      ) : (
+        <rect x="4" y={isColor ? 30 : 38} width="28" height={isColor ? 16 : 8} rx="4" fill={color} opacity="0.7" />
+      )}
     </svg>
   );
 }
@@ -108,8 +131,9 @@ function LaminationSheet({ active }: { active: boolean }) {
 }
 
 export default function SettingsObjects({
-  paperSize, binding, colorMode, lamination, copies,
-  onPaperSize, onBinding, onColorMode, onLamination, onCopies,
+  paperSize, binding, colorMode, customColorPages, lamination, copies,
+  onPaperSize, onBinding, onColorMode, onCustomColorPages, onLamination, onCopies,
+  pageCount
 }: SettingsObjectsProps) {
 
   const paperDimensions: Record<'A4' | 'A3' | 'A5', { w: number; h: number }> = {
@@ -164,6 +188,13 @@ export default function SettingsObjects({
             <InkBottle color="#D48A70" isColor={true} />
             <span className={styles.inkBottleLabel}>Color</span>
           </div>
+          <div
+            className={`${styles.inkBottle} ${colorMode === 'custom' ? styles.selected : ''}`}
+            onClick={() => onColorMode('custom')}
+          >
+            <InkBottle color="#7A6D8C" isColor={true} isMixed={true} />
+            <span className={styles.inkBottleLabel}>Mixed</span>
+          </div>
           {/* Swatch dots */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', alignSelf: 'center', marginLeft: '4px' }}>
             {['#D48A70','#A9B59D','#7A6D8C','#2A2928'].map(c => (
@@ -172,6 +203,30 @@ export default function SettingsObjects({
           </div>
         </div>
       </div>
+
+      {/* Mixed mode page input */}
+      {colorMode === 'custom' && (
+        <div style={{ marginTop: '14px', animation: 'fadeIn 0.3s ease-in-out' }}>
+          <p className={styles.settingsLabel} style={{ fontSize: '0.85rem', marginBottom: '6px' }}>Specify Color Pages (1 to {pageCount})</p>
+          <input
+            type="text"
+            placeholder="e.g. 1, 3-5, 8"
+            value={customColorPages}
+            onChange={(e) => onCustomColorPages(e.target.value)}
+            style={{
+              width: '100%',
+              padding: '10px 12px',
+              borderRadius: '10px',
+              border: '1px solid var(--border-subtle, rgba(42,41,40,0.15))',
+              background: 'var(--bg-primary, #FAF7F1)',
+              color: 'var(--text-primary, #2A2928)',
+              fontFamily: 'Space Grotesk, sans-serif',
+              fontSize: '0.9rem',
+              outline: 'none'
+            }}
+          />
+        </div>
+      )}
 
       {/* Binding — actual objects */}
       <div>

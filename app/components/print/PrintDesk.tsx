@@ -12,8 +12,26 @@ import SignatureMoment from './SignatureMoment';
 import PaymentDesk from './PaymentDesk';
 import TheJourney from './TheJourney';
 import { useMemorySystem } from './useMemorySystem';
+import CartReview from './CartReview';
 
-type Phase = 'upload' | 'settings' | 'shop' | 'payment' | 'printing' | 'ticket' | 'signature' | 'done';
+export type ColorMode = 'bw' | 'color' | 'custom';
+
+export interface CartItem {
+  id: string;
+  docName: string;
+  pageCount: number;
+  docType: DocumentType;
+  paperSize: 'A4' | 'A3' | 'A5';
+  binding: 'none' | 'spiral' | 'staple' | 'hardcover';
+  colorMode: ColorMode;
+  customColorPages: string;
+  lamination: boolean;
+  copies: number;
+  shopId: string;
+  shopName: string;
+}
+
+type Phase = 'upload' | 'settings' | 'shop' | 'cartReview' | 'payment' | 'printing' | 'ticket' | 'signature' | 'done';
 
 interface PrintDeskProps {
   onClose: () => void;
@@ -236,10 +254,16 @@ export default function PrintDesk({ onClose, isNight = false }: PrintDeskProps) 
   const [pageCount, setPageCount] = useState(0);
   const [docType, setDocType] = useState<DocumentType>('general');
 
-  // Settings state
+  // Cart state
+  const [cartItems, setCartItems] = useState<CartItem[]>([]);
+  // Items selected from cart for the current payment
+  const [activeCartItems, setActiveCartItems] = useState<CartItem[]>([]);
+
+  // Settings state (for current item being configured)
   const [paperSize, setPaperSize] = useState<'A4' | 'A3' | 'A5'>('A4');
   const [binding, setBinding] = useState<'none' | 'spiral' | 'staple' | 'hardcover'>('none');
-  const [colorMode, setColorMode] = useState<'bw' | 'color'>('bw');
+  const [colorMode, setColorMode] = useState<ColorMode>('bw');
+  const [customColorPages, setCustomColorPages] = useState('');
   const [lamination, setLamination] = useState(false);
   const [copies, setCopies] = useState(1);
   const [selectedShop, setSelectedShop] = useState('cozy');
@@ -282,8 +306,35 @@ export default function PrintDesk({ onClose, isNight = false }: PrintDeskProps) 
   const shop = SHOPS.find(s => s.id === selectedShop) ?? SHOPS[0];
   const etaMinutes = Math.floor((shop.etaMin + shop.etaMax) / 2);
 
+  // Reset current-item state (after adding to cart)
+  const resetCurrentItem = useCallback(() => {
+    setDocName('');
+    setPageCount(0);
+    setPaperSize('A4');
+    setBinding('none');
+    setColorMode('bw');
+    setCustomColorPages('');
+    setLamination(false);
+    setCopies(1);
+    setSelectedShop('cozy');
+    setPhase('upload');
+  }, []);
+
+  const handleAddToCart = useCallback(() => {
+    const newItem: CartItem = {
+      id: String(Date.now()),
+      docName, pageCount, docType,
+      paperSize, binding, colorMode, customColorPages,
+      lamination, copies,
+      shopId: selectedShop,
+      shopName: shop.name,
+    };
+    setCartItems(prev => [...prev, newItem]);
+    resetCurrentItem();
+  }, [docName, pageCount, docType, paperSize, binding, colorMode, customColorPages, lamination, copies, selectedShop, shop.name, resetCurrentItem]);
+
   const canProceedToShop = phase === 'settings';
-  const canSendToPrint = phase === 'shop';
+  const canAddToCart = phase === 'shop';
 
   return (
     <div className={`${styles.printDesk} ${isNight ? styles.nightMode : ''}`}>
@@ -291,17 +342,18 @@ export default function PrintDesk({ onClose, isNight = false }: PrintDeskProps) 
       {/* Top bar */}
       <div className={styles.topBar}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-          {/* Phase breadcrumb — words not steps */}
+          {/* Phase breadcrumb */}
           <span className={styles.topBarTitle}>
             {phase === 'upload' ? 'The Desk' :
              phase === 'settings' ? 'Preparing' :
              phase === 'shop' ? 'Choose Your Shop' :
+             phase === 'cartReview' ? 'Your Cart' :
              phase === 'payment' ? 'Payment' :
              phase === 'printing' ? 'Printing…' :
              phase === 'ticket' ? 'It’s Ready' :
              phase === 'signature' ? 'On Its Way' : 'Done'}
           </span>
-          {phase !== 'upload' && phase !== 'printing' && phase !== 'payment' && phase !== 'ticket' && phase !== 'signature' && phase !== 'done' && (
+          {(phase === 'settings' || phase === 'shop') && (
             <button
               onClick={() => setPhase(p => p === 'shop' ? 'settings' : 'upload')}
               style={{ background: 'none', border: 'none', fontFamily: 'Space Grotesk', fontSize: '0.8rem', color: '#7A6D8C', cursor: 'pointer', opacity: 0.7 }}
@@ -310,15 +362,28 @@ export default function PrintDesk({ onClose, isNight = false }: PrintDeskProps) 
             </button>
           )}
         </div>
-        <button className={styles.closeBtn} onClick={onClose} aria-label="Close Print Studio">×</button>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+          {/* Cart badge button */}
+          {cartItems.length > 0 && phase !== 'cartReview' && phase !== 'payment' && phase !== 'printing' && phase !== 'ticket' && phase !== 'signature' && phase !== 'done' && (
+            <button
+              className={styles.cartBtn}
+              onClick={() => setPhase('cartReview')}
+              aria-label={`View cart (${cartItems.length} files)`}
+            >
+              🛒 Cart
+              <span className={styles.cartBadge} key={cartItems.length}>{cartItems.length}</span>
+            </button>
+          )}
+          <button className={styles.closeBtn} onClick={onClose} aria-label="Close Print Studio">×</button>
+        </div>
       </div>
 
       {/* Sacred printer phase — full overlay */}
       {phase === 'printing' && (
         <SacredPrinter
           isNight={isNight}
-          copies={copies}
-          docName={docName}
+          copies={activeCartItems.reduce((s, i) => s + i.copies, 0)}
+          docNames={activeCartItems.map(i => i.docName)}
           onDone={() => setPhase('ticket')}
         />
       )}
@@ -326,22 +391,22 @@ export default function PrintDesk({ onClose, isNight = false }: PrintDeskProps) 
       {/* Payment Drawer phase — full overlay */}
       {phase === 'payment' && (
         <PaymentDesk
-          pageCount={pageCount}
-          copies={copies}
-          colorMode={colorMode}
+          cartItems={activeCartItems}
           isNight={isNight}
           onPay={() => setPhase('printing')}
-          onBack={() => setPhase('shop')}
+          onBack={() => setPhase('cartReview')}
         />
       )}
 
       {/* Signature moment — full overlay */}
       {phase === 'signature' && (
         <SignatureMoment
-          shopName={shop.name}
+          shopName={activeCartItems[0]?.shopName ?? ''}
           isNight={isNight}
           onComplete={() => {
-            trackOrder(docName, docType, pageCount, copies, binding, shop.name, isNight);
+            activeCartItems.forEach(item =>
+              trackOrder(item.docName, item.docType, item.pageCount, item.copies, item.binding, item.shopName, isNight)
+            );
             setPhase('done');
           }}
         />
@@ -350,12 +415,26 @@ export default function PrintDesk({ onClose, isNight = false }: PrintDeskProps) 
       {/* The Journey — Post-order atmospheric experience */}
       {phase === 'done' && (
         <TheJourney
-          docName={docName}
-          shopName={shop.name}
+          docName={activeCartItems.length === 1 ? activeCartItems[0].docName : `${activeCartItems.length} files`}
+          shopName={activeCartItems[0]?.shopName ?? ''}
           isNight={isNight}
           onClose={onClose}
         />
       )}
+
+      {/* Cart Review phase */}
+      {phase === 'cartReview' && (
+        <CartReview
+          cartItems={cartItems}
+          isNight={isNight}
+          onDeleteItem={(id) => setCartItems(prev => prev.filter(i => i.id !== id))}
+          onAddMore={() => setPhase('upload')}
+          onProceed={(selected) => {
+            setActiveCartItems(selected);
+            setPhase('payment');
+          }}
+        />
+      )}  
 
       {/* Main desk — visible during upload, settings, shop, ticket */}
       {(phase === 'upload' || phase === 'settings' || phase === 'shop' || phase === 'ticket') && (
@@ -447,13 +526,7 @@ export default function PrintDesk({ onClose, isNight = false }: PrintDeskProps) 
               {phase === 'ticket' && (
                 <PrintTicket
                   orderNum={orderNum}
-                  docName={docName}
-                  pageCount={pageCount}
-                  copies={copies}
-                  binding={binding}
-                  paperSize={paperSize}
-                  colorMode={colorMode}
-                  shopName={shop.name}
+                  cartItems={activeCartItems}
                   etaMinutes={etaMinutes}
                   isNight={isNight}
                   onSendToShop={() => setPhase('signature')}
@@ -469,11 +542,14 @@ export default function PrintDesk({ onClose, isNight = false }: PrintDeskProps) 
                     paperSize={paperSize}
                     binding={binding}
                     colorMode={colorMode}
+                    customColorPages={customColorPages}
                     lamination={lamination}
                     copies={copies}
+                    pageCount={pageCount}
                     onPaperSize={setPaperSize}
                     onBinding={setBinding}
                     onColorMode={setColorMode}
+                    onCustomColorPages={setCustomColorPages}
                     onLamination={setLamination}
                     onCopies={setCopies}
                   />
@@ -498,13 +574,22 @@ export default function PrintDesk({ onClose, isNight = false }: PrintDeskProps) 
                     selected={selectedShop}
                     onSelect={setSelectedShop}
                   />
-                  {canSendToPrint && (
+                  {canAddToCart && (
+                    <button
+                      className={styles.addToCartBtn}
+                      onClick={handleAddToCart}
+                      style={{ marginTop: 'auto' }}
+                    >
+                      + Add to Cart
+                    </button>
+                  )}
+                  {cartItems.length > 0 && (
                     <button
                       className={styles.sendBtn}
-                      onClick={() => setPhase('payment')}
-                      style={{ marginTop: 'auto', alignSelf: 'stretch', justifyContent: 'center' }}
+                      onClick={() => setPhase('cartReview')}
+                      style={{ marginTop: '0.5rem', alignSelf: 'stretch', justifyContent: 'center' }}
                     >
-                      Proceed to Payment →
+                      Review Cart ({cartItems.length}) →
                     </button>
                   )}
                 </>
@@ -512,16 +597,17 @@ export default function PrintDesk({ onClose, isNight = false }: PrintDeskProps) 
 
               {phase === 'ticket' && (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', justifyContent: 'center', height: '100%' }}>
-                  {/* Summary recap */}
                   <p className={styles.settingsLabel}>Order Summary</p>
+                  {activeCartItems.map(item => (
+                    <div key={item.id} style={{ marginBottom: '0.5rem' }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px dashed rgba(42,41,40,0.1)', paddingBottom: '0.4rem' }}>
+                        <span style={{ fontFamily: 'Space Grotesk', fontSize: '0.8rem', color: '#7A6D8C' }}>{item.docName}</span>
+                        <span style={{ fontFamily: 'Instrument Sans', fontSize: '0.85rem', color: '#2A2928', fontWeight: 600 }}>{item.pageCount} pgs &times; {item.copies}</span>
+                      </div>
+                    </div>
+                  ))}
                   {[
-                    { label: 'Shop', val: shop.name },
-                    { label: 'Pages', val: `${pageCount}` },
-                    { label: 'Copies', val: `${copies}` },
-                    { label: 'Binding', val: binding === 'none' ? 'Loose' : binding },
-                    { label: 'Paper', val: paperSize },
-                    { label: 'Color', val: colorMode === 'bw' ? 'B&W' : 'Full Color' },
-                    { label: 'Lam.', val: lamination ? 'Yes' : 'No' },
+                    { label: 'Shop', val: activeCartItems[0]?.shopName ?? '' },
                     { label: 'Ready in', val: `~${etaMinutes} min` },
                   ].map(({ label, val }) => (
                     <div key={label} style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px dashed rgba(42,41,40,0.1)', paddingBottom: '0.4rem' }}>

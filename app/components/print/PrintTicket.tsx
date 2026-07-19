@@ -2,16 +2,11 @@
 
 import React from 'react';
 import styles from './print.module.css';
+import { CartItem } from './PrintDesk';
 
 interface PrintTicketProps {
   orderNum: number;
-  docName: string;
-  pageCount: number;
-  copies: number;
-  binding: string;
-  paperSize: string;
-  colorMode: string;
-  shopName: string;
+  cartItems: CartItem[];
   etaMinutes: number;
   isNight: boolean;
   onSendToShop: () => void;
@@ -27,6 +22,7 @@ const bindingLabels: Record<string, string> = {
 const colorLabels: Record<string, string> = {
   bw: 'Black & White',
   color: 'Full Color',
+  custom: 'Mixed Mode',
 };
 
 function EziSmall() {
@@ -51,12 +47,14 @@ function EziSmall() {
 }
 
 export default function PrintTicket({
-  orderNum, docName, pageCount, copies,
-  binding, paperSize, colorMode, shopName,
-  etaMinutes, isNight, onSendToShop,
+  orderNum, cartItems, etaMinutes, isNight, onSendToShop,
 }: PrintTicketProps) {
   const today = new Date();
   const dateStr = today.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
+  // Aggregate totals for display
+  const totalPages = cartItems.reduce((s, i) => s + i.pageCount * i.copies, 0);
+  const shopName = cartItems[0]?.shopName ?? '';
+  const multiShop = cartItems.some(i => i.shopName !== shopName);
 
   return (
     <div style={{
@@ -81,14 +79,18 @@ export default function PrintTicket({
         </div>
 
 
-        <h2 className={styles.ticketDocName} style={{ color: isNight ? '#EAE4DD' : '#2A2928' }}>{docName}</h2>
+        <h2 className={styles.ticketDocName} style={{ color: isNight ? '#EAE4DD' : '#2A2928' }}>
+          {cartItems.length === 1 ? cartItems[0].docName : `${cartItems.length} Files`}
+        </h2>
 
         <div className={styles.ticketDetails}>
-          <span>{pageCount} Pages{copies > 1 ? ` × ${copies} Copies` : ''}</span>
-          <span>{colorLabels[colorMode] ?? colorMode}</span>
-          <span>{bindingLabels[binding] ?? binding}</span>
-          <span>{paperSize} Paper</span>
-          <span>{shopName}</span>
+          <span>{totalPages} Total Pages</span>
+          {cartItems.map(item => (
+            <span key={item.id} style={{ fontSize: '0.75em', opacity: 0.8 }}>
+              {item.docName} · {item.colorMode === 'custom' && item.customColorPages ? `Mixed (Col: ${item.customColorPages})` : (colorLabels[item.colorMode] ?? item.colorMode)} · {bindingLabels[item.binding] ?? item.binding}
+            </span>
+          ))}
+          <span>{multiShop ? 'Multiple Shops' : shopName}</span>
         </div>
 
         <hr className={styles.ticketDivider} />

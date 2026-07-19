@@ -7,7 +7,7 @@ import EziPrinter from './EziPrinter';
 interface SacredPrinterProps {
   isNight: boolean;
   copies: number;
-  docName: string;
+  docNames: string[];
   onDone: () => void;
 }
 
@@ -144,7 +144,7 @@ function PrinterMachine({ printing, progress }: { printing: boolean; progress: n
   );
 }
 
-export default function SacredPrinter({ isNight, copies, docName, onDone }: SacredPrinterProps) {
+export default function SacredPrinter({ isNight, copies, docNames, onDone }: SacredPrinterProps) {
   const progressRef = useRef(0);
   const [progress, setProgress] = React.useState(0);
 
@@ -178,10 +178,11 @@ export default function SacredPrinter({ isNight, copies, docName, onDone }: Sacr
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const firstName = docNames[0] ?? 'your document';
   const waitMessages = [
-    `Preparing "${docName}"…`,
+    `Preparing "${firstName}"…`,
     'Warming up the printer…',
-    'Loading the paper tray…',
+    ...docNames.slice(1).map(n => `Printing "${n}"…`),
     'Ezi is double-checking everything…',
     'Almost there…',
     'One more moment…',

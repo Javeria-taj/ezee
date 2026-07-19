@@ -1,42 +1,30 @@
 "use client";
-import React, { useRef, useEffect, useState } from "react";
+import React from "react";
+import { motion } from "framer-motion";
 
 export function Reveal({
   children,
   delay = 0,
   className = "",
   style = {},
-  animation = "riseIn",
-  duration = "0.7s",
+  duration = 1.2,
 }: any) {
-  const [isVisible, setIsVisible] = useState(false);
-  const ref = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsVisible(true);
-          observer.disconnect();
-        }
-      },
-      { threshold: 0.1, rootMargin: "0px 0px -50px 0px" }
-    );
-    if (ref.current) observer.observe(ref.current);
-    return () => observer.disconnect();
-  }, []);
-
+  const parsedDuration = typeof duration === "string" ? parseFloat(duration.replace("s", "")) : duration;
+  
   return (
-    <div
-      ref={ref}
+    <motion.div
       className={className}
-      style={{
-        ...style,
-        opacity: isVisible ? 1 : 0,
-        animation: isVisible ? `${animation} ${duration} ease-out ${delay}s both` : "none",
+      style={style}
+      initial={{ opacity: 0, y: 40 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-50px" }}
+      transition={{ 
+        duration: parsedDuration || 1.2, 
+        delay: Number(delay), 
+        ease: [0.22, 1, 0.36, 1] 
       }}
     >
       {children}
-    </div>
+    </motion.div>
   );
 }

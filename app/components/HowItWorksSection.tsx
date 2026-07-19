@@ -95,7 +95,9 @@ export default function HowItWorksSection() {
       style={{
         position: "relative",
         padding: "clamp(90px,12vw,150px) clamp(22px,6vw,110px)",
-        background: "linear-gradient(180deg,#F2ECE2 0%, #F4EDE2 100%)",
+        background: "var(--bg-tertiary)",
+        borderTop: "1px solid var(--border-subtle)",
+        borderBottom: "1px solid var(--border-subtle)",
         overflow: "hidden",
       }}
     >
@@ -112,7 +114,7 @@ export default function HowItWorksSection() {
             fontWeight: 600,
             letterSpacing: ".2em",
             textTransform: "uppercase",
-            color: "#A9926f",
+            color: "var(--accent-secondary)",
           }}
         >
           A gentle little journey
@@ -125,11 +127,12 @@ export default function HowItWorksSection() {
             lineHeight: 1.02,
             letterSpacing: "-.03em",
             margin: "14px 0 16px",
+            color: "var(--text-primary)"
           }}
         >
           How the magic happens
         </h2>
-        <p style={{ fontSize: 17, lineHeight: 1.6, color: "#5b554f", margin: 0 }}>
+        <p style={{ fontSize: 17, lineHeight: 1.6, color: "var(--text-secondary)", margin: 0 }}>
           Four small steps between you and a warm stack of freshly printed notes.
         </p>
       </Reveal>
@@ -185,20 +188,21 @@ export default function HowItWorksSection() {
             >
               <div
                 style={{
-                  background: "#FAF7F1",
-                  border: "1px solid rgba(42,41,40,.07)",
+                  background: "var(--glass-bg)",
+                  backdropFilter: "blur(12px)",
+                  border: "1px solid var(--border-subtle)",
                   borderRadius: 22,
                   padding: 26,
-                  boxShadow: "0 1px 0 rgba(255,255,255,.8) inset, 0 22px 40px -22px rgba(42,41,40,.4)",
-                  transition: "transform .5s cubic-bezier(.2,.9,.3,1.2), box-shadow .5s",
+                  boxShadow: "0 1px 0 rgba(255,255,255,.1) inset, 0 22px 40px -22px var(--shadow-color)",
+                  transition: "transform 0.6s cubic-bezier(.22,1,.36,1), box-shadow 0.6s cubic-bezier(.22,1,.36,1)",
                 }}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.transform = `translateY(-6px) rotate(${step.rotate})`;
-                  e.currentTarget.style.boxShadow = "0 34px 54px -26px rgba(42,41,40,.45)";
+                  e.currentTarget.style.transform = `translateY(-12px) rotate(${step.rotate}) scale(1.03)`;
+                  e.currentTarget.style.boxShadow = "0 34px 54px -26px var(--shadow-color)";
                 }}
                 onMouseLeave={(e) => {
                   e.currentTarget.style.transform = "";
-                  e.currentTarget.style.boxShadow = "0 1px 0 rgba(255,255,255,.8) inset, 0 22px 40px -22px rgba(42,41,40,.4)";
+                  e.currentTarget.style.boxShadow = "0 1px 0 rgba(255,255,255,.1) inset, 0 22px 40px -22px var(--shadow-color)";
                 }}
               >
                 <div style={{ display: "flex", alignItems: "center", gap: 14, marginBottom: 14 }}>
@@ -207,7 +211,7 @@ export default function HowItWorksSection() {
                       fontFamily: "'Space Grotesk', monospace",
                       fontWeight: 700,
                       fontSize: 13,
-                      color: "#FAF7F1",
+                      color: "var(--text-inverse)",
                       background: step.color,
                       width: 30,
                       height: 30,
@@ -226,11 +230,12 @@ export default function HowItWorksSection() {
                     fontWeight: 700,
                     fontSize: 23,
                     margin: "0 0 8px",
+                    color: "var(--text-primary)"
                   }}
                 >
                   {step.title}
                 </h3>
-                <p style={{ fontSize: 15, lineHeight: 1.55, color: "#5b554f", margin: 0 }}>
+                <p style={{ fontSize: 15, lineHeight: 1.55, color: "var(--text-secondary)", margin: 0 }}>
                   {step.desc}
                 </p>
               </div>

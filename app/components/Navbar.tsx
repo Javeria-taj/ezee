@@ -8,6 +8,33 @@ import Image from "next/image";
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [isDark, setIsDark] = useState(false);
+
+  useEffect(() => {
+    // Check initial theme
+    if (document.documentElement.classList.contains("dark")) {
+      setIsDark(true);
+    } else {
+      // Check local storage or system preference
+      const storedTheme = localStorage.getItem("theme");
+      if (storedTheme === "dark" || (!storedTheme && window.matchMedia("(prefers-color-scheme: dark)").matches)) {
+        setIsDark(true);
+        document.documentElement.classList.add("dark");
+      }
+    }
+  }, []);
+
+  const toggleTheme = () => {
+    const nextDark = !isDark;
+    setIsDark(nextDark);
+    if (nextDark) {
+      document.documentElement.classList.add("dark");
+      localStorage.setItem("theme", "dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+      localStorage.setItem("theme", "light");
+    }
+  };
 
   useEffect(() => {
     const nav = document.getElementById("main-nav");
@@ -16,13 +43,13 @@ export default function Navbar() {
     const onScroll = () => {
       if (window.scrollY > 40) {
         nav.style.boxShadow =
-          "inset 0 1px 0 rgba(255,255,255,.9), 0 20px 40px -12px rgba(42,41,40,.12), 0 4px 12px rgba(42,41,40,.04)";
-        nav.style.background = "linear-gradient(135deg, rgba(250,247,241,0.92) 0%, rgba(245,241,235,0.85) 100%)";
+          "inset 0 1px 0 rgba(255,255,255,.1), 0 20px 40px -12px rgba(0,0,0,.15), 0 4px 12px rgba(0,0,0,.08)";
+        nav.style.background = "var(--nav-bg)";
         nav.style.transform = "translateX(-50%) translateY(4px)";
       } else {
         nav.style.boxShadow =
-          "inset 0 1px 0 rgba(255,255,255,.9), 0 10px 30px -12px rgba(42,41,40,.08), 0 2px 6px rgba(42,41,40,.02)";
-        nav.style.background = "linear-gradient(135deg, rgba(250,247,241,0.82) 0%, rgba(245,241,235,0.72) 100%)";
+          "inset 0 1px 0 rgba(255,255,255,.05), 0 10px 30px -12px rgba(0,0,0,.1), 0 2px 6px rgba(0,0,0,.05)";
+        nav.style.background = "var(--nav-bg)";
         nav.style.transform = "translateX(-50%) translateY(0px)";
       }
     };
@@ -51,7 +78,7 @@ export default function Navbar() {
           padding: "16px 16px 16px 26px",
           backdropFilter: "blur(16px)",
           WebkitBackdropFilter: "blur(16px)",
-          border: "1px solid rgba(255, 255, 255, 0.5)",
+          border: "1px solid var(--nav-border)",
           borderRadius: 32,
           boxShadow:
             "inset 0 1px 0 rgba(255,255,255,.9), 0 10px 30px -12px rgba(42,41,40,.08), 0 2px 6px rgba(42,41,40,.02)",
@@ -89,7 +116,7 @@ export default function Navbar() {
         </a>
 
         {/* Divider — hidden on mobile via .nav-divider class */}
-        <div className="nav-divider" style={{ width: 1, height: 16, background: "rgba(42,41,40,.1)" }} />
+        <div className="nav-divider" style={{ width: 1, height: 16, background: "var(--border-subtle)" }} />
 
         {/* Nav links — hidden on mobile via .nav-links class */}
         <div
@@ -101,7 +128,7 @@ export default function Navbar() {
             fontSize: 13.5,
             fontWeight: 600,
             fontFamily: "'Space Grotesk', sans-serif",
-            color: "#5b554f",
+            color: "var(--text-secondary)",
             letterSpacing: "0.01em",
           }}
         >
@@ -133,7 +160,7 @@ export default function Navbar() {
         </div>
 
         {/* Divider — hidden on mobile via .nav-divider class */}
-        <div className="nav-divider" style={{ width: 1, height: 16, background: "rgba(42,41,40,.1)" }} />
+        <div className="nav-divider" style={{ width: 1, height: 16, background: "var(--border-subtle)" }} />
 
         <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
           <Link
@@ -164,6 +191,51 @@ export default function Navbar() {
           >
             Start Printing
           </Link>
+
+          {/* Theme Toggle Button */}
+          <button
+            onClick={toggleTheme}
+            aria-label="Toggle Dark Mode"
+            style={{
+              background: "transparent",
+              border: "1px solid var(--border-subtle)",
+              borderRadius: "50%",
+              width: 36,
+              height: 36,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              cursor: "pointer",
+              color: "var(--text-primary)",
+              transition: "transform 0.3s var(--anim-easing), background 0.3s var(--anim-easing)",
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.transform = "scale(1.1) rotate(5deg)";
+              e.currentTarget.style.background = "var(--border-subtle)";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.transform = "";
+              e.currentTarget.style.background = "transparent";
+            }}
+          >
+            {isDark ? (
+              <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="12" cy="12" r="5" />
+                <line x1="12" y1="1" x2="12" y2="3" />
+                <line x1="12" y1="21" x2="12" y2="23" />
+                <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
+                <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
+                <line x1="1" y1="12" x2="3" y2="12" />
+                <line x1="21" y1="12" x2="23" y2="12" />
+                <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
+                <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
+              </svg>
+            ) : (
+              <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+              </svg>
+            )}
+          </button>
         </div>
 
         {/* Hamburger button — hidden on desktop via CSS (.mob-menu-btn only shows at ≤820px) */}

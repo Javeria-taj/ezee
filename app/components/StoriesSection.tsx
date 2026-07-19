@@ -1,5 +1,6 @@
 "use client";
 import { Reveal } from "./Reveal";
+import { motion } from "framer-motion";
 const EziSVG = ({ beretColor }: { beretColor: string }) => (
   <svg width="70" height="80" viewBox="0 0 140 170">
     <path
@@ -80,7 +81,7 @@ export default function StoriesSection() {
       style={{
         position: "relative",
         padding: "clamp(90px,12vw,150px) clamp(22px,6vw,110px)",
-        background: "linear-gradient(180deg,#EAE0D2 0%, #F2ECE2 100%)",
+        background: "var(--bg-primary)",
         overflow: "hidden",
       }}
     >
@@ -97,7 +98,7 @@ export default function StoriesSection() {
             fontWeight: 600,
             letterSpacing: ".2em",
             textTransform: "uppercase",
-            color: "#b9744f",
+            color: "var(--accent-primary)",
           }}
         >
           Pinned to the wall
@@ -110,28 +111,42 @@ export default function StoriesSection() {
             lineHeight: 1.02,
             letterSpacing: "-.03em",
             margin: "14px 0 16px",
+            color: "var(--text-primary)",
           }}
         >
           Notes from the nook
         </h2>
-        <p style={{ fontSize: 17, lineHeight: 1.6, color: "#5b554f", margin: 0 }}>
+        <p style={{ fontSize: 17, lineHeight: 1.6, color: "var(--text-secondary)", margin: 0 }}>
           Little memories left behind by students who found their corner.
         </p>
       </Reveal>
 
       <div
-        className="mobile-stack mobile-center-items"
         style={{
-          maxWidth: 1040,
-          margin: "0 auto",
-          display: "flex",
-          flexWrap: "wrap",
-          justifyContent: "center",
-          alignItems: "flex-start",
-          gap: "34px 40px",
+          width: "100%",
+          overflow: "hidden",
+          padding: "20px 0",
         }}
       >
-        {testimonials.map((t, i) => {
+        <motion.div
+          className="mobile-center-items"
+          animate={{ x: ["0%", "-50%"] }}
+          transition={{ ease: "linear", duration: 40, repeat: Infinity }}
+          style={{
+            display: "inline-flex",
+            alignItems: "flex-start",
+            gap: "40px",
+            paddingRight: "40px",
+          }}
+          onMouseEnter={(e) => {
+            // Pause animation on hover
+            e.currentTarget.style.animationPlayState = "paused";
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.animationPlayState = "running";
+          }}
+        >
+          {[...testimonials, ...testimonials].map((t, i) => {
           if (t.type === "sticky") {
             return (
               <Reveal
@@ -165,8 +180,8 @@ export default function StoriesSection() {
                       transform: "translateX(-50%) rotate(-3deg)",
                       width: 80,
                       height: 22,
-                      background: "rgba(250,247,241,.55)",
-                      border: "1px dashed rgba(120,100,70,.35)",
+                      background: "rgba(250,247,241,.35)",
+                      border: "1px dashed rgba(120,100,70,.25)",
                     }}
                   />
                   <p
@@ -174,13 +189,14 @@ export default function StoriesSection() {
                       fontFamily: "'Space Grotesk', sans-serif",
                       fontSize: 18,
                       lineHeight: 1.4,
-                      color: "#5a4326",
+                      color: "#39312B",
                       margin: "8px 0 14px",
+                      whiteSpace: "normal",
                     }}
                   >
                     {t.quote}
                   </p>
-                  <p style={{ fontSize: 13, color: "#7a6038", margin: 0 }}>{t.author}</p>
+                  <p style={{ fontSize: 13, color: "#5a4326", margin: 0 }}>{t.author}</p>
                 </div>
               </Reveal>
             );
@@ -199,12 +215,15 @@ export default function StoriesSection() {
                 style={{
                   position: "relative",
                   width: t.width,
-                  background: "#FAF7F1",
+                  background: "var(--glass-bg)",
+                  backdropFilter: "blur(12px)",
                   padding: "14px 14px 22px",
                   borderRadius: 4,
-                  boxShadow: "0 22px 38px -20px rgba(42,41,40,.5)",
+                  boxShadow: "0 22px 38px -20px var(--shadow-color)",
+                  border: "1px solid var(--border-subtle)",
                   transform: `rotate(${t.rotate})`,
                   transition: "transform .5s cubic-bezier(.2,.9,.3,1.2)",
+                  whiteSpace: "normal",
                 }}
                 onMouseEnter={(e) => {
                   e.currentTarget.style.transform =
@@ -236,7 +255,7 @@ export default function StoriesSection() {
                     fontFamily: "'Space Grotesk', sans-serif",
                     fontSize: 15,
                     lineHeight: 1.4,
-                    color: "#2A2928",
+                    color: "var(--text-primary)",
                     margin: "14px 4px 8px",
                     textAlign: "center",
                   }}
@@ -246,7 +265,7 @@ export default function StoriesSection() {
                 <p
                   style={{
                     fontSize: 12.5,
-                    color: "#9a8d7d",
+                    color: "var(--text-secondary)",
                     textAlign: "center",
                     margin: 0,
                   }}
@@ -257,6 +276,7 @@ export default function StoriesSection() {
             </Reveal>
           );
         })}
+        </motion.div>
       </div>
     </section>
   );

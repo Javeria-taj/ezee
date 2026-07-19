@@ -1,12 +1,40 @@
 "use client";
 
-import React from "react";
+import React, { useRef } from "react";
 import Link from "next/link";
 import { Reveal } from "./Reveal";
+import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 
 export default function HeroSection() {
+  const containerRef = useRef<HTMLElement>(null);
+
+  // For 3D Tilt
+  const x = useMotionValue(0);
+  const y = useMotionValue(0);
+  const mouseXSpring = useSpring(x, { stiffness: 100, damping: 20 });
+  const mouseYSpring = useSpring(y, { stiffness: 100, damping: 20 });
+  
+  const rotateX = useTransform(mouseYSpring, [-0.5, 0.5], ["10deg", "-10deg"]);
+  const rotateY = useTransform(mouseXSpring, [-0.5, 0.5], ["-10deg", "10deg"]);
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const width = rect.width;
+    const height = rect.height;
+    const mouseX = e.clientX - rect.left;
+    const mouseY = e.clientY - rect.top;
+    x.set(mouseX / width - 0.5);
+    y.set(mouseY / height - 0.5);
+  };
+
+  const handleMouseLeave = () => {
+    x.set(0);
+    y.set(0);
+  };
+
   return (
     <section
+      ref={containerRef}
       id="hero"
       className="mobile-hero-pad mobile-stack mobile-center-items mobile-text-center"
       style={{
@@ -16,7 +44,7 @@ export default function HeroSection() {
         alignItems: "center",
         padding: "120px clamp(22px,6vw,110px) 80px",
         background:
-          "radial-gradient(120% 90% at 78% 18%, #FFFBF4 0%, #FAF7F1 46%, #F2ECE2 100%)",
+          "radial-gradient(120% 90% at 78% 18%, var(--bg-tertiary) 0%, var(--bg-primary) 46%, var(--bg-secondary) 100%)",
         overflow: "hidden",
       }}
     >
@@ -113,7 +141,10 @@ export default function HeroSection() {
             Now open in your study nook
           </div>
 
-          <h1
+          <motion.h1
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1], staggerChildren: 0.2 }}
             style={{
               fontFamily: "'Space Grotesk', sans-serif",
               fontWeight: 900,
@@ -121,21 +152,21 @@ export default function HeroSection() {
               lineHeight: 0.94,
               letterSpacing: "-0.035em",
               margin: "0 0 22px",
-              color: "#2A2928",
+              color: "var(--text-primary)",
             }}
           >
-            Print.
+            <motion.span initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1, delay: 0.1 }}>Print.</motion.span>
             <br />
-            <span style={{ color: "#D48A70" }}>Study.</span>
+            <motion.span initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1, delay: 0.3 }} style={{ color: "var(--accent-primary)" }}>Study.</motion.span>
             <br />
-            Repeat.
-          </h1>
+            <motion.span initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1, delay: 0.5 }}>Repeat.</motion.span>
+          </motion.h1>
 
           <p
             style={{
               fontSize: "clamp(16px,1.7vw,19.5px)",
               lineHeight: 1.6,
-              color: "#5b554f",
+              color: "var(--text-secondary)",
               maxWidth: 430,
               margin: "0 0 36px",
             }}
@@ -162,23 +193,23 @@ export default function HeroSection() {
                 gap: 10,
                 fontSize: 16,
                 fontWeight: 600,
-                color: "#FAF7F1",
-                background: "#2A2928",
+                color: "var(--text-inverse)",
+                background: "var(--text-primary)",
                 padding: "16px 26px",
                 borderRadius: 17,
-                boxShadow: "0 14px 26px -12px rgba(42,41,40,.7)",
+                boxShadow: "0 14px 26px -12px var(--shadow-color)",
                 transition:
-                  "transform .4s cubic-bezier(.2,.9,.3,1.3), box-shadow .4s",
+                  "transform .6s cubic-bezier(.2,.9,.3,1.3), box-shadow .6s",
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.transform = "translateY(-3px)";
+                e.currentTarget.style.transform = "translateY(-3px) scale(1.02)";
                 e.currentTarget.style.boxShadow =
-                  "0 22px 34px -14px rgba(42,41,40,.7)";
+                  "0 22px 34px -14px var(--shadow-color)";
               }}
               onMouseLeave={(e) => {
                 e.currentTarget.style.transform = "";
                 e.currentTarget.style.boxShadow =
-                  "0 14px 26px -12px rgba(42,41,40,.7)";
+                  "0 14px 26px -12px var(--shadow-color)";
               }}
             >
               Start Printing
@@ -187,7 +218,7 @@ export default function HeroSection() {
                 height="16"
                 viewBox="0 0 24 24"
                 fill="none"
-                stroke="#FAF7F1"
+                stroke="currentColor"
                 strokeWidth="2.4"
                 strokeLinecap="round"
               >
@@ -204,21 +235,23 @@ export default function HeroSection() {
                 gap: 10,
                 fontSize: 16,
                 fontWeight: 600,
-                color: "#2A2928",
-                background: "rgba(250,247,241,.7)",
-                border: "1.5px solid rgba(42,41,40,.14)",
+                color: "var(--text-primary)",
+                background: "var(--glass-bg)",
+                border: "1.5px solid var(--border-subtle)",
                 padding: "15px 24px",
                 borderRadius: 17,
                 transition:
-                  "transform .4s cubic-bezier(.2,.9,.3,1.3), background .4s",
+                  "transform .6s cubic-bezier(.2,.9,.3,1.3), background .6s, border-color .6s",
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.transform = "translateY(-3px)";
-                e.currentTarget.style.background = "#fff";
+                e.currentTarget.style.transform = "translateY(-3px) scale(1.02)";
+                e.currentTarget.style.background = "var(--bg-primary)";
+                e.currentTarget.style.borderColor = "var(--text-secondary)";
               }}
               onMouseLeave={(e) => {
                 e.currentTarget.style.transform = "";
-                e.currentTarget.style.background = "rgba(250,247,241,.7)";
+                e.currentTarget.style.background = "var(--glass-bg)";
+                e.currentTarget.style.borderColor = "var(--border-subtle)";
               }}
             >
               Meet Ezi
@@ -229,17 +262,24 @@ export default function HeroSection() {
         {/* Hero Illustration */}
         <Reveal
           delay={0.15}
-          duration="0.8s"
+          duration="1.2s"
           style={{
             flex: "1 1 440px",
             maxWidth: 560,
+            perspective: "1200px",
           }}
         >
-          <div
+          <motion.div
+            onMouseMove={handleMouseMove}
+            onMouseLeave={handleMouseLeave}
             style={{
               position: "relative",
               width: "100%",
               aspectRatio: "1/.94",
+              rotateX,
+              rotateY,
+              transformStyle: "preserve-3d",
+              transition: "transform 0.1s ease-out",
             }}
           >
             <svg
@@ -364,7 +404,7 @@ export default function HeroSection() {
                 </g>
               </g>
             </svg>
-          </div>
+          </motion.div>
         </Reveal>
       </div>
 

@@ -59,20 +59,21 @@ function ShopCard({ shop, delay }: { shop: Shop; delay: number }) {
     >
       <div
         style={{
-          background: "#FAF7F1",
-          border: "1px solid rgba(42,41,40,.08)",
+          background: "var(--bg-card-white)",
+          backdropFilter: "blur(12px)",
+          border: "1px solid var(--border-subtle)",
           borderRadius: "20px 20px 22px 22px",
           overflow: "hidden",
-          boxShadow: "0 26px 44px -24px rgba(42,41,40,.5)",
+          boxShadow: "0 26px 44px -24px var(--shadow-color)",
           transition: "transform .5s cubic-bezier(.2,.9,.3,1.2), box-shadow .5s",
         }}
         onMouseEnter={(e) => {
           e.currentTarget.style.transform = "translateY(-8px)";
-          e.currentTarget.style.boxShadow = "0 40px 60px -28px rgba(42,41,40,.55)";
+          e.currentTarget.style.boxShadow = "0 40px 60px -28px var(--shadow-color)";
         }}
         onMouseLeave={(e) => {
           e.currentTarget.style.transform = "";
-          e.currentTarget.style.boxShadow = "0 26px 44px -24px rgba(42,41,40,.5)";
+          e.currentTarget.style.boxShadow = "0 26px 44px -24px var(--shadow-color)";
         }}
       >
         {/* shop awning */}
@@ -108,13 +109,14 @@ function ShopCard({ shop, delay }: { shop: Shop; delay: number }) {
             }}
           >
             <h3
-              style={{
-                fontFamily: "'Space Grotesk', sans-serif",
-                fontWeight: 700,
-                fontSize: 21,
-                margin: 0,
-              }}
-            >
+               style={{
+                 fontFamily: "'Space Grotesk', sans-serif",
+                 fontWeight: 700,
+                 fontSize: 21,
+                 margin: 0,
+                 color: "var(--text-primary)"
+               }}
+             >
               {shop.name}
             </h3>
             <span
@@ -137,7 +139,7 @@ function ShopCard({ shop, delay }: { shop: Shop; delay: number }) {
               {shop.rating}
             </span>
           </div>
-          <p style={{ fontSize: 13.5, color: "#8a7d6d", margin: "0 0 18px" }}>
+          <p style={{ fontSize: 13.5, color: "var(--text-secondary)", margin: "0 0 18px" }}>
             {shop.desc}
           </p>
 
@@ -148,33 +150,33 @@ function ShopCard({ shop, delay }: { shop: Shop; delay: number }) {
               gap: 10,
             }}
           >
-            <div style={{ background: "#F4EEE4", borderRadius: 12, padding: "10px 12px" }}>
-              <div style={{ fontSize: 11, color: "#9a8d7d", letterSpacing: ".06em" }}>DISTANCE</div>
-              <div style={{ fontFamily: "'Space Grotesk', monospace", fontWeight: 600, fontSize: 16, color: "#2A2928" }}>
+            <div style={{ background: "var(--bg-secondary)", borderRadius: 12, padding: "10px 12px" }}>
+              <div style={{ fontSize: 11, color: "var(--text-secondary)", letterSpacing: ".06em" }}>DISTANCE</div>
+              <div style={{ fontFamily: "'Space Grotesk', monospace", fontWeight: 600, fontSize: 16, color: "var(--text-primary)" }}>
                 {shop.distance}
               </div>
             </div>
-            <div style={{ background: "#F4EEE4", borderRadius: 12, padding: "10px 12px" }}>
-              <div style={{ fontSize: 11, color: "#9a8d7d", letterSpacing: ".06em" }}>FROM</div>
-              <div style={{ fontFamily: "'Space Grotesk', monospace", fontWeight: 600, fontSize: 16, color: "#2A2928" }}>
+            <div style={{ background: "var(--bg-secondary)", borderRadius: 12, padding: "10px 12px" }}>
+              <div style={{ fontSize: 11, color: "var(--text-secondary)", letterSpacing: ".06em" }}>FROM</div>
+              <div style={{ fontFamily: "'Space Grotesk', monospace", fontWeight: 600, fontSize: 16, color: "var(--text-primary)" }}>
                 {shop.price}
               </div>
             </div>
-            <div style={{ background: "#F4EEE4", borderRadius: 12, padding: "10px 12px" }}>
-              <div style={{ fontSize: 11, color: "#9a8d7d", letterSpacing: ".06em" }}>READY IN</div>
-              <div style={{ fontFamily: "'Space Grotesk', monospace", fontWeight: 600, fontSize: 16, color: "#2A2928" }}>
+            <div style={{ background: "var(--bg-secondary)", borderRadius: 12, padding: "10px 12px" }}>
+              <div style={{ fontSize: 11, color: "var(--text-secondary)", letterSpacing: ".06em" }}>READY IN</div>
+              <div style={{ fontFamily: "'Space Grotesk', monospace", fontWeight: 600, fontSize: 16, color: "var(--text-primary)" }}>
                 {shop.readyIn}
               </div>
             </div>
             <div
               style={{
-                background: "#2A2928",
+                background: "var(--text-primary)",
                 borderRadius: 12,
                 padding: "10px 12px",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                color: "#FAF7F1",
+                color: "var(--text-inverse)",
                 fontWeight: 600,
                 fontSize: 14,
                 cursor: "pointer",
@@ -184,7 +186,7 @@ function ShopCard({ shop, delay }: { shop: Shop; delay: number }) {
                 (e.currentTarget.style.background = shop.hoverColor)
               }
               onMouseLeave={(e) =>
-                (e.currentTarget.style.background = "#2A2928")
+                (e.currentTarget.style.background = "var(--text-primary)")
               }
             >
               Print here →
@@ -203,8 +205,7 @@ export default function CitySection() {
       style={{
         position: "relative",
         padding: "clamp(90px,12vw,150px) clamp(22px,6vw,110px) 0",
-        background:
-          "linear-gradient(180deg,#F4EDE2 0%, #F3E3CF 55%, #EFD8BE 100%)",
+        background: "var(--bg-primary)",
         overflow: "hidden",
       }}
     >
@@ -216,10 +217,10 @@ export default function CitySection() {
           left: "8%",
           width: 120,
           height: 40,
-          background: "#FAF7F1",
+          background: "#ffffff",
           borderRadius: 40,
           opacity: 0.7,
-          boxShadow: "34px 8px 0 -6px #FAF7F1, -28px 6px 0 -8px #FAF7F1",
+          boxShadow: "34px 8px 0 -6px #ffffff, -28px 6px 0 -8px #ffffff",
           animation: "drift 16s ease-in-out infinite alternate",
         }}
       />
@@ -230,13 +231,141 @@ export default function CitySection() {
           right: "12%",
           width: 90,
           height: 32,
-          background: "#FAF7F1",
+          background: "#ffffff",
           borderRadius: 40,
           opacity: 0.6,
-          boxShadow: "26px 6px 0 -5px #FAF7F1",
+          boxShadow: "26px 6px 0 -5px #ffffff",
           animation: "drift 22s ease-in-out infinite alternate-reverse",
         }}
       />
+      <div
+        style={{
+          position: "absolute",
+          top: "18%",
+          left: "35%",
+          width: 105,
+          height: 36,
+          background: "#ffffff",
+          borderRadius: 40,
+          opacity: 0.65,
+          boxShadow: "30px 7px 0 -5px #ffffff",
+          animation: "drift 19s ease-in-out infinite alternate",
+        }}
+      />
+
+      {/* flying birds flock */}
+      <div
+        style={{
+          position: "absolute",
+          top: "5%",
+          left: 0,
+          width: "100%",
+          height: "100%",
+          pointerEvents: "none",
+          zIndex: 5,
+          overflow: "hidden",
+        }}
+      >
+        <svg
+          style={{
+            position: "absolute",
+            width: 60,
+            height: 30,
+            animation: "birdFly1 25s linear infinite",
+            animationDelay: "0s",
+          }}
+          viewBox="-40 -20 80 40"
+        >
+          <path
+            d="M0,0 Q-15,-15 -30,-5"
+            stroke="var(--accent-tertiary)"
+            strokeWidth="3.5"
+            fill="none"
+            strokeLinecap="round"
+            style={{
+              transformOrigin: "0px 0px",
+              animation: "wingLeftFlap 0.65s ease-in-out infinite",
+            }}
+          />
+          <path
+            d="M0,0 Q15,-15 30,-5"
+            stroke="var(--accent-tertiary)"
+            strokeWidth="3.5"
+            fill="none"
+            strokeLinecap="round"
+            style={{
+              transformOrigin: "0px 0px",
+              animation: "wingRightFlap 0.65s ease-in-out infinite",
+            }}
+          />
+        </svg>
+        <svg
+          style={{
+            position: "absolute",
+            width: 60,
+            height: 30,
+            animation: "birdFly2 28s linear infinite",
+            animationDelay: "2.2s",
+          }}
+          viewBox="-40 -20 80 40"
+        >
+          <path
+            d="M0,0 Q-15,-15 -30,-5"
+            stroke="var(--accent-tertiary)"
+            strokeWidth="3.5"
+            fill="none"
+            strokeLinecap="round"
+            style={{
+              transformOrigin: "0px 0px",
+              animation: "wingLeftFlap 0.72s ease-in-out infinite",
+            }}
+          />
+          <path
+            d="M0,0 Q15,-15 30,-5"
+            stroke="var(--accent-tertiary)"
+            strokeWidth="3.5"
+            fill="none"
+            strokeLinecap="round"
+            style={{
+              transformOrigin: "0px 0px",
+              animation: "wingRightFlap 0.72s ease-in-out infinite",
+            }}
+          />
+        </svg>
+        <svg
+          style={{
+            position: "absolute",
+            width: 60,
+            height: 30,
+            animation: "birdFly3 23s linear infinite",
+            animationDelay: "1.0s",
+          }}
+          viewBox="-40 -20 80 40"
+        >
+          <path
+            d="M0,0 Q-15,-15 -30,-5"
+            stroke="var(--accent-tertiary)"
+            strokeWidth="3.5"
+            fill="none"
+            strokeLinecap="round"
+            style={{
+              transformOrigin: "0px 0px",
+              animation: "wingLeftFlap 0.6s ease-in-out infinite",
+            }}
+          />
+          <path
+            d="M0,0 Q15,-15 30,-5"
+            stroke="var(--accent-tertiary)"
+            strokeWidth="3.5"
+            fill="none"
+            strokeLinecap="round"
+            style={{
+              transformOrigin: "0px 0px",
+              animation: "wingRightFlap 0.6s ease-in-out infinite",
+            }}
+          />
+        </svg>
+      </div>
 
       <Reveal
         style={{
@@ -303,7 +432,7 @@ export default function CitySection() {
         >
           {/* road */}
           <rect x="0" y="186" width="1440" height="34" fill="#9c8466" />
-          <line x1="0" y1="202" x2="1440" y2="202" stroke="#FAF7F1" strokeWidth="3" strokeDasharray="34 30" opacity=".55" />
+          <line x1="0" y1="202" x2="1440" y2="202" stroke="var(--bg-tertiary)" strokeWidth="3" strokeDasharray="34 30" opacity=".55" />
           {/* trees */}
           <g><rect x="60" y="150" width="8" height="40" fill="#8a6b4a" /><circle cx="64" cy="146" r="22" fill="#A9B59D" /></g>
           <g><rect x="1360" y="150" width="8" height="40" fill="#8a6b4a" /><circle cx="1364" cy="146" r="22" fill="#94a386" /></g>

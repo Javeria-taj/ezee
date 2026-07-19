@@ -10,7 +10,22 @@ import Payments from '@/app/components/dashboard/Payments';
    TYPE DEFINITIONS
    ===================================================================== */
 type Phase = 'desk' | 'slip' | 'shops' | 'send' | 'journey' | 'done';
-type ActiveModal = 'none' | 'notifications' | 'settings' | 'wallet';
+type ActiveModal = 'none' | 'notifications' | 'settings' | 'wallet' | 'cart';
+
+interface CartItem {
+  id: string;
+  fileName: string;
+  fileSize: number;
+  pages: number;
+  mode: 'bw' | 'color' | 'custom';
+  customColorPages: string;
+  size: 'a4' | 'a3';
+  binding: 'none' | 'staple' | 'spiral' | 'hardcover';
+  copies: number;
+  shop: ShopDef;
+  totalCost: number;
+}
+
 
 interface ShopDef {
   id: string;
@@ -133,7 +148,11 @@ export default function StudentDesk() {
   const [fileName, setFileName] = useState('');
   const [fileSize, setFileSize] = useState(0);
   const [pages, setPages] = useState(24);
-  const [mode, setMode] = useState<'bw' | 'color'>('bw');
+  const [mode, setMode] = useState<'bw' | 'color' | 'custom'>('bw');
+  const [customColorPages, setCustomColorPages] = useState('');
+  const [cart, setCart] = useState<CartItem[]>([]);
+  const [checkedCartItemIds, setCheckedCartItemIds] = useState<string[]>([]);
+  const [printingItems, setPrintingItems] = useState<CartItem[]>([]);
   const [size, setSize] = useState<'a4' | 'a3'>('a4');
   const [binding, setBinding] = useState<'none' | 'staple' | 'spiral' | 'hardcover'>('none');
   const [copies, setCopies] = useState(1);
@@ -177,6 +196,19 @@ export default function StudentDesk() {
   const timersRef = useRef<ReturnType<typeof setTimeout>[]>([]);
   const eziTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const s2Ref = useRef<HTMLElement>(null);
+  const pageTopRef = useRef<HTMLDivElement>(null);
+  const confirmRef = useRef<HTMLDivElement>(null);
+  const s4NextRef = useRef<HTMLElement>(null);
+
+  const [orderConfirmed, setOrderConfirmed] = useState(false);
+  const [showCheckout, setShowCheckout] = useState(false);
+  const [checkoutStep, setCheckoutStep] = useState<'pay' | 'confirmed' | 'tracking' | 'ready'>('pay');
+  const [confirmedOrder, setConfirmedOrder] = useState<{
+    items: { fileName: string; pages: number; copies: number; mode: string; shop: ShopDef; totalCost: number }[];
+    pickupCode: string;
+    totalCost: number;
+    totalSaved: number;
+  } | null>(null);
 
   /* --- Night mode --- */
   const applyNight = useCallback(() => {
@@ -255,12 +287,49 @@ export default function StudentDesk() {
   }, []);
 
   /* --- Price --- */
+  const parsePageRanges = (rangeStr: string, totalPages: number) => {
+    const pagesSet = new Set<number>();
+    if (!rangeStr) return pagesSet;
+    const parts = rangeStr.split(',');
+    for (const part of parts) {
+      const trimmed = part.trim();
+      if (trimmed.includes('-')) {
+        const [startStr, endStr] = trimmed.split('-');
+        const start = parseInt(startStr, 10);
+        const end = parseInt(endStr, 10);
+        if (!isNaN(start) && !isNaN(end)) {
+          const min = Math.max(1, Math.min(start, end));
+          const max = Math.min(totalPages, Math.max(start, end));
+          for (let i = min; i <= max; i++) {
+            pagesSet.add(i);
+          }
+        }
+      } else {
+        const page = parseInt(trimmed, 10);
+        if (!isNaN(page) && page >= 1 && page <= totalPages) {
+          pagesSet.add(page);
+        }
+      }
+    }
+    return pagesSet;
+  };
+
   const priceParts = () => {
-    const per = (mode === 'color' ? 5 : 1.2) * (size === 'a3' ? 2 : 1);
-    const print = Math.round(pages * per * copies);
+    const mult = size === 'a3' ? 2 : 1;
+    let print = 0;
+    let per = 1.2;
+    if (mode === 'custom') {
+      const colorPagesCount = parsePageRanges(customColorPages, pages).size;
+      const bwPagesCount = Math.max(0, pages - colorPagesCount);
+      print = Math.round((colorPagesCount * 5 + bwPagesCount * 1.2) * mult * copies);
+    } else {
+      per = (mode === 'color' ? 5 : 1.2) * mult;
+      print = Math.round(pages * per * copies);
+    }
     const bind = BIND[binding] * copies;
     return { print, bind, total: print + bind, per };
   };
+
 
   /* --- File upload --- */
   const placeFile = (f: File | { name: string; size: number }) => {
@@ -292,7 +361,119 @@ export default function StudentDesk() {
     setBinding('none');
     setCopies(1);
     setCardRisen(false);
+    setShowCheckout(false);
+    setOrderConfirmed(false);
+    setCheckoutStep('pay');
     eziSays('Fresh start. The desk is clear.', 'calm');
+  };
+
+  const addToCart = () => {
+    if (!canSend) return;
+    const p = priceParts();
+    const item: CartItem = {
+      id: String(Date.now() + Math.random()),
+      fileName,
+      fileSize,
+      pages,
+      mode,
+      customColorPages,
+      size,
+      binding,
+      copies,
+      shop: shop!,
+      totalCost: p.total
+    };
+    setCart(prev => [...prev, item]);
+    setCheckedCartItemIds(prev => [...prev, item.id]);
+    toast(`"${shortName(fileName)}" added to cart`);
+    resetAll();
+    // Scroll to top so student can add another file
+    setTimeout(() => {
+      pageTopRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 200);
+  };
+
+  const handlePrintNow = () => {
+    if (!canSend) return;
+    // Build the pending order details so they are ready for the confirmation screen
+    const p = priceParts();
+    const cost = p.total;
+    const saved = Math.round(cost * 0.5);
+    
+    setConfirmedOrder({
+      items: [{ fileName, pages, copies, mode, shop: shop!, totalCost: cost }],
+      pickupCode: '', // will be set after payment
+      totalCost: cost,
+      totalSaved: saved,
+    });
+
+    // Enter the checkout screen instead of scrolling down
+    setShowCheckout(true);
+    window.scrollTo({ top: 0, behavior: 'instant' });
+  };
+
+  const payCart = (itemsToPrint: CartItem[]) => {
+    if (itemsToPrint.length === 0) return;
+    setActiveModal('none');
+    setPrintingItems(itemsToPrint);
+    
+    // Remove printed items from cart
+    setCart(prev => prev.filter(item => !itemsToPrint.some(p => p.id === item.id)));
+    setCheckedCartItemIds(prev => prev.filter(id => !itemsToPrint.some(p => p.id === id)));
+    
+    const totalP = itemsToPrint.reduce((sum, item) => sum + item.pages * item.copies, 0);
+    const totalCost = itemsToPrint.reduce((sum, item) => sum + item.totalCost, 0);
+    const mainShop = itemsToPrint[0].shop;
+    
+    // Build confirmed order for cart items
+    setConfirmedOrder({
+      items: itemsToPrint,
+      pickupCode: '', // will be set later
+      totalCost: totalCost,
+      totalSaved: Math.round(totalCost * 0.5),
+    });
+
+    setShowCheckout(true);
+    window.scrollTo({ top: 0, behavior: 'instant' });
+
+    setFileName(itemsToPrint.length === 1 ? itemsToPrint[0].fileName : `${itemsToPrint.length} files`);
+    setPages(totalP);
+    setShop(mainShop);
+    
+    setPhase('journey');
+    setSpineActive(5);
+
+    if (planeRef.current) {
+      planeRef.current.classList.remove(styles.fly);
+      void planeRef.current.getBoundingClientRect();
+      planeRef.current.classList.add(styles.fly);
+    }
+
+    eziSays('Cart order placed! Let\'s watch them print.', 'happy');
+
+    timersRef.current.forEach(clearTimeout);
+    timersRef.current = [];
+    setJourneyStep(0);
+
+    timersRef.current.push(setTimeout(() => {
+      setOrderConfirmed(true);
+      setCheckoutStep('confirmed');
+    }, 1500));
+
+    timersRef.current.push(setTimeout(() => {
+      setCheckoutStep('tracking');
+      toast(`Shops accepted your print cart`);
+      
+      let p_val = 0;
+      const iv = setInterval(() => {
+        p_val = Math.min(100, p_val + 9 + Math.random() * 8);
+        setBarWidth(p_val);
+        if (p_val >= 100) {
+          clearInterval(iv);
+          finishPrint();
+        }
+      }, 900);
+    }, 4000));
   };
 
   const handlePayClick = () => {
@@ -306,7 +487,7 @@ export default function StudentDesk() {
   /* --- Send + Journey --- */
   const sendSlip = (cod = false) => {
     setPhase('journey');
-    setSpineActive(4);
+    setSpineActive(5);
 
     // Paper plane animation
     if (sendBtnRef.current && planeRef.current) {
@@ -327,11 +508,12 @@ export default function StudentDesk() {
     setJourneyStep(0);
 
     timersRef.current.push(setTimeout(() => {
-      setJourneyStep(1);
-    }, 1600));
+      setOrderConfirmed(true);
+      setCheckoutStep('confirmed');
+    }, 1500));
 
     timersRef.current.push(setTimeout(() => {
-      setJourneyStep(2);
+      setCheckoutStep('tracking');
       toast(`${shop!.name} accepted #${slipNo}`);
       // Progress bar
       let p = 0;
@@ -343,36 +525,71 @@ export default function StudentDesk() {
           finishPrint();
         }
       }, 900);
-    }, 4200));
+    }, 4000));
   };
 
   const finishPrint = () => {
     setJourneyStep(4); // all done
     const code = mkCode();
     setPickupCode(code);
-    setSpineActive(5);
+    
+    if (confirmedOrder) {
+      setConfirmedOrder(prev => prev ? { ...prev, pickupCode: code } : null);
+    }
+    
+    // Switch directly to 'ready' since we were in 'tracking' while printing
+    setCheckoutStep('ready');
+
+    setSpineActive(6);
     setHasUnread(true);
     eziSays(`Code ${code}. Go get it while it's warm.`, 'happy', 6000);
     toast(`Ready at ${shop!.name} — code ${code}`);
   };
 
   const collect = () => {
-    const title = (fileName || 'Untitled').replace(/\.[^.]+$/, '');
-    const p = priceParts();
-    const cost = p.total;
-    const saved = Math.round(p.total * 0.5);
-    const newFile: ShelfFile = {
-      title: shortName(title),
-      pages: pages * copies,
-      shop: shop!.name,
-      at: Date.now(),
-      cost,
-      saved
-    };
-    const files = [...shelfFiles, newFile];
+    const now = Date.now();
+    let newFiles = [...shelfFiles];
+    let addedPages = 0;
+    let addedOrders = 0;
+
+    if (printingItems.length > 0) {
+      printingItems.forEach(item => {
+        const title = item.fileName.replace(/\.[^.]+$/, '');
+        const cost = item.totalCost;
+        const saved = Math.round(cost * 0.5);
+        newFiles.push({
+          title: shortName(title),
+          pages: item.pages * item.copies,
+          shop: item.shop.name,
+          at: now,
+          cost,
+          saved
+        });
+        addedPages += item.pages * item.copies;
+        addedOrders += 1;
+      });
+      setPrintingItems([]);
+    } else {
+      const title = (fileName || 'Untitled').replace(/\.[^.]+$/, '');
+      const p = priceParts();
+      const cost = p.total;
+      const saved = Math.round(p.total * 0.5);
+      newFiles.push({
+        title: shortName(title),
+        pages: pages * copies,
+        shop: shop!.name,
+        at: now,
+        cost,
+        saved
+      });
+      addedPages = pages * copies;
+      addedOrders = 1;
+    }
+
+    const files = newFiles;
     MEM.files = files;
-    MEM.orders = MEM.orders + 1;
-    MEM.pages = MEM.pages + pages * copies;
+    MEM.orders = MEM.orders + addedOrders;
+    MEM.pages = MEM.pages + addedPages;
     if (MEM.orders >= 6) MEM.plant = 3;
     else if (MEM.orders >= 2) MEM.plant = 2;
 
@@ -382,15 +599,17 @@ export default function StudentDesk() {
     setPlantStage(MEM.plant);
     setNewBookIdx(files.length - 1);
 
-    eziSays('Shelved. It lives here now. 🌱', 'happy', 5000);
-    toast('Added to your shelf');
+    eziSays(addedOrders > 1 ? 'All files shelved successfully! 🌱' : 'Shelved. It lives here now. 🌱', 'happy', 5000);
+    toast(addedOrders > 1 ? 'Files added to your shelf' : 'Added to your shelf');
     setSettingsInitialTab('history');
     setActiveModal('settings');
+    setCart([]);
 
     setTimeout(() => {
       resetAll();
     }, 2600);
   };
+
 
   /* --- Derived --- */
   const p = priceParts();
@@ -421,11 +640,13 @@ export default function StudentDesk() {
     <div className={`${styles.deskPage} ${night ? styles.night : ''}`}>
 
       {/* ========== SPINE ========== */}
-      <div className={styles.spine}>
-        {[1, 2, 3, 4, 5].map(n => (
-          <span key={n} className={`${styles.spineDot} ${spineActive >= n ? styles.lit : ''}`} style={{ top: `${18 + (n - 1) * 18}%` }} />
-        ))}
-      </div>
+      {!showCheckout && (
+        <div className={styles.spine}>
+          {[1, 2, 3, 4, 5, 6].map(n => (
+            <span key={n} className={`${styles.spineDot} ${spineActive >= n ? styles.lit : ''}`} style={{ top: `${15 + (n - 1) * 15}%` }} />
+          ))}
+        </div>
+      )}
 
       {/* ========== HEADER ========== */}
       <header className={styles.header}>
@@ -451,14 +672,19 @@ export default function StudentDesk() {
         {/* Cart */}
         <button 
           className={styles.headerIcon} 
+          style={{ position: 'relative' }}
           title="Cart" 
           onClick={() => {
-            setActiveModal('none');
-            setTimeout(() => {
-              document.getElementById('s1')?.scrollIntoView({ behavior: 'smooth' });
-            }, 100);
+            if (cart.length > 0) {
+              setActiveModal('cart');
+            } else {
+              toast("Your cart is empty");
+            }
           }}
         >
+          {cart.length > 0 && (
+            <span className={styles.cartBadgeCount}>{cart.length}</span>
+          )}
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
             <circle cx="9" cy="21" r="1" />
             <circle cx="20" cy="21" r="1" />
@@ -484,14 +710,19 @@ export default function StudentDesk() {
 
       {/* ========== MAIN ========== */}
       <main className={styles.main}>
+        {/* page top ref */}
+        <div ref={pageTopRef} />
 
-        {/* ──── 1 · THE DESK ──── */}
-        <section className={styles.hero} id="s1">
-          <div className={styles.greet} dangerouslySetInnerHTML={{ __html: g }} />
-          <div className={styles.greetSub}>
-            <span className={styles.quill} />
-            <span>{sub}</span>
-          </div>
+        {/* ──── Only render desk/shops if NOT in checkout ──── */}
+        {!showCheckout && (
+          <>
+            {/* ──── 1 · THE DESK ──── */}
+            <section className={styles.hero} id="s1">
+              <div className={styles.greet} dangerouslySetInnerHTML={{ __html: g }} />
+              <div className={styles.greetSub}>
+                <span className={styles.quill} />
+                <span>{sub}</span>
+              </div>
 
           <div className={styles.deskScene}>
             {/* Ezi perch */}
@@ -593,8 +824,24 @@ export default function StudentDesk() {
               <div className={styles.opts}>
                 <button className={`${styles.opt} ${mode === 'bw' ? styles.on : ''}`} onClick={() => setMode('bw')}>B &amp; W <span className={styles.optPrice}>₹1.2/pg</span></button>
                 <button className={`${styles.opt} ${mode === 'color' ? styles.on : ''}`} onClick={() => { setMode('color'); eziSays('Colour it is — Morning Star does it best.', 'calm', 3000); }}>Full colour <span className={styles.optPrice}>₹5/pg</span></button>
+                <button className={`${styles.opt} ${mode === 'custom' ? styles.on : ''}`} onClick={() => { setMode('custom'); eziSays('Mixed mode. Tell me which pages are colour.', 'curious', 3000); }}>Mixed mode <span className={styles.optPrice}>Mixed</span></button>
               </div>
             </div>
+
+            {/* Custom/Mixed color page ranges */}
+            {mode === 'custom' && (
+              <div className={styles.frow}>
+                <div className={styles.frowQ}>Colour Pages<small>e.g. 1, 3-5, 8 (out of {pages})</small></div>
+                <input
+                  type="text"
+                  placeholder="e.g. 1, 3-5, 8"
+                  value={customColorPages}
+                  onChange={(e) => setCustomColorPages(e.target.value)}
+                  className={styles.customPagesInput}
+                />
+              </div>
+            )}
+
 
             {/* Paper */}
             <div className={styles.frow}>
@@ -634,7 +881,7 @@ export default function StudentDesk() {
             {/* Tally */}
             <div className={styles.tally}>
               <div className={styles.tline}>
-                <span>Printing — {pages}pp × {copies} {mode === 'color' ? 'colour' : 'b/w'} {size.toUpperCase()}</span>
+                <span>Printing — {pages}pp × {copies} {mode === 'color' ? 'colour' : mode === 'custom' ? 'mixed' : 'b/w'} {size.toUpperCase()}</span>
                 <span className={styles.mono}>₹{p.print.toLocaleString('en-IN')}</span>
               </div>
               {p.bind > 0 && (
@@ -665,14 +912,17 @@ export default function StudentDesk() {
                 style={{ '--shop-accent': s.accent } as React.CSSProperties}
                 onClick={() => {
                   setShop(s);
-                  setSpineActive(3);
+                  setSpineActive(4);
                   eziSays(`${s.name}. Their window's already glowing.`, 'happy', 3000);
+                  setTimeout(() => {
+                    s4NextRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                  }, 350);
                 }}
               >
                 <span className={styles.picktick}>
                   <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6L9 17l-5-5" /></svg>
                 </span>
-                <div className={styles.storefront}>
+              <div className={styles.storefront}>
                   <div className={styles.awning}></div>
                   <div className={styles.shopwin}></div>
                 </div>
@@ -684,148 +934,295 @@ export default function StudentDesk() {
           </div>
         </section>
 
-        {/* ──── 4 · SEND & JOURNEY ──── */}
-        <section id="s4" className={`${styles.section} ${fileUploaded ? styles.unlocked : styles.locked}`}>
-          <div className={styles.stepEyebrow}><span className={styles.stepNo}>4</span><span className={styles.label}>Send it off</span></div>
-          <h2 className={styles.sectionTitle}>Fold, and let it fly.</h2>
-
-          <div className={styles.drawerSection}>
-            <h3 className={styles.drawerTitle}>The Desk Drawer</h3>
+        {/* ──── 4 · NEXT STEP (ACTIONS) ──── */}
+        {shop && fileUploaded && phase !== 'journey' && phase !== 'done' && (
+          <section id="s4_next" ref={s4NextRef} className={styles.section}>
+            <div className={styles.stepEyebrow}><span className={styles.stepNo}>4</span><span className={styles.label}>Next Step</span></div>
+            <h2 className={styles.sectionTitle}>Ready to print, or save for later?</h2>
             
-            <div className={styles.drawerFlex}>
-              {/* Receipt Area */}
-              <div className={styles.receiptContainer}>
-                {/* Stamp */}
-                <div className={styles.stampWrapper}>
-                  <svg className={styles.postStamp} viewBox="0 0 40 40">
-                    <rect x="2" y="2" width="36" height="36" fill="#FDFBF7" stroke="#7E8C6F" strokeWidth="1.5" strokeDasharray="3 2" />
-                    <path d="M 8 30 L 16 14 L 20 22 L 24 14 L 32 30" fill="none" stroke="#7E8C6F" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                    <text x="20" y="36" fontSize="6.5" fontFamily="Space Grotesk" fontWeight="bold" fill="#7E8C6F" textAnchor="middle" letterSpacing="1">POST</text>
-                  </svg>
-                </div>
+            <div className={styles.nextActionsCard}>
+              <button className={styles.addToCartAction} onClick={addToCart}>
+                <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ marginRight: 2 }}><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+                Add to Cart
+              </button>
+              <button className={styles.printNowAction} onClick={handlePrintNow}>
+                <svg width="19" height="19" viewBox="0 0 24 24" fill="currentColor" style={{ marginRight: 2 }}><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                Print Now
+              </button>
+            </div>
+          </section>
+        )}
+        </>
+        )}
 
-                {/* Jagged Receipt Paper */}
-                <div className={styles.receiptPaper}>
-                  <div className={styles.receiptHeader}>RECEIPT</div>
-                  
-                  <div className={styles.receiptRows}>
-                    <div className={styles.receiptRow}>
-                      <span>{pages} Pages</span>
-                      <span className={styles.mono}>₹{p.print.toLocaleString('en-IN')}</span>
+        {/* ──── 5 · SEND & JOURNEY (CHECKOUT) ──── */}
+        {showCheckout && (
+          <section id="s4" className={`${styles.section} ${styles.unlocked}`} style={{ minHeight: '80vh', marginTop: 40 }}>
+            {phase !== 'journey' && phase !== 'done' && (
+              <button className={styles.backToDeskBtn} onClick={() => setShowCheckout(false)}>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ marginRight: 6 }}><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                Back to Desk
+              </button>
+            )}
+            <div className={styles.stepEyebrow}><span className={styles.stepNo}>5</span><span className={styles.label}>Checkout</span></div>
+            <h2 className={styles.sectionTitle}>Fold, and let it fly.</h2>
+
+            {/* ---- STAGE 1: PAY ---- */}
+            {checkoutStep === 'pay' && (
+              <div className={styles.drawerSection}>
+                <h3 className={styles.drawerTitle}>The Desk Drawer</h3>
+                
+                <div className={styles.drawerFlex}>
+                  {/* Receipt Area */}
+                  <div className={styles.receiptContainer}>
+                    {/* Stamp */}
+                    <div className={styles.stampWrapper}>
+                      <svg className={styles.postStamp} viewBox="0 0 40 40">
+                        <rect x="2" y="2" width="36" height="36" fill="#FDFBF7" stroke="#7E8C6F" strokeWidth="1.5" strokeDasharray="3 2" />
+                        <path d="M 8 30 L 16 14 L 20 22 L 24 14 L 32 30" fill="none" stroke="#7E8C6F" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                        <text x="20" y="36" fontSize="6.5" fontFamily="Space Grotesk" fontWeight="bold" fill="#7E8C6F" textAnchor="middle" letterSpacing="1">POST</text>
+                      </svg>
                     </div>
-                    <div className={styles.receiptRow}>
-                      <span>{copies} Copies</span>
-                      <span className={styles.mono}>× {copies}</span>
-                    </div>
-                    {p.bind > 0 && (
-                      <div className={styles.receiptRow}>
-                        <span>Binding</span>
-                        <span className={styles.mono}>₹{p.bind.toLocaleString('en-IN')}</span>
+
+                    {/* Jagged Receipt Paper */}
+                    <div className={styles.receiptPaper}>
+                      <div className={styles.receiptHeader}>RECEIPT</div>
+                      
+                      <div className={styles.receiptRows}>
+                        <div className={styles.receiptRow}>
+                          <span>{pages} Pages</span>
+                          <span className={styles.mono}>₹{p.print.toLocaleString('en-IN')}</span>
+                        </div>
+                        <div className={styles.receiptRow}>
+                          <span>{copies} Copies</span>
+                          <span className={styles.mono}>× {copies}</span>
+                        </div>
+                        {p.bind > 0 && (
+                          <div className={styles.receiptRow}>
+                            <span>Binding</span>
+                            <span className={styles.mono}>₹{p.bind.toLocaleString('en-IN')}</span>
+                          </div>
+                        )}
                       </div>
-                    )}
+                      
+                      <div className={styles.receiptDivider} />
+                      
+                      <div className={styles.receiptTotalRow}>
+                        <span className={styles.receiptTotalLabel}>Total</span>
+                        <span className={`${styles.receiptTotalAmt} ${styles.mono}`}>₹{p.total.toLocaleString('en-IN')}</span>
+                      </div>
+                    </div>
                   </div>
                   
-                  <div className={styles.receiptDivider} />
-                  
-                  <div className={styles.receiptTotalRow}>
-                    <span className={styles.receiptTotalLabel}>Total</span>
-                    <span className={`${styles.receiptTotalAmt} ${styles.mono}`}>₹{p.total.toLocaleString('en-IN')}</span>
+                  {/* Wallet Area */}
+                  <div className={styles.walletArea}>
+                    <div className={styles.walletWrapper}>
+                      {/* Coins in background */}
+                      <div className={`${styles.coin} ${styles.coin5_1}`}>5</div>
+                      <div className={`${styles.coin} ${styles.coin5_2}`}>5</div>
+                      <div className={`${styles.coin} ${styles.coin1}`}>1</div>
+
+                      {/* Wallet Back */}
+                      <div className={styles.walletBack} />
+
+                      {/* Interactive Card Button */}
+                      <button
+                        ref={sendBtnRef}
+                        className={`${styles.creditCard} ${cardRisen ? styles.risen : ''}`}
+                        disabled={!canSend || phase === 'journey' || phase === 'done'}
+                        onClick={handlePayClick}
+                        aria-label="Pay now"
+                      >
+                        <div className={styles.cardHeader}>
+                          <span className={styles.cardBrand}>STUDENT UPI</span>
+                          <svg className={styles.wirelessIcon} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                            <path d="M5 8a9.99 9.99 0 0 1 14 0" />
+                            <path d="M7.83 10.83a6 6 0 0 1 8.34 0" />
+                            <path d="M10.66 13.66a2 2 0 0 1 2.68 0" />
+                          </svg>
+                        </div>
+                        
+                        <div className={styles.cardChip}>
+                          <div className={styles.chipInner} />
+                        </div>
+                        
+                        <div className={styles.cardFooter}>
+                          <span className={styles.cardNumber}>•••• 4092</span>
+                          <span className={styles.payNowBadge}>PAY NOW</span>
+                        </div>
+                      </button>
+
+                      {/* Wallet Front */}
+                      <div className={styles.walletFront}>
+                        <button
+                          className={styles.walletPayBadge}
+                          disabled={!canSend || phase === 'journey' || phase === 'done'}
+                          onClick={handlePayClick}
+                        >
+                          PAY NOW
+                        </button>
+                      </div>
+                    </div>
+                    
+                    <div className={styles.tapInstruction}>
+                      Tap card to pay
+                    </div>
                   </div>
                 </div>
               </div>
-              
-              {/* Wallet Area */}
-              <div className={styles.walletArea}>
-                <div className={styles.walletWrapper}>
-                  {/* Coins in background */}
-                  <div className={`${styles.coin} ${styles.coin5_1}`}>5</div>
-                  <div className={`${styles.coin} ${styles.coin5_2}`}>5</div>
-                  <div className={`${styles.coin} ${styles.coin1}`}>1</div>
+            )}
 
-                  {/* Wallet Back */}
-                  <div className={styles.walletBack} />
+            {/* ---- STAGE 2: ORDER CONFIRMED (ONLY) ---- */}
+            {checkoutStep === 'confirmed' && (
+              <div className={`${styles.orderConfirmation} ${styles.on}`} style={{ marginTop: '10vh', background: 'transparent', boxShadow: 'none', border: 'none' }}>
+                <div className={styles.ocHeader} style={{ marginBottom: 0 }}>
+                  <div className={styles.ocCheckIcon} style={{ transform: 'scale(1.5)', margin: '0 auto 40px' }}>
+                    <svg viewBox="0 0 52 52">
+                      <circle className={styles.ocCheckCircle} cx="26" cy="26" r="25" fill="none" strokeWidth="2"/>
+                      <path className={styles.ocCheckPath} fill="none" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" d="M14 27l7 7 16-16"/>
+                    </svg>
+                  </div>
+                  <div className={styles.ocTitle} style={{ fontSize: 32 }}>Order Confirmed!</div>
+                </div>
+              </div>
+            )}
 
-                  {/* Interactive Card Button */}
-                  <button
-                    ref={sendBtnRef}
-                    className={`${styles.creditCard} ${cardRisen ? styles.risen : ''}`}
-                    disabled={!canSend || phase === 'journey' || phase === 'done'}
-                    onClick={handlePayClick}
-                    aria-label="Pay now"
-                  >
-                    <div className={styles.cardHeader}>
-                      <span className={styles.cardBrand}>STUDENT UPI</span>
-                      <svg className={styles.wirelessIcon} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M5 8a9.99 9.99 0 0 1 14 0" />
-                        <path d="M7.83 10.83a6 6 0 0 1 8.34 0" />
-                        <path d="M10.66 13.66a2 2 0 0 1 2.68 0" />
+            {/* ---- STAGE 3: LIVE TRACKING ---- */}
+            {checkoutStep === 'tracking' && confirmedOrder && (
+              <div className={`${styles.orderConfirmation} ${styles.on}`} ref={confirmRef} style={{ maxWidth: 540 }}>
+                {/* Animated Tracking Header */}
+                <div className={styles.trackingHeader}>
+                  <div className={`${styles.trackStage} ${styles.active}`}>
+                    <div className={styles.trackStageIcon}>
+                      <svg className={styles.animRocket} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2l.5-.5M12 15l-3-3a22 22 0 0 1 3.86-8.76l.64-.81a1.99 1.99 0 0 1 2.83 0l2.83 2.83a2 2 0 0 1 0 2.83l-.81.64A22 22 0 0 1 15 12z"/>
+                        <path d="M15 9l-6 6"/>
                       </svg>
                     </div>
-                    
-                    <div className={styles.cardChip}>
-                      <div className={styles.chipInner} />
+                    <div className={styles.trackStageLabel}>Sent to Shop</div>
+                  </div>
+                  
+                  <div className={styles.trackLine}></div>
+                  
+                  <div className={`${styles.trackStage} ${styles.active}`}>
+                    <div className={styles.trackStageIcon}>
+                      <svg className={styles.animPrinter} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/>
+                        <path d="M6 9V3a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v6"/>
+                        <path d="M8 22h8a1 1 0 0 0 1-1v-4H7v4a1 1 0 0 0 1 1z"/>
+                      </svg>
                     </div>
-                    
-                    <div className={styles.cardFooter}>
-                      <span className={styles.cardNumber}>•••• 4092</span>
-                      <span className={styles.payNowBadge}>PAY NOW</span>
+                    <div className={styles.trackStageLabel}>On the Press</div>
+                  </div>
+                  
+                  <div className={styles.trackLine}></div>
+                  
+                  <div className={styles.trackStage}>
+                    <div className={styles.trackStageIcon}>
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
                     </div>
-                  </button>
+                    <div className={styles.trackStageLabel}>Ready</div>
+                  </div>
+                </div>
 
-                  {/* Wallet Front */}
-                  <div className={styles.walletFront}>
-                    <button
-                      className={styles.walletPayBadge}
-                      disabled={!canSend || phase === 'journey' || phase === 'done'}
-                      onClick={handlePayClick}
-                    >
-                      PAY NOW
-                    </button>
+                <div className={styles.ocTitle} style={{ textAlign: 'center', marginTop: 16 }}>
+                  Printing your order...
+                </div>
+
+                <div className={styles.ocSupport} style={{ marginTop: 64 }}>
+                  Having trouble? <a href="#">Contact Support</a> or check our <a href="#">Help Center</a>.
+                </div>
+              </div>
+            )}
+
+            {/* ---- STAGE 4: READY & FEEDBACK ---- */}
+            {checkoutStep === 'ready' && confirmedOrder && (
+              <div className={`${styles.orderConfirmation} ${styles.on}`} ref={confirmRef} style={{ maxWidth: 540 }}>
+                {/* Animated Tracking Header (All active) */}
+                <div className={styles.trackingHeader}>
+                  <div className={`${styles.trackStage} ${styles.active}`}>
+                    <div className={styles.trackStageIcon}>
+                      <svg className={styles.animRocket} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2l.5-.5M12 15l-3-3a22 22 0 0 1 3.86-8.76l.64-.81a1.99 1.99 0 0 1 2.83 0l2.83 2.83a2 2 0 0 1 0 2.83l-.81.64A22 22 0 0 1 15 12z"/>
+                        <path d="M15 9l-6 6"/>
+                      </svg>
+                    </div>
+                    <div className={styles.trackStageLabel}>Sent to Shop</div>
+                  </div>
+                  
+                  <div className={styles.trackLine}></div>
+                  
+                  <div className={`${styles.trackStage} ${styles.active}`}>
+                    <div className={styles.trackStageIcon}>
+                      <svg className={styles.animPrinter} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/>
+                        <path d="M6 9V3a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v6"/>
+                        <path d="M8 22h8a1 1 0 0 0 1-1v-4H7v4a1 1 0 0 0 1 1z"/>
+                      </svg>
+                    </div>
+                    <div className={styles.trackStageLabel}>Printed</div>
+                  </div>
+                  
+                  <div className={styles.trackLine}></div>
+                  
+                  <div className={`${styles.trackStage} ${styles.readyStage}`}>
+                    <div className={`${styles.trackStageIcon} ${styles.readyIcon}`}>
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+                    </div>
+                    <div className={styles.trackStageLabel}>Ready</div>
+                  </div>
+                </div>
+
+                {/* Pickup Code details */}
+                <div className={styles.ocCode} style={{ textAlign: 'center', margin: '16px 0 32px' }}>
+                  Pickup Code: <span>{confirmedOrder.pickupCode}</span>
+                  <div className={styles.ocShopInfo} style={{ display: 'block', marginTop: 12 }}>
+                    Ready at <b>{confirmedOrder.items[0].shop.name}</b> in {confirmedOrder.items[0].shop.eta[0]}-{confirmedOrder.items[0].shop.eta[1]} mins
+                  </div>
+                </div>
+
+                <div className={styles.ocBody}>
+                  <div className={styles.ocSectionTitle}>Order Details</div>
+                  <div className={styles.ocList}>
+                    {confirmedOrder.items.map((it, i) => (
+                      <div key={i} className={styles.ocListItem}>
+                        <div className={styles.ocItemLeft}>
+                          <div className={styles.ocItemName}>{shortName(it.fileName)}</div>
+                          <div className={styles.ocItemMeta}>{it.pages} pages • {it.copies} copies • {it.mode === 'bw' ? 'B&W' : 'Color'}</div>
+                        </div>
+                        <div className={styles.ocItemRight}>₹{it.totalCost.toLocaleString('en-IN')}</div>
+                      </div>
+                    ))}
+                  </div>
+
+                  <div className={styles.ocSummaryCard}>
+                    <div className={styles.ocSummaryRow}>
+                      <span>Total Paid</span>
+                      <span className={styles.ocTotalAmt}>₹{confirmedOrder.totalCost.toLocaleString('en-IN')}</span>
+                    </div>
+                    <div className={styles.ocSavedBadge}>
+                      🎉 You saved ₹{confirmedOrder.totalSaved.toLocaleString('en-IN')} vs retail!
+                    </div>
+                  </div>
+                  
+                  <div className={styles.feedbackSection}>
+                    <button className={styles.feedbackBtn}>📝 Share your experience</button>
+                    <button className={styles.feedbackBtn}>💡 Give feedback</button>
+                  </div>
+                  
+                  <div className={styles.ocSupport} style={{ marginTop: 24 }}>
+                    Having trouble? <a href="#">Contact Support</a> or check our <a href="#">Help Center</a>.
                   </div>
                 </div>
                 
-                <div className={styles.tapInstruction}>
-                  Tap card to pay
-                </div>
+                <button className={styles.collectBtn} onClick={collect} style={{ marginTop: 32, width: '100%', maxWidth: 320 }}>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6L9 17l-5-5" /></svg>
+                  Collected — shelve it
+                </button>
               </div>
-            </div>
-          </div>
-
-          {/* Journey timeline */}
-          {phase === 'journey' || phase === 'done' ? (
-            <div className={`${styles.journey} ${styles.on}`}>
-              <div className={styles.jcard}>
-                {jSteps.map((step, idx) => (
-                  <div key={idx} className={jStepClass(idx)}>
-                    <span className={styles.jdot} />
-                    <div className={styles.jbody}>
-                      <b>{step.t}</b>
-                      <small>{step.d}</small>
-                      {idx === 2 && (
-                        <div className={styles.jbar}>
-                          <span ref={jbarRef} className={styles.jbarFill} style={{ width: `${barWidth}%` }} />
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                ))}
-              </div>
-
-              {/* Pickup code card */}
-              {pickupCode && (
-                <div className={`${styles.codeCard} ${styles.on}`}>
-                  <div className={styles.label}>Your pickup code</div>
-                  <div className={styles.bigCode}>{pickupCode}</div>
-                  <div className={styles.codeCardSay}>Say it at the counter — <b>{shop?.name}</b> is keeping your pages warm.</div>
-                  <button className={styles.collectBtn} onClick={collect} style={{ marginTop: 16 }}>
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6L9 17l-5-5" /></svg>
-                    Collected — shelve it
-                  </button>
-                </div>
-              )}
-            </div>
-          ) : null}
+            )}
         </section>
+        )}
 
 
         <footer className={styles.footer}>
@@ -864,6 +1261,141 @@ export default function StudentDesk() {
             />
           )}
           {activeModal === 'wallet' && <Payments onClose={() => setActiveModal('none')} />}
+          
+          {activeModal === 'cart' && (() => {
+            const selectedCartItems = cart.filter(item => checkedCartItemIds.includes(item.id));
+            const totalCost = selectedCartItems.reduce((sum, item) => sum + item.totalCost, 0);
+            const isPayDisabled = selectedCartItems.length === 0 || cardRisen;
+
+            return (
+              <div className={styles.cartModal} onClick={e => e.stopPropagation()}>
+                <div className={styles.cartModalHeader}>
+                  <h3>Your Print Cart</h3>
+                  <button className={styles.closeModalBtn} onClick={() => setActiveModal('none')}>✕</button>
+                </div>
+                <div className={styles.cartModalBody}>
+                  {cart.length === 0 ? (
+                    <div style={{ textAlign: 'center', padding: '32px 0', color: 'var(--ink-3)' }}>
+                      Your cart is empty. Place some notes on the desk first!
+                    </div>
+                  ) : (
+                    <>
+                      <div className={styles.cartItemsList}>
+                        {cart.map(item => {
+                          const isChecked = checkedCartItemIds.includes(item.id);
+                          return (
+                            <div key={item.id} className={styles.cartItemCard} style={{ opacity: isChecked ? 1 : 0.6 }}>
+                              <input
+                                type="checkbox"
+                                checked={isChecked}
+                                onChange={() => {
+                                  setCheckedCartItemIds(prev => 
+                                    prev.includes(item.id) 
+                                      ? prev.filter(id => id !== item.id) 
+                                      : [...prev, item.id]
+                                  );
+                                }}
+                                style={{ marginRight: 12, cursor: 'pointer', width: 16, height: 16 }}
+                              />
+                              <div className={styles.cartItemMain}>
+                                <div className={styles.cartItemTitle}>{item.fileName}</div>
+                                <div className={styles.cartItemMeta}>
+                                  {item.pages} pgs &middot; {item.copies} copies &middot; {item.mode === 'bw' ? 'B&W' : item.mode === 'custom' ? 'Mixed' : 'Colour'} &middot; {BINDL[item.binding]} &middot; {item.size.toUpperCase()}
+                                </div>
+                                <div className={styles.cartItemShop}>🏪 {item.shop.name}</div>
+                              </div>
+                              <div className={styles.cartItemRight}>
+                                <div className={styles.cartItemPrice}>₹{item.totalCost}</div>
+                                <button
+                                  className={styles.cartItemDelete}
+                                  onClick={() => {
+                                    setCart(prev => prev.filter(i => i.id !== item.id));
+                                    setCheckedCartItemIds(prev => prev.filter(id => id !== item.id));
+                                    toast(`"${shortName(item.fileName)}" removed`);
+                                  }}
+                                  title="Remove item"
+                                >
+                                  ✕
+                                </button>
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+
+                      <div className={styles.cartTotalSummary}>
+                        <div className={styles.cartSummaryRow}>
+                          <span>Selected Files</span>
+                          <span>{selectedCartItems.length} of {cart.length}</span>
+                        </div>
+                        <div className={styles.cartSummaryRow} style={{ fontSize: '18px', fontWeight: 'bold', borderTop: '1.5px dashed var(--edge)', paddingTop: 12, marginTop: 12 }}>
+                          <span>Total Pay</span>
+                          <span>₹{totalCost}</span>
+                        </div>
+                      </div>
+
+                      <div style={{ marginTop: 24, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                        <div className={styles.walletWrapper} style={{ transform: 'scale(0.95)' }}>
+                          <div className={`${styles.coin} ${styles.coin5_1}`}>5</div>
+                          <div className={`${styles.coin} ${styles.coin5_2}`}>5</div>
+                          <div className={`${styles.coin} ${styles.coin1}`}>1</div>
+
+                          <div className={styles.walletBack} />
+
+                          <button
+                            className={`${styles.creditCard} ${cardRisen ? styles.risen : ''}`}
+                            disabled={isPayDisabled}
+                            onClick={() => {
+                              setCardRisen(true);
+                              setTimeout(() => {
+                                payCart(selectedCartItems);
+                              }, 600);
+                            }}
+                          >
+                            <div className={styles.cardHeader}>
+                              <span className={styles.cardBrand}>STUDENT UPI</span>
+                              <svg className={styles.wirelessIcon} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                                <path d="M5 8a9.99 9.99 0 0 1 14 0" />
+                                <path d="M7.83 10.83a6 6 0 0 1 8.34 0" />
+                                <path d="M10.66 13.66a2 2 0 0 1 2.68 0" />
+                              </svg>
+                            </div>
+                            
+                            <div className={styles.cardChip}>
+                              <div className={styles.chipInner} />
+                            </div>
+                            
+                            <div className={styles.cardFooter}>
+                              <span className={styles.cardNumber}>•••• 4092</span>
+                              <span className={styles.payNowBadge}>PAY NOW</span>
+                            </div>
+                          </button>
+
+                          <div className={styles.walletFront}>
+                            <button
+                              className={styles.walletPayBadge}
+                              disabled={isPayDisabled}
+                              onClick={() => {
+                                setCardRisen(true);
+                                setTimeout(() => {
+                                  payCart(selectedCartItems);
+                                }, 600);
+                              }}
+                            >
+                              PAY NOW
+                            </button>
+                          </div>
+                        </div>
+                        <div className={styles.tapInstruction} style={{ marginTop: 8 }}>
+                          Tap card to pay now
+                        </div>
+                      </div>
+                    </>
+                  )}
+                </div>
+              </div>
+            );
+          })()}
         </div>
       )}
     </div>

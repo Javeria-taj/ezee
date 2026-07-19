@@ -80,89 +80,95 @@ const CSS = `
   background:linear-gradient(180deg,var(--paper) 0%,var(--paper-2) 100%);
   min-height:100vh;overflow-x:hidden;-webkit-font-smoothing:antialiased;
   box-sizing:border-box;
+  font-size: 17px;
 }
 .obs-root *{box-sizing:border-box;margin:0;padding:0}
 .obs-root button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
 .obs-root ::selection{background:var(--terracotta-soft);color:var(--paper)}
 .obs-grain{position:fixed;inset:0;pointer-events:none;z-index:9999;opacity:.035;
   background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 220 220' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
-.obs-app{display:grid;grid-template-columns:236px 1fr;min-height:100vh;transition:grid-template-columns var(--spring)}
-.obs-app.obs-closed{grid-template-columns:68px 1fr}
+.obs-app{display:grid;grid-template-columns:260px 1fr;min-height:100vh;transition:grid-template-columns var(--spring)}
+.obs-app.obs-closed{grid-template-columns:80px 1fr}
 /* rail */
-.obs-rail{position:sticky;top:0;align-self:start;height:100vh;padding:22px 16px;
-  display:flex;flex-direction:column;gap:6px;
+.obs-rail{position:sticky;top:0;align-self:start;height:100vh;padding:26px 18px;
+  display:flex;flex-direction:column;gap:8px;
   background:linear-gradient(180deg,rgba(255,255,255,.5),rgba(243,237,227,.35));
   border-right:1px solid var(--paper-edge);backdrop-filter:blur(2px);
   overflow:hidden;transition:padding var(--spring)}
-.obs-app.obs-closed .obs-rail{padding:22px 10px}
+.obs-app.obs-closed .obs-rail{padding:26px 14px}
 .obs-app.obs-closed .obs-brand div,
 .obs-app.obs-closed .obs-nav span:not(.obs-ic) {
   display:none;
 }
 .obs-app.obs-closed .obs-brand { justify-content:center !important; }
-.obs-app.obs-closed .obs-nav button { justify-content: center; padding: 12px 0; }
-.obs-brand{display:flex;align-items:center;gap:10px;padding:4px 8px 14px}
-.obs-seal{width:34px;height:34px;border-radius:10px;flex:none;
+.obs-app.obs-closed .obs-nav button { justify-content: center; padding: 14px 0; }
+.obs-brand{display:flex;align-items:center;gap:12px;padding:4px 8px 18px}
+.obs-seal{width:38px;height:38px;border-radius:12px;flex:none;
   background:linear-gradient(160deg,var(--ink),#3c3a37);color:var(--paper);
-  display:grid;place-items:center;box-shadow:var(--rest);font-family:'Space Grotesk';font-weight:700;font-size:15px;position:relative}
+  display:grid;place-items:center;box-shadow:var(--rest);font-family:'Space Grotesk';font-weight:700;font-size:16px;position:relative}
 .obs-seal::after{content:"";position:absolute;inset:3px;border:1px solid rgba(250,247,241,.18);border-radius:7px}
-.obs-brand b{font-family:'Space Grotesk';letter-spacing:-.02em;font-size:16px}
-.obs-brand small{display:block;font-size:10px;color:var(--ink-3);letter-spacing:.16em;text-transform:uppercase;margin-top:1px}
-.obs-nav{display:flex;flex-direction:column;gap:2px;margin-top:2px}
-.obs-nav button{display:flex;align-items:center;gap:11px;padding:9px 11px;border-radius:10px;
-  font-size:13.5px;color:var(--ink-2);font-weight:500;transition:background var(--soft),color var(--soft);text-align:left;width:100%}
+.obs-brand b{font-family:'Space Grotesk';letter-spacing:-.02em;font-size:17.5px}
+.obs-brand small{display:block;font-size:11.5px;color:var(--ink-3);letter-spacing:.16em;text-transform:uppercase;margin-top:2px}
+.obs-nav{display:flex;flex-direction:column;gap:3px;margin-top:2px}
+.obs-nav button{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:12px;
+  font-size:15px;color:var(--ink-2);font-weight:500;transition:background var(--soft),color var(--soft);text-align:left;width:100%}
 .obs-nav button:hover{background:rgba(42,41,40,.045);color:var(--ink)}
 .obs-nav button.on{background:linear-gradient(120deg,rgba(122,109,140,.16),rgba(122,109,140,.07));color:var(--ink);box-shadow:var(--rest)}
 .obs-nav button.on .obs-ic{color:var(--plum)}
-.obs-ic{width:17px;height:17px;flex:none;color:var(--ink-3);transition:color var(--soft)}
-.obs-count{margin-left:auto;font-family:'Space Grotesk';font-size:11px;font-weight:600;min-width:20px;height:20px;padding:0 5px;
+.obs-ic{width:20px;height:20px;flex:none;color:var(--ink);transition:color var(--soft)}
+.obs-count{margin-left:auto;font-family:'Space Grotesk';font-size:12px;font-weight:600;min-width:22px;height:22px;padding:0 6px;
   display:grid;place-items:center;border-radius:6px;background:rgba(42,41,40,.06);color:var(--ink-2)}
 .obs-nav button.on .obs-count{background:var(--plum);color:#fff}
 /* main */
 .obs-main{min-width:0;display:flex;flex-direction:column}
 .obs-topbar{position:sticky;top:0;z-index:30;display:flex;align-items:center;gap:16px;
-  padding:14px 26px;border-bottom:1px solid var(--paper-edge);
+  padding:18px 30px;border-bottom:1px solid var(--paper-edge);
   background:linear-gradient(180deg,rgba(250,247,241,.92),rgba(250,247,241,.78));backdrop-filter:blur(8px)}
-.obs-topbar h1{font-family:'Space Grotesk';font-size:19px;letter-spacing:-.02em;font-weight:600}
-.obs-sub{font-size:12px;color:var(--ink-3);margin-top:1px}
-.obs-clockchip{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--ink-2);
-  padding:7px 12px;border-radius:10px;background:#fff;box-shadow:var(--rest);border:1px solid var(--paper-edge)}
+.obs-topbar h1{font-family:'Space Grotesk';font-size:24px;letter-spacing:-.02em;font-weight:600}
+.obs-sub{font-size:14.5px;color:var(--ink-3);margin-top:1px}
+.obs-clockchip{display:flex;align-items:center;gap:8px;font-size:14.5px;color:var(--ink-2);
+  padding:9px 14px;border-radius:10px;background:#fff;box-shadow:var(--rest);border:1px solid var(--paper-edge)}
+.obs-wx-emoji {
+  font-size: 19px;
+  filter: brightness(0.8);
+  display: inline-block;
+}
 .obs-clockchip .mono{font-weight:600;color:var(--ink);font-family:'Space Grotesk'}
 .obs-canvas{padding:22px 26px 60px;max-width:1340px;width:100%}
 /* stats grid */
 .obs-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px}
-.obs-stat{padding:14px 15px;border-radius:var(--r);background:linear-gradient(165deg,#fffdf8,#f1ebdf);box-shadow:var(--rest);border:1px solid var(--paper-edge);position:relative;overflow:hidden}
-.obs-stat .label{font-family:'Space Grotesk';text-transform:uppercase;letter-spacing:.14em;font-size:10.5px;font-weight:600;color:var(--ink-3);margin-bottom:7px}
-.obs-stat .big{font-family:'Space Grotesk';font-size:27px;font-weight:600;letter-spacing:-.03em;line-height:1}
-.obs-stat .big small{font-size:14px;color:var(--ink-3);font-weight:500}
-.obs-stat .trail{font-size:11.5px;color:var(--ink-2);margin-top:5px}
+.obs-stat{padding:16px 18px;border-radius:var(--r);background:linear-gradient(165deg,#fffdf8,#f1ebdf);box-shadow:var(--rest);border:1px solid var(--paper-edge);position:relative;overflow:hidden}
+.obs-stat .label{font-family:'Space Grotesk';text-transform:uppercase;letter-spacing:.14em;font-size:12.5px;font-weight:600;color:var(--ink-3);margin-bottom:7px}
+.obs-stat .big{font-family:'Space Grotesk';font-size:34px;font-weight:600;letter-spacing:-.03em;line-height:1}
+.obs-stat .big small{font-size:16.5px;color:var(--ink-3);font-weight:500}
+.obs-stat .trail{font-size:13.5px;color:var(--ink-2);margin-top:5px}
 .obs-edge{position:absolute;left:0;top:0;bottom:0;width:3px;border-radius:3px}
 /* layout */
 .obs-two-col{display:grid;grid-template-columns:1fr 360px;gap:18px;align-items:start}
 /* ledger */
 .obs-ledger{border-radius:var(--r);background:linear-gradient(165deg,#fffdf8,#f1ebdf);box-shadow:var(--rest);border:1px solid var(--paper-edge);overflow:hidden;margin-bottom:18px}
 .obs-ledger-head{padding:14px 17px;display:flex;align-items:center;gap:12px;border-bottom:1px solid var(--paper-edge)}
-.obs-ledger-head h3{font-family:'Space Grotesk';font-size:15px;font-weight:600;letter-spacing:-.01em}
+.obs-ledger-head h3{font-family:'Space Grotesk';font-size:17.5px;font-weight:600;letter-spacing:-.01em}
 /* owl card */
 .obs-owl-card{border-radius:var(--r);background:linear-gradient(165deg,#34322e,#26241f);color:var(--paper);box-shadow:var(--hover);padding:18px;position:relative;overflow:hidden}
-.obs-owl-card .label-dim{font-family:'Space Grotesk';text-transform:uppercase;letter-spacing:.14em;font-size:10.5px;font-weight:600;color:rgba(250,247,241,.55)}
-.obs-insight{font-size:14px;line-height:1.55;margin-top:8px;color:#efe9df}
+.obs-owl-card .label-dim{font-family:'Space Grotesk';text-transform:uppercase;letter-spacing:.14em;font-size:12.5px;font-weight:600;color:rgba(250,247,241,.55)}
+.obs-insight{font-size:16px;line-height:1.55;margin-top:8px;color:#efe9df}
 .obs-insight b{color:#fff}
 .obs-owl-svg{position:absolute;right:-6px;bottom:-6px;width:96px;height:96px;opacity:.9}
 /* table */
-table.obs-table{width:100%;border-collapse:collapse;font-size:13.5px}
-table.obs-table thead th{font-family:'Space Grotesk';font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);
+table.obs-table{width:100%;border-collapse:collapse;font-size:15.5px}
+table.obs-table thead th{font-family:'Space Grotesk';font-size:12.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);
   text-align:left;padding:10px 17px;font-weight:600;border-bottom:1px solid var(--paper-edge)}
 table.obs-table tbody td{padding:13px 17px;border-bottom:1px solid rgba(224,214,197,.55);vertical-align:middle}
 table.obs-table tbody tr{transition:background var(--soft)}
 table.obs-table tbody tr:hover{background:rgba(42,41,40,.025)}
 table.obs-table tbody tr:last-child td{border-bottom:none}
 .obs-cell-name{display:flex;align-items:center;gap:10px}
-.obs-cell-name b{font-family:'Space Grotesk';font-weight:600;font-size:13.5px}
-.obs-cell-name small{display:block;color:var(--ink-3);font-size:11.5px}
-.obs-avatar{width:32px;height:32px;border-radius:9px;flex:none;display:grid;place-items:center;
-  font-family:'Space Grotesk';font-weight:700;font-size:12px;color:#fff;box-shadow:var(--rest)}
-.obs-badge{display:inline-flex;align-items:center;gap:6px;font-family:'Space Grotesk';font-size:11px;font-weight:600;padding:4px 9px;border-radius:7px}
+.obs-cell-name b{font-family:'Space Grotesk';font-weight:600;font-size:16px}
+.obs-cell-name small{display:block;color:var(--ink-3);font-size:13.5px}
+.obs-avatar{width:36px;height:36px;border-radius:9px;flex:none;display:grid;place-items:center;
+  font-family:'Space Grotesk';font-weight:700;font-size:13.5px;color:#fff;box-shadow:var(--rest)}
+.obs-badge{display:inline-flex;align-items:center;gap:6px;font-family:'Space Grotesk';font-size:12.5px;font-weight:600;padding:4px 9px;border-radius:7px}
 .obs-badge .d{width:6px;height:6px;border-radius:50%}
 .obs-badge.ok{background:rgba(126,140,111,.14);color:var(--sage)}.obs-badge.ok .d{background:var(--sage)}
 .obs-badge.pend{background:rgba(184,145,46,.15);color:var(--brass)}.obs-badge.pend .d{background:var(--brass)}
@@ -170,10 +176,10 @@ table.obs-table tbody tr:last-child td{border-bottom:none}
 .obs-badge.info{background:rgba(122,109,140,.14);color:var(--plum)}.obs-badge.info .d{background:var(--plum)}
 .obs-rowact{display:flex;gap:7px;justify-content:flex-end}
 /* search */
-.obs-search{display:flex;align-items:center;gap:8px;padding:7px 12px;border-radius:9px;background:#fff;box-shadow:var(--well);border:1px solid var(--paper-edge);color:var(--ink-3);font-size:12.5px}
-.obs-search input{border:none;background:none;outline:none;font-family:inherit;font-size:13px;color:var(--ink);width:140px}
+.obs-search{display:flex;align-items:center;gap:8px;padding:7px 12px;border-radius:9px;background:#fff;box-shadow:var(--well);border:1px solid var(--paper-edge);color:var(--ink-3);font-size:14.5px}
+.obs-search input{border:none;background:none;outline:none;font-family:inherit;font-size:15px;color:var(--ink);width:140px}
 /* buttons */
-.obs-btn{display:inline-flex;align-items:center;gap:7px;padding:8px 15px;border-radius:9px;font-size:13px;font-weight:600;
+.obs-btn{display:inline-flex;align-items:center;gap:7px;padding:8px 15px;border-radius:9px;font-size:15px;font-weight:600;
   font-family:'Space Grotesk';box-shadow:var(--rest);transition:transform 90ms ease,box-shadow var(--soft),background var(--soft);
   border:1px solid transparent;white-space:nowrap;cursor:pointer}
 .obs-btn:active{transform:translateY(1px);box-shadow:var(--press)}
@@ -182,22 +188,30 @@ table.obs-table tbody tr:last-child td{border-bottom:none}
 .obs-btn.terra{background:linear-gradient(165deg,#d07a5c,var(--terracotta));color:#fff}
 .obs-btn.ghost{background:#fff;color:var(--ink-2);border-color:var(--paper-edge)}
 .obs-btn.ghost:hover{color:var(--ink)}
-.obs-btn.sm{padding:6px 11px;font-size:12px}
+.obs-btn.sm{padding:6px 11px;font-size:13.5px}
 /* chart */
-.obs-spark{display:flex;align-items:flex-end;gap:6px;height:120px}
-.obs-spark i{flex:1;border-radius:4px 4px 0 0;background:linear-gradient(180deg,var(--sage-soft),var(--sage));display:block}
+.obs-spark{display:flex;align-items:flex-end;gap:8px;height:120px;position:relative}
+.obs-spark-bar-wrapper{flex:1;height:100%;display:flex;align-items:flex-end;position:relative;cursor:pointer}
+.obs-spark-bar-wrapper i{width:100%;border-radius:4px 4px 0 0;background:linear-gradient(180deg,var(--sage-soft),var(--sage));display:block;transition:opacity var(--soft)}
+.obs-tooltip{position:absolute;bottom:100%;left:50%;transform:translateX(-50%) translateY(-10px);
+  background:linear-gradient(160deg,#34322e,var(--ink));color:var(--paper);padding:8px 12px;border-radius:var(--r-sm);
+  box-shadow:var(--hover);font-size:12px;pointer-events:none;z-index:100;min-width:115px;text-align:center;
+  border:1px solid var(--paper-edge);animation:obs-toastin 150ms cubic-bezier(.25,1,.5,1) both}
+.obs-tooltip::after{content:"";position:absolute;top:100%;left:50%;margin-left:-6px;border-width:6px;border-style:solid;border-color:var(--ink) transparent transparent transparent}
+.obs-root.night .obs-tooltip::after{border-color:#3E3A49 transparent transparent transparent}
+.obs-root.night .obs-tooltip { background: #3E3A49 !important; }
 /* tick list (support) */
-.obs-tick{display:flex;gap:11px;padding:11px 0;border-bottom:1px dashed var(--paper-edge);font-size:13px;align-items:center}
+.obs-tick{display:flex;gap:11px;padding:11px 0;border-bottom:1px dashed var(--paper-edge);font-size:15px;align-items:center}
 .obs-tick:last-child{border-bottom:none}
-.obs-tick .tk-main{flex:1;min-width:0}.obs-tick .tk-main b{font-weight:600;display:block;font-size:13.5px}
-.obs-tick .tk-main small{color:var(--ink-3);font-size:11.5px}
-.obs-pr{font-family:'Space Grotesk';font-size:10px;font-weight:700;padding:2px 7px;border-radius:5px;height:fit-content;text-transform:uppercase;letter-spacing:.08em}
+.obs-tick .tk-main{flex:1;min-width:0}.obs-tick .tk-main b{font-weight:600;display:block;font-size:16px}
+.obs-tick .tk-main small{color:var(--ink-3);font-size:13.5px}
+.obs-pr{font-family:'Space Grotesk';font-size:12.5px;font-weight:700;padding:2px 7px;border-radius:5px;height:fit-content;text-transform:uppercase;letter-spacing:.08em}
 .obs-pr.high{background:rgba(194,103,74,.14);color:var(--terracotta)}.obs-pr.med{background:rgba(184,145,46,.14);color:var(--brass)}.obs-pr.low{background:rgba(122,109,140,.14);color:var(--plum)}
 /* audit */
-.obs-audit{font-family:'Space Grotesk';font-size:12.5px}
+.obs-audit{font-family:'Space Grotesk';font-size:14.5px}
 .obs-audit .a-row{display:flex;gap:12px;padding:9px 0;border-bottom:1px dashed var(--paper-edge);align-items:baseline}
 .obs-audit .a-row:last-child{border-bottom:none}
-.obs-audit .t{color:var(--ink-3);font-size:11px;width:52px;flex:none}
+.obs-audit .t{color:var(--ink-3);font-size:13px;width:68px;flex:none}
 .obs-audit .who{font-weight:600}.obs-audit .what{color:var(--ink-2);font-weight:400}
 /* mini-spark health */
 .obs-mini-spark{display:flex;align-items:flex-end;gap:2px;height:26px}
@@ -216,6 +230,151 @@ table.obs-table tbody tr:last-child td{border-bottom:none}
   .obs-canvas { padding: 16px 12px 60px; }
   table.obs-table { display: block; overflow-x: auto; white-space: nowrap; }
   .obs-spark { height: 80px; }
+}
+
+/* =====================================================================
+   DARK MODE OVERRIDES
+   ===================================================================== */
+.obs-root.night {
+  --paper:#2E2A36;--paper-2:#23202D;--paper-3:#3E3A49;--paper-edge:#4F4A5E;
+  --ink:#FAF7F1;--ink-2:#C0BAC8;--ink-3:#8A8392;
+  --rest:0 1px 0 rgba(255,255,255,.05) inset,0 2px 5px rgba(0,0,0,.35),0 8px 18px rgba(0,0,0,.25);
+  --hover:0 1px 0 rgba(255,255,255,.1) inset,0 4px 10px rgba(0,0,0,.45),0 14px 30px rgba(0,0,0,.35);
+  --well:inset 0 2px 5px rgba(0,0,0,.4);
+  background: #23202D !important;
+}
+.obs-root.night .obs-grain {
+  display:none;
+}
+.obs-root.night .obs-rail {
+  background:linear-gradient(180deg,rgba(30,28,38,.88),rgba(24,22,30,.72)) !important;
+}
+.obs-root.night .obs-topbar {
+  background:linear-gradient(180deg,rgba(35,32,45,.96),rgba(35,32,45,.85)) !important;
+}
+.obs-root.night .obs-stat,
+.obs-root.night .obs-ledger,
+.obs-root.night .obs-owl-card {
+  background:linear-gradient(165deg,#3A3545,#2E2A37) !important;
+}
+.obs-root.night .obs-clockchip,
+.obs-root.night .obs-btn.ghost {
+  background:#3E3A49 !important;
+  color:#FAF7F1 !important;
+  border-color:#4F4A5E !important;
+}
+.obs-root.night .obs-nav button:hover {
+  background:rgba(255,255,255,.05) !important;
+}
+.obs-root.night input {
+  background:#23202D !important;
+  color:#FAF7F1 !important;
+  border:1px solid #4F4A5E !important;
+}
+.obs-root.night table.obs-table tbody tr:hover {
+  background:rgba(255,255,255,.02) !important;
+}
+.obs-root.night .obs-settings-card {
+  background:linear-gradient(165deg,#3A3545,#2E2A37) !important;
+}
+.obs-root.night .obs-sw {
+  background:#23202D !important;
+}
+.obs-root.night .obs-sw.on {
+  background:var(--sage) !important;
+}
+
+/* =====================================================================
+   ADMIN SETTINGS VIEWS
+   ===================================================================== */
+.obs-settings-card {
+  padding: 24px;
+  border-radius: var(--r);
+  background: linear-gradient(165deg,#fffdf8,#f1ebdf);
+  box-shadow: var(--rest);
+  border: 1px solid var(--paper-edge);
+  margin-bottom: 20px;
+}
+.obs-settings-header {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 24px;
+}
+.obs-avatar-large {
+  width: 64px;
+  height: 64px;
+  border-radius: 16px;
+  background: var(--plum);
+  color: #fff;
+  display: grid;
+  place-items: center;
+  font-family: 'Space Grotesk';
+  font-weight: 700;
+  font-size: 24px;
+  box-shadow: var(--hover);
+}
+.obs-settings-title h4 {
+  font-family: 'Space Grotesk';
+  font-size: 18px;
+  font-weight: 600;
+}
+.obs-settings-title p {
+  font-size: 13px;
+  color: var(--ink-3);
+}
+.obs-settings-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 0;
+  border-bottom: 1px dashed var(--paper-edge);
+}
+.obs-settings-row:last-child {
+  border-bottom: none;
+}
+.obs-settings-label {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.obs-settings-label b {
+  font-size: 14px;
+  font-weight: 600;
+}
+.obs-settings-label span {
+  font-size: 12px;
+  color: var(--ink-3);
+}
+.obs-sw {
+  width: 44px;
+  height: 24px;
+  border-radius: 12px;
+  background: var(--paper-3);
+  position: relative;
+  transition: background var(--soft);
+  box-shadow: var(--well);
+  cursor: pointer;
+  border: none;
+  display: inline-block;
+}
+.obs-sw::after {
+  content: "";
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #fff;
+  transition: transform var(--soft);
+  box-shadow: var(--rest);
+}
+.obs-sw.on {
+  background: var(--sage);
+}
+.obs-sw.on::after {
+  transform: translateX(20px);
 }
 `;
 
@@ -238,11 +397,42 @@ function LoadBadge({ l }: { l: string }) {
   return <span style={{ color: 'var(--ink-3)' }}>—</span>;
 }
 
+// ── Timeframe Data ────────────────────────────────────────────────────────────
+const TIMEFRAME_DATA = {
+  daily: {
+    data: [8, 14, 22, 31, 28, 19, 12, 24, 38, 41, 33, 21, 9],
+    labels: ['8:00 AM', '9:00 AM', '10:00 AM', '11:00 AM', '12:00 PM', '1:00 PM', '2:00 PM', '3:00 PM', '4:00 PM', '5:00 PM', '6:00 PM', '7:00 PM', '8:00 PM'],
+    bottom: ['8a', '9a', '10a', '11a', '12p', '1p', '2p', '3p', '4p', '5p', '6p', '7p', '8p'],
+    title: 'Orders through the day'
+  },
+  weekly: {
+    data: [120, 145, 98, 160, 210, 185, 90],
+    labels: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
+    bottom: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+    title: 'Orders this week'
+  },
+  monthly: {
+    data: [420, 480, 510, 600, 750, 890, 920, 840, 780, 810, 950, 1020],
+    labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+    bottom: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+    title: 'Orders this year'
+  }
+};
+
 // ── Main Component ─────────────────────────────────────────────────────────────
 export default function ObservatoryRoom() {
   const [section, setSection] = useState('overview');
   const [clock, setClock] = useState('—');
   const [wx, setWx] = useState('☀');
+  const [night, setNight] = useState(false);
+  const [activeBar, setActiveBar] = useState<number | null>(null);
+  const [timeframe, setTimeframe] = useState<'daily' | 'weekly' | 'monthly'>('daily');
+  const [selectedPeriod, setSelectedPeriod] = useState<string | null>(null);
+
+  useEffect(() => {
+    document.body.classList.toggle('night', night);
+  }, [night]);
+
   const [vendorStates, setVendorStates] = useState<VendorState[]>(() =>
     VENDORS_DATA.map(v => ({ status: v[2] as 'ok'|'pend'|'susp' }))
   );
@@ -327,6 +517,7 @@ export default function ObservatoryRoom() {
     payments: ['Payments & payouts', 'Commission earned and settlements owed to shops.'],
     support: ['Support', 'Open tickets from students and vendors.'],
     audit: ['Audit log', 'Every consequential action, on the record.'],
+    settings: ['Admin Settings', 'Manage your profile and observatory configurations.'],
   };
   const [pageTitle, pageSub] = TITLES[section] || TITLES.overview;
 
@@ -344,7 +535,8 @@ export default function ObservatoryRoom() {
 
   // ── Overview ─────────────────────────────────────────────────────────────
   function Overview() {
-    const data = [8,14,22,31,28,19,12,24,38,41,33,21,9];
+    const tf = TIMEFRAME_DATA[timeframe];
+    const data = tf.data;
     const max = Math.max(...data);
     const activeVendors = vendorStates.filter(v => v.status === 'ok').length;
     return (
@@ -358,18 +550,67 @@ export default function ObservatoryRoom() {
         <div className="obs-two-col">
           <div className="obs-ledger">
             <div className="obs-ledger-head">
-              <h3>Orders through the day</h3>
+              <h3>{tf.title}</h3>
               <div style={{ flex: 1 }} />
-              <span style={{ fontFamily: 'Space Grotesk', textTransform: 'uppercase', letterSpacing: '.14em', fontSize: 10.5, fontWeight: 600, color: 'var(--ink-3)' }}>live</span>
+              <div style={{ display: 'flex', gap: '6px', background: 'var(--paper-3)', padding: '3px', borderRadius: '8px' }}>
+                {(['daily', 'weekly', 'monthly'] as const).map(t => (
+                  <button 
+                    key={t}
+                    onClick={() => {
+                      setTimeframe(t);
+                      addToast(`Switched chart to ${t} view`, 'globe');
+                    }}
+                    style={{
+                      fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '.08em',
+                      padding: '4px 8px', borderRadius: '6px',
+                      background: timeframe === t ? 'var(--paper)' : 'transparent',
+                      color: timeframe === t ? 'var(--ink)' : 'var(--ink-2)',
+                      transition: 'background var(--soft), color var(--soft)'
+                    }}
+                  >
+                    {t}
+                  </button>
+                ))}
+              </div>
             </div>
             <div style={{ padding: '20px 17px 22px' }}>
               <div className="obs-spark">
-                {data.map((d, i) => (
-                  <i key={i} style={{ height: `${Math.round(d/max*100)}%`, opacity: 0.5+d/max*0.5 }} />
-                ))}
+                {data.map((d, i) => {
+                  const label = tf.labels[i];
+                  return (
+                    <div 
+                      key={i} 
+                      className="obs-spark-bar-wrapper"
+                      onMouseEnter={() => setActiveBar(i)}
+                      onMouseLeave={() => setActiveBar(null)}
+                      onClick={() => {
+                        setSelectedPeriod(`${timeframe === 'daily' ? 'Hour' : timeframe === 'weekly' ? 'Day' : 'Month'}: ${label}`);
+                        setSection('orders');
+                        addToast(`Filtered orders for ${label}`, 'inbox');
+                      }}
+                    >
+                      <i 
+                        style={{ 
+                          height: `${Math.round(d/max*100)}%`, 
+                          opacity: activeBar === null ? 0.8 : (activeBar === i ? 1 : 0.25),
+                          background: activeBar === i ? 'linear-gradient(180deg, var(--plum), #635773)' : undefined
+                        }} 
+                      />
+                      {activeBar === i && (
+                        <div className="obs-tooltip">
+                          <div style={{ fontWeight: 600, color: 'var(--paper-3)', marginBottom: 2 }}>{label}</div>
+                          <div style={{ fontSize: 13.5 }}><b>{d}</b> orders</div>
+                          <div style={{ opacity: 0.8, fontSize: 11.5 }}>Est: ₹{(d * 60).toLocaleString('en-IN')}</div>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
               </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 8, fontFamily: 'Space Grotesk', fontSize: 10.5, textTransform: 'uppercase', letterSpacing: '.14em', fontWeight: 600, color: 'var(--ink-3)' }}>
-                <span>8a</span><span>noon</span><span>4p</span><span>8p</span>
+              <div style={{ display: 'flex', gap: '8px', marginTop: 8, fontFamily: 'Space Grotesk', fontSize: 10, textTransform: 'uppercase', letterSpacing: '.08em', fontWeight: 600, color: 'var(--ink-3)' }}>
+                {tf.bottom.map(lbl => (
+                  <span key={lbl} style={{ flex: 1, textAlign: 'center' }}>{lbl}</span>
+                ))}
               </div>
             </div>
           </div>
@@ -451,17 +692,33 @@ export default function ObservatoryRoom() {
 
   // ── Orders ────────────────────────────────────────────────────────────────
   function Orders() {
-    const sample = [
+    let sample = [
       ['#A19','Final Year Thesis','Aisha Khan','Campus Central','₹240','done'],
       ['#A21','Resume','Sneha Rao','Morning Star','₹60','printing'],
       ['#A14','Lab Record','Rahul Menon','Night Owl','₹120','done'],
       ['#A23','Wedding Card','Faiz Ahmed','Campus Central','₹95','dispute'],
       ['#A09','Project Report','Divya Nair','Night Owl','₹390','done'],
     ];
+
+    if (selectedPeriod) {
+      sample = [
+        ['#A30', `Study Guide (${selectedPeriod})`, 'Ishaan Sharma', 'Campus Central', '₹150', 'done'],
+        ['#A31', `Syllabus Copy (${selectedPeriod})`, 'Meera Sen', 'Night Owl', '₹45', 'printing'],
+        ['#A32', `Thesis Submission (${selectedPeriod})`, 'Kabir Das', 'Morning Star', '₹320', 'done'],
+      ];
+    }
+
     return (
       <div className="obs-ledger">
-        <div className="obs-ledger-head">
-          <h3>All orders</h3><div style={{ flex: 1 }} />
+        <div className="obs-ledger-head" style={{ flexWrap: 'wrap', gap: '12px' }}>
+          <h3>All orders</h3>
+          {selectedPeriod && (
+            <span style={{ fontSize: '13px', background: 'var(--paper-3)', padding: '4px 10px', borderRadius: '6px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+              Filtered: <b>{selectedPeriod}</b>
+              <button onClick={() => setSelectedPeriod(null)} style={{ border: 'none', background: 'none', cursor: 'pointer', fontWeight: 'bold', fontSize: '13px', opacity: 0.6 }}>×</button>
+            </span>
+          )}
+          <div style={{ flex: 1 }} />
           <div className="obs-search"><Ic name="inbox" size={15} /><input placeholder="Search by code or student…" /></div>
         </div>
         <table className="obs-table">
@@ -600,6 +857,85 @@ export default function ObservatoryRoom() {
     );
   }
 
+  // ── Settings ───────────────────────────────────────────────────────────────
+  function Settings() {
+    const [alertsEnabled, setAlertsEnabled] = useState(true);
+    const [maintenanceMode, setMaintenanceMode] = useState(false);
+
+    return (
+      <div className="obs-two-col">
+        <div className="obs-settings-card">
+          <div className="obs-settings-header">
+            <div className="obs-avatar-large">A</div>
+            <div className="obs-settings-title">
+              <h4>Admin User</h4>
+              <p>Campus Overseer · admin@ezeeprint.in</p>
+            </div>
+          </div>
+
+          <div className="obs-settings-row">
+            <div className="obs-settings-label">
+              <b>Observatory Alert Sound</b>
+              <span>Play hums or bells when new support tickets arrive.</span>
+            </div>
+            <button 
+              className={`obs-sw ${alertsEnabled ? 'on' : ''}`} 
+              onClick={() => {
+                setAlertsEnabled(!alertsEnabled);
+                addToast(alertsEnabled ? 'Alert sounds disabled' : 'Alert sounds enabled', 'bell');
+              }}
+              aria-label="Toggle alerts"
+            />
+          </div>
+
+          <div className="obs-settings-row">
+            <div className="obs-settings-label">
+              <b>Platform Maintenance Mode</b>
+              <span>Display warning banners on student and vendor interfaces.</span>
+            </div>
+            <button 
+              className={`obs-sw ${maintenanceMode ? 'on' : ''}`} 
+              onClick={() => {
+                setMaintenanceMode(!maintenanceMode);
+                addToast(maintenanceMode ? 'Maintenance mode deactivated' : 'Platform set to Maintenance Mode', 'alert');
+                logAudit('toggled maintenance mode', maintenanceMode ? 'off' : 'on');
+              }}
+              aria-label="Toggle maintenance mode"
+            />
+          </div>
+        </div>
+
+        <div className="obs-ledger">
+          <div className="obs-ledger-head"><h3>Account Actions</h3></div>
+          <div style={{ padding: '14px 17px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
+            <button 
+              onClick={() => {
+                if (window.confirm('Are you sure you want to sign out from the observatory?')) {
+                  document.cookie = "ezee_admin_session=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+                  window.location.href = '/observatory/login';
+                }
+              }}
+              style={{ width: '100%', padding: '12px', background: night ? 'rgba(255, 255, 255, 0.08)' : '#f5efe7', border: night ? '1px solid rgba(255, 255, 255, 0.15)' : '1px solid var(--paper-edge)', borderRadius: '8px', color: night ? '#FAF7F1' : '#232221', fontWeight: 600, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', cursor: 'pointer', fontFamily: 'Space Grotesk', fontSize: '13.5px' }}
+            >
+              🚪 Sign Out
+            </button>
+            <button 
+              onClick={() => {
+                if (window.confirm('Are you sure you want to permanently delete this administrator account? This action is irreversible.')) {
+                  document.cookie = "ezee_admin_session=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+                  window.location.href = '/observatory/login';
+                }
+              }}
+              style={{ width: '100%', padding: '12px', background: night ? 'rgba(255, 99, 99, 0.12)' : 'rgba(155, 44, 44, 0.08)', border: night ? '1px solid rgba(255, 99, 99, 0.35)' : '1px solid rgba(155, 44, 44, 0.25)', borderRadius: '8px', color: night ? '#ff8b8b' : 'var(--crimson)', fontWeight: 600, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', cursor: 'pointer', fontFamily: 'Space Grotesk', fontSize: '13.5px' }}
+            >
+              🗑️ Delete Account
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   // ── Render ────────────────────────────────────────────────────────────────
   if (!mounted) return (
     <div className="obs-root" style={{ opacity: 0.6, pointerEvents: 'none', animation: 'obs-breathe 2s infinite' }}>
@@ -628,39 +964,39 @@ export default function ObservatoryRoom() {
   );
 
   return (
-    <div className="obs-root">
+    <div className={`obs-root ${night ? 'night' : ''}`}>
       <div className="obs-grain" />
       <div className={`obs-app ${isMenuOpen ? '' : 'obs-closed'}`}>
         {/* RAIL */}
         <aside className="obs-rail">
           <div className="obs-brand" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '10px' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-              <img src="/logo.png" alt="Ezee Logo" style={{ height: 34, width: 'auto', objectFit: 'contain', borderRadius: '22%' }} />
-              <div><small>Observatory</small></div>
-            </div>
-            <button 
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
-              style={{ padding: '4px', cursor: 'pointer', opacity: 0.7 }}
+            <div 
+              onClick={() => { if (!isMenuOpen) setIsMenuOpen(true); }}
+              style={{ display: 'flex', alignItems: 'center', gap: '10px', cursor: isMenuOpen ? 'default' : 'pointer' }}
+              title={isMenuOpen ? undefined : "Open Sidebar"}
             >
-              <Ic name={isMenuOpen ? "x" : "menu"} size={22} />
-            </button>
+              <img src="/logo.png" alt="Ezee Logo" style={{ height: 38, width: 'auto', objectFit: 'contain', borderRadius: '22%' }} />
+              <div><small style={{ fontSize: '11px', letterSpacing: '.14em', textTransform: 'uppercase', color: 'var(--ink-3)', fontWeight: 600 }}>Observatory</small></div>
+            </div>
+            {isMenuOpen && (
+              <button 
+                onClick={() => setIsMenuOpen(false)}
+                style={{ padding: '4px', cursor: 'pointer', opacity: 0.7, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                title="Close Sidebar"
+              >
+                <Ic name="x" size={18} />
+              </button>
+            )}
           </div>
 
           <nav className="obs-nav">
             {navItems.map(([ic, label, key, badge]) => (
               <button key={key as string} className={section === key ? 'on' : ''} onClick={() => setSection(key as string)}>
-                <span className="obs-ic"><Ic name={ic as string} size={17} /></span>
+                <span className="obs-ic"><Ic name={ic as string} size={20} /></span>
                 <span>{label}</span>
                 {(badge as number) > 0 && <span className="obs-count">{badge as number}</span>}
               </button>
             ))}
-            <button onClick={() => {
-              document.cookie = "ezee_admin_session=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-              window.location.href = '/observatory/login';
-            }} style={{ marginTop: '2rem', opacity: 0.6 }}>
-              <span className="obs-ic"><Ic name="x" size={17} /></span>
-              <span>Sign out</span>
-            </button>
           </nav>
         </aside>
 
@@ -672,9 +1008,56 @@ export default function ObservatoryRoom() {
               <div className="obs-sub">{pageSub}</div>
             </div>
             <div style={{ flex: 1 }} />
-            <div className="obs-clockchip">
-              <span>{wx}</span>
-              <span className="mono">{clock}</span>
+            
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+              <div className="obs-clockchip">
+                <span className="obs-wx-emoji">{wx}</span>
+                <span className="mono">{clock}</span>
+              </div>
+
+              {/* Lamp (night toggle) */}
+              <button 
+                className="obs-btn ghost" 
+                style={{ 
+                  width: '42px', height: '42px', padding: 0, borderRadius: '50%',
+                  display: 'grid', placeItems: 'center', position: 'relative',
+                  border: '1px solid var(--paper-edge)'
+                }}
+                title="Lamp"
+                onClick={() => {
+                  const next = !night;
+                  setNight(next);
+                  addToast(next ? 'Lamp on. The observatory goes golden.' : 'Lamp off. Daylight it is.', 'clock');
+                }}
+              >
+                <span 
+                  style={{ 
+                    position: 'absolute', inset: 0, borderRadius: '50%', 
+                    background: 'radial-gradient(circle, rgba(212, 175, 55, .45), transparent 70%)', 
+                    opacity: night ? 1 : 0, transition: 'opacity 0.8s ease', pointerEvents: 'none' 
+                  }} 
+                />
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
+                  <path d="M8 3h8l3 8H5l3-8zM12 11v7M8 21h8" />
+                </svg>
+              </button>
+
+              {/* Profile Avatar Button */}
+              <div 
+                className="obs-avatar"
+                onClick={() => setSection('settings')}
+                style={{ 
+                  width: '42px', height: '42px', borderRadius: '50%', 
+                  background: 'var(--plum)', color: '#FAF7F1', 
+                  display: 'grid', placeItems: 'center', cursor: 'pointer', 
+                  fontFamily: 'Space Grotesk', fontWeight: 600, fontSize: '16px',
+                  boxShadow: 'var(--rest)',
+                  border: '1.5px solid var(--paper-edge)'
+                }}
+                title="Admin Settings"
+              >
+                A
+              </div>
             </div>
           </div>
 
@@ -685,6 +1068,7 @@ export default function ObservatoryRoom() {
             {section === 'payments' && <Payments />}
             {section === 'support' && <Support />}
             {section === 'audit' && <AuditLog />}
+            {section === 'settings' && <Settings />}
           </div>
         </main>
       </div>

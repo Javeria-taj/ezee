@@ -137,12 +137,13 @@ export default function FeaturesSection() {
                 />
                 Live now
               </div>
-              <h3
+               <h3
                 style={{
                   fontFamily: "'Space Grotesk', sans-serif",
                   fontWeight: 700,
                   fontSize: 27,
                   margin: "0 0 8px",
+                  color: "var(--text-primary)",
                 }}
               >
                 Ambient preparation
@@ -151,7 +152,7 @@ export default function FeaturesSection() {
                 style={{
                   fontSize: 15,
                   lineHeight: 1.55,
-                  color: "#5b554f",
+                  color: "var(--text-secondary)",
                   maxWidth: 340,
                   margin: "0 0 20px",
                 }}
@@ -194,10 +195,10 @@ export default function FeaturesSection() {
               <rect x="13" y="28" width="12" height="4" rx="2" fill="#FAF7F1" />
             </svg>
             <div>
-              <h3 style={{ fontFamily: "'Space Grotesk', sans-serif", fontWeight: 700, fontSize: 22, margin: "0 0 6px" }}>
+              <h3 style={{ fontFamily: "'Space Grotesk', sans-serif", fontWeight: 700, fontSize: 22, margin: "0 0 6px", color: "var(--bg-primary)" }}>
                 One-tap payments
               </h3>
-              <p style={{ fontSize: 14, lineHeight: 1.5, color: "#c4bcb2", margin: 0 }}>
+              <p style={{ fontSize: 14, lineHeight: 1.5, color: "var(--text-card-reverse-desc)", margin: 0 }}>
                 UPI, cards, wallets. Pay before you arrive, collect and go.
               </p>
             </div>
@@ -265,10 +266,10 @@ export default function FeaturesSection() {
               <circle cx="34" cy="12" r="6" fill="#D48A70" />
             </svg>
             <div>
-              <h3 style={{ fontFamily: "'Space Grotesk', sans-serif", fontWeight: 700, fontSize: 22, margin: "0 0 6px" }}>
+              <h3 style={{ fontFamily: "'Space Grotesk', sans-serif", fontWeight: 700, fontSize: 22, margin: "0 0 6px", color: "var(--text-primary)" }}>
                 Gentle nudges
               </h3>
-              <p style={{ fontSize: 14, lineHeight: 1.5, color: "#5b554f", margin: 0 }}>
+              <p style={{ fontSize: 14, lineHeight: 1.5, color: "var(--text-secondary)", margin: 0 }}>
                 A soft ping when your prints are warm and ready.
               </p>
             </div>
@@ -314,10 +315,10 @@ export default function FeaturesSection() {
               <path d="M24 15v9l6 4" stroke="#7A6D8C" strokeWidth="3" strokeLinecap="round" fill="none" />
             </svg>
             <div>
-              <h3 style={{ fontFamily: "'Space Grotesk', sans-serif", fontWeight: 700, fontSize: 22, margin: "0 0 6px" }}>
+              <h3 style={{ fontFamily: "'Space Grotesk', sans-serif", fontWeight: 700, fontSize: 22, margin: "0 0 6px", color: "var(--text-primary)" }}>
                 Your print history
               </h3>
-              <p style={{ fontSize: 14, lineHeight: 1.5, color: "#5b554f", margin: 0 }}>
+              <p style={{ fontSize: 14, lineHeight: 1.5, color: "var(--text-secondary)", margin: 0 }}>
                 Reprint last week&apos;s notes in two taps.
               </p>
             </div>

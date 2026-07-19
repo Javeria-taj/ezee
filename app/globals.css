@@ -26,6 +26,8 @@
   --nav-bg: rgba(255, 255, 255, 0.85);
   --nav-border: rgba(42, 41, 40, 0.12);
 
+  --text-card-reverse-desc: #c4bcb2;
+
   --anim-duration-slow: 1.5s;
   --anim-duration-med: 0.8s;
   --anim-easing: cubic-bezier(0.22, 1, 0.36, 1);
@@ -47,6 +49,8 @@
 
   --bg-card-white: #1E1E2A;
   --bg-card-gray: #272730;
+
+  --text-card-reverse-desc: #5b554f;
 
   --nav-bg: rgba(30, 30, 42, 0.8);
   --nav-border: rgba(234, 228, 221, 0.15);
@@ -845,6 +849,6 @@ body {
 }
 
 .dark .shop-card {
-  background: var(--bg-card-gray) !important;
-  border-color: var(--border-subtle) !important;
+  background: #34303A !important;
+  border-color: rgba(234, 228, 221, 0.15) !important;
 }

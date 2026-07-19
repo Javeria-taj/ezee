@@ -78,6 +78,7 @@ export default function Navbar() {
           padding: "16px 16px 16px 26px",
           backdropFilter: "blur(16px)",
           WebkitBackdropFilter: "blur(16px)",
+          background: "var(--nav-bg)",
           border: "1px solid var(--nav-border)",
           borderRadius: 32,
           boxShadow:

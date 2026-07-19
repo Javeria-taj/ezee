@@ -18,6 +18,7 @@
   --accent-tertiary: #7A6D8C;
   --border-subtle: rgba(42, 41, 40, 0.14);
   --glass-bg: rgba(249, 235, 216, 0.75);
+  --how-card-bg: rgba(235, 215, 190, 0.85);
   --shadow-color: rgba(42, 41, 40, 0.16);
 
   --bg-card-white: #ffffff;
@@ -45,6 +46,7 @@
   --accent-tertiary: #8C7D9B;
   --border-subtle: rgba(234, 228, 221, 0.12);
   --glass-bg: rgba(26, 26, 36, 0.6);
+  --how-card-bg: rgba(16, 16, 24, 0.9);
   --shadow-color: rgba(0, 0, 0, 0.4);
 
   --bg-card-white: #1E1E2A;

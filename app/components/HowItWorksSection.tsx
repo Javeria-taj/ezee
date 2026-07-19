@@ -188,7 +188,7 @@ export default function HowItWorksSection() {
             >
               <div
                 style={{
-                  background: "var(--glass-bg)",
+                  background: "var(--how-card-bg)",
                   backdropFilter: "blur(12px)",
                   border: "1px solid var(--border-subtle)",
                   borderRadius: 22,

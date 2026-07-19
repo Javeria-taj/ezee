@@ -9,12 +9,12 @@ export default function PartnerShopArt() {
   React.useEffect(() => {
     const art = artRef.current;
     if (!art) return;
-    art.querySelectorAll('.halo').forEach((h, i) => {
+    (art.querySelectorAll('.halo') as NodeListOf<SVGElement | HTMLElement>).forEach((h, i) => {
       h.style.transitionDelay = (1550 + i * 70) + 'ms';
       h.style.animationDelay = (2800 + i * 160) + 'ms';
     });
-    art.querySelectorAll('.dot').forEach((d, i) => { d.style.transitionDelay = (1750 + i * 60) + 'ms'; });
-    art.querySelectorAll('.swatch').forEach((s, i) => { s.style.transitionDelay = (2600 + i * 80) + 'ms'; });
+    (art.querySelectorAll('.dot') as NodeListOf<SVGElement | HTMLElement>).forEach((d, i) => { d.style.transitionDelay = (1750 + i * 60) + 'ms'; });
+    (art.querySelectorAll('.swatch') as NodeListOf<SVGElement | HTMLElement>).forEach((s, i) => { s.style.transitionDelay = (2600 + i * 80) + 'ms'; });
     setInView(true);
   }, []);
 

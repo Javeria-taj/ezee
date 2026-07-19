@@ -232,6 +232,15 @@ table.obs-table tbody tr:last-child td{border-bottom:none}
   .obs-spark { height: 80px; }
 }
 
+/* Pulse Map CSS */
+@keyframes pulseTravel { 0% { stroke-dashoffset: 200; } 100% { stroke-dashoffset: 0; } }
+.pulse-beam { stroke-dasharray: 20 180; animation: pulseTravel 2s infinite linear; }
+@keyframes pulseBlink { 0% { r: 2; opacity: 0.8; } 100% { r: 8; opacity: 0; } }
+.pulse-dot { animation: pulseBlink 1.5s infinite cubic-bezier(0.16, 1, 0.3, 1); }
+.pulse-map-panel { background: radial-gradient(circle at center, #2c2a27, #1f1d1a); position: relative; overflow: hidden; min-height: 280px; }
+.pulse-map-title { color: #f2efe9 !important; text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
+.pulse-live-tag { display: flex; align-items: center; gap: 6px; font-family: 'Space Grotesk'; font-size: 11px; font-weight: 700; color: var(--terracotta); text-transform: uppercase; letter-spacing: 0.1em; background: rgba(212,138,112,0.1); padding: 4px 8px; border-radius: 12px; }
+
 /* =====================================================================
    DARK MODE OVERRIDES
    ===================================================================== */
@@ -533,6 +542,53 @@ export default function ObservatoryRoom() {
     );
   }
 
+  // ── Pulse Map ────────────────────────────────────────────────────────────
+  function PulseMap() {
+    return (
+      <div className="obs-ledger pulse-map-panel" style={{ marginBottom: '24px' }}>
+        <div className="obs-ledger-head" style={{ borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
+          <h3 className="pulse-map-title">Live Campus Pulse</h3>
+          <div style={{ flex: 1 }} />
+          <div className="pulse-live-tag">
+            <svg width="10" height="10" viewBox="0 0 10 10"><circle cx="5" cy="5" r="4" fill="currentColor" /></svg> Live Routing
+          </div>
+        </div>
+        <div style={{ padding: '20px', position: 'relative', height: '260px' }}>
+          <svg style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', pointerEvents: 'none' }} viewBox="0 0 800 260">
+            <defs>
+              <linearGradient id="pulse-grad" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stopColor="transparent" />
+                <stop offset="50%" stopColor="#D48A70" stopOpacity="0.8" />
+                <stop offset="100%" stopColor="#FAF7F1" />
+              </linearGradient>
+            </defs>
+            {/* Base map lines */}
+            <path d="M 100,200 Q 300,50 600,150" fill="none" stroke="rgba(255,255,255,0.1)" strokeWidth="2" />
+            <path d="M 200,230 Q 400,280 650,80" fill="none" stroke="rgba(255,255,255,0.1)" strokeWidth="2" />
+            
+            {/* Animated Pulses */}
+            <path className="pulse-beam" d="M 100,200 Q 300,50 600,150" fill="none" stroke="url(#pulse-grad)" strokeWidth="3" strokeLinecap="round" />
+            <path className="pulse-beam" d="M 200,230 Q 400,280 650,80" fill="none" stroke="url(#pulse-grad)" strokeWidth="3" strokeLinecap="round" style={{ animationDelay: '1s' }} />
+
+            {/* Nodes */}
+            <circle cx="100" cy="200" r="4" fill="#FAF7F1" />
+            <circle cx="100" cy="200" className="pulse-dot" fill="#D48A70" />
+            <circle cx="200" cy="230" r="4" fill="#FAF7F1" />
+            <circle cx="200" cy="230" className="pulse-dot" fill="#D48A70" style={{ animationDelay: '0.5s' }} />
+            
+            <circle cx="600" cy="150" r="6" fill="#A9B59D" />
+            <circle cx="650" cy="80" r="6" fill="#A9B59D" />
+          </svg>
+          <div style={{ position: 'absolute', left: '70px', top: '215px', color: '#8A8392', fontSize: '11px', fontFamily: 'Space Grotesk' }}>Student Dorms</div>
+          <div style={{ position: 'absolute', left: '170px', top: '245px', color: '#8A8392', fontSize: '11px', fontFamily: 'Space Grotesk' }}>Library</div>
+          
+          <div style={{ position: 'absolute', left: '620px', top: '145px', color: '#FAF7F1', fontSize: '13px', fontWeight: 600, fontFamily: 'Space Grotesk' }}>Morning Star</div>
+          <div style={{ position: 'absolute', left: '670px', top: '75px', color: '#FAF7F1', fontSize: '13px', fontWeight: 600, fontFamily: 'Space Grotesk' }}>The Paper Mill</div>
+        </div>
+      </div>
+    );
+  }
+
   // ── Overview ─────────────────────────────────────────────────────────────
   function Overview() {
     const tf = TIMEFRAME_DATA[timeframe];
@@ -622,6 +678,9 @@ export default function ObservatoryRoom() {
             <div className="obs-owl-svg" dangerouslySetInnerHTML={{ __html: owlSVG }} />
           </div>
         </div>
+
+        <PulseMap />
+
         <div className="obs-ledger">
           <div className="obs-ledger-head"><h3>Platform health</h3></div>
           <table className="obs-table">

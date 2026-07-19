@@ -149,6 +149,7 @@ export default function StudentDesk() {
   const [fileSize, setFileSize] = useState(0);
   const [pages, setPages] = useState(24);
   const [mode, setMode] = useState<'bw' | 'color' | 'custom'>('bw');
+  const [sided, setSided] = useState<'single' | 'double'>('single');
   const [customColorPages, setCustomColorPages] = useState('');
   const [cart, setCart] = useState<CartItem[]>([]);
   const [checkedCartItemIds, setCheckedCartItemIds] = useState<string[]>([]);
@@ -168,6 +169,7 @@ export default function StudentDesk() {
   const [eziMood, setEziMood] = useState('calm');
   const [eziText, setEziText] = useState('');
   const [eziVisible, setEziVisible] = useState(false);
+  const [showEcoPrompt, setShowEcoPrompt] = useState(false);
 
   const [journeyStep, setJourneyStep] = useState(-1);
   const [barWidth, setBarWidth] = useState(0);
@@ -318,13 +320,14 @@ export default function StudentDesk() {
     const mult = size === 'a3' ? 2 : 1;
     let print = 0;
     let per = 1.2;
+    const sidedMult = sided === 'double' ? 0.75 : 1; // 25% discount for saving paper
     if (mode === 'custom') {
       const colorPagesCount = parsePageRanges(customColorPages, pages).size;
       const bwPagesCount = Math.max(0, pages - colorPagesCount);
-      print = Math.round((colorPagesCount * 5 + bwPagesCount * 1.2) * mult * copies);
+      print = Math.round((colorPagesCount * 5 + bwPagesCount * 1.2) * mult * copies * sidedMult);
     } else {
       per = (mode === 'color' ? 5 : 1.2) * mult;
-      print = Math.round(pages * per * copies);
+      print = Math.round(pages * per * copies * sidedMult);
     }
     const bind = BIND[binding] * copies;
     return { print, bind, total: print + bind, per };
@@ -341,7 +344,14 @@ export default function StudentDesk() {
     setPhase('slip');
     setSpineActive(2);
     setGuessNote('our guess — fix it if we\'re off');
-    eziSays(`"${shortName(f.name)}" — good paper. Fill the slip below.`, 'curious');
+    setSided('single');
+    if (p > 40) {
+      setShowEcoPrompt(true);
+      eziSays(`Ooh, ${p} pages is a thick stack. Want to print double-sided to save money and a tree?`, 'curious', 8000);
+    } else {
+      setShowEcoPrompt(false);
+      eziSays(`"${shortName(f.name)}" — good paper. Fill the slip below.`, 'curious');
+    }
     setTimeout(() => s2Ref.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 450);
   };
 
@@ -357,9 +367,11 @@ export default function StudentDesk() {
     setFileSize(0);
     setPages(24);
     setMode('bw');
+    setSided('single');
     setSize('a4');
     setBinding('none');
     setCopies(1);
+    setShowEcoPrompt(false);
     setCardRisen(false);
     setShowCheckout(false);
     setOrderConfirmed(false);
@@ -727,7 +739,21 @@ export default function StudentDesk() {
           <div className={styles.deskScene}>
             {/* Ezi perch */}
             <div className={styles.eziPerch}>
-              <div className={`${styles.eziSay} ${eziVisible ? styles.on : ''}`}>{eziText}</div>
+              <div className={`${styles.eziSay} ${eziVisible ? styles.on : ''}`}>
+                {eziText}
+                {showEcoPrompt && eziVisible && (
+                  <button 
+                    onClick={() => {
+                      setSided('double');
+                      setShowEcoPrompt(false);
+                      eziSays('Done! 🌿 A tree says thank you.', 'happy', 4000);
+                    }}
+                    style={{ display: 'block', marginTop: '8px', background: '#A9B59D', color: '#fff', border: 'none', padding: '6px 12px', borderRadius: '4px', cursor: 'pointer', fontFamily: 'Space Grotesk', fontSize: '0.85rem' }}
+                  >
+                    Yes, make it double-sided
+                  </button>
+                )}
+              </div>
               <div className={styles.breathe} dangerouslySetInnerHTML={{ __html: eziSVG(eziMoodResolved, night) }} />
             </div>
 
@@ -825,6 +851,15 @@ export default function StudentDesk() {
                 <button className={`${styles.opt} ${mode === 'bw' ? styles.on : ''}`} onClick={() => setMode('bw')}>B &amp; W <span className={styles.optPrice}>₹1.2/pg</span></button>
                 <button className={`${styles.opt} ${mode === 'color' ? styles.on : ''}`} onClick={() => { setMode('color'); eziSays('Colour it is — Morning Star does it best.', 'calm', 3000); }}>Full colour <span className={styles.optPrice}>₹5/pg</span></button>
                 <button className={`${styles.opt} ${mode === 'custom' ? styles.on : ''}`} onClick={() => { setMode('custom'); eziSays('Mixed mode. Tell me which pages are colour.', 'curious', 3000); }}>Mixed mode <span className={styles.optPrice}>Mixed</span></button>
+              </div>
+            </div>
+
+            {/* Sides */}
+            <div className={styles.frow}>
+              <div className={styles.frowQ}>Sides<small>Save paper, save trees 🌿</small></div>
+              <div className={styles.opts}>
+                <button className={`${styles.opt} ${sided === 'single' ? styles.on : ''}`} onClick={() => setSided('single')}>Single-sided</button>
+                <button className={`${styles.opt} ${sided === 'double' ? styles.on : ''}`} onClick={() => { setSided('double'); eziSays('Double sided! Good choice.', 'happy', 3000); }}>Double-sided <span className={styles.optPrice}>-25%</span></button>
               </div>
             </div>
 
@@ -1258,6 +1293,7 @@ export default function StudentDesk() {
               onToggleNight={toggleNight}
               shelfOrders={shelfOrders}
               shelfPages={shelfPages}
+              onToast={toast}
             />
           )}
           {activeModal === 'wallet' && <Payments onClose={() => setActiveModal('none')} />}

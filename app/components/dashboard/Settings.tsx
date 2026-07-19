@@ -17,6 +17,7 @@ interface SettingsProps {
   onToggleNight: () => void;
   shelfOrders: number;
   shelfPages: number;
+  onToast?: (msg: string) => void;
 }
 
 export default function Settings({
@@ -28,7 +29,8 @@ export default function Settings({
   night,
   onToggleNight,
   shelfOrders,
-  shelfPages
+  shelfPages,
+  onToast
 }: SettingsProps) {
   const [studentInfo, setStudentInfo] = useState({
     name: typeof window !== 'undefined' ? (localStorage.getItem('ezee_student_name') || 'Javeria Taj') : 'Javeria Taj',
@@ -247,13 +249,39 @@ export default function Settings({
                         {f.pages} pages · via {f.shop} · {dateStr}
                       </div>
                     </div>
-                    <div style={{
-                      fontFamily: 'Space Grotesk',
-                      fontWeight: 600,
-                      fontSize: '0.95rem',
-                      color: '#2A2928',
-                    }}>
-                      ₹{costVal}
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                      <div style={{
+                        fontFamily: 'Space Grotesk',
+                        fontWeight: 600,
+                        fontSize: '0.95rem',
+                        color: '#2A2928',
+                      }}>
+                        ₹{costVal}
+                      </div>
+                      <button 
+                        onClick={() => {
+                          navigator.clipboard.writeText(`https://ezee.edu/print/${f.title.replace(/\s+/g, '-').toLowerCase()}-${idx}`);
+                          if (onToast) {
+                            onToast('Print Pass link copied! Share this so friends can print this exact document without uploading.');
+                          } else {
+                            alert('Print Pass link copied! Share this so friends can print this exact document without uploading.');
+                          }
+                        }}
+                        style={{
+                          background: '#EAE4DD',
+                          border: 'none',
+                          padding: '0.4rem 0.8rem',
+                          borderRadius: '4px',
+                          color: '#7E8C6F',
+                          fontFamily: 'Space Grotesk',
+                          fontSize: '0.75rem',
+                          cursor: 'pointer',
+                          fontWeight: 600,
+                        }}
+                        title="Share this print configuration with a friend"
+                      >
+                        Share
+                      </button>
                     </div>
                   </div>
                 );
@@ -486,7 +514,25 @@ export default function Settings({
           <span style={{ fontFamily: 'Space Grotesk', fontSize: '0.85rem', color: '#A9B59D', background: 'rgba(169,181,157,0.15)', padding: '0.3rem 0.6rem', borderRadius: '6px' }}>Coming soon</span>
         </div>
 
-        {/* ════════ 8. Report Issue ════════ */}
+        {/* ════════ 8. Help Center ════════ */}
+        <div style={settingsItem} onClick={() => window.open('mailto:help@ezee.edu', '_blank')}>
+          <div>
+            <h4 style={{ fontFamily: 'Space Grotesk', fontSize: '1rem', color: '#2A2928', margin: '0 0 0.2rem 0' }}>💡 Help Center</h4>
+            <p style={{ fontFamily: 'Instrument Sans', fontSize: '0.85rem', color: '#7A6D8C', margin: 0 }}>Guides, FAQs, and printing tips</p>
+          </div>
+          <span style={{ fontFamily: 'Space Grotesk', fontSize: '1.2rem', color: '#A29884' }}>→</span>
+        </div>
+
+        {/* ════════ 9. Contact Support ════════ */}
+        <div style={settingsItem} onClick={() => window.open('mailto:support@ezee.edu', '_blank')}>
+          <div>
+            <h4 style={{ fontFamily: 'Space Grotesk', fontSize: '1rem', color: '#2A2928', margin: '0 0 0.2rem 0' }}>🎧 Contact Support</h4>
+            <p style={{ fontFamily: 'Instrument Sans', fontSize: '0.85rem', color: '#7A6D8C', margin: 0 }}>Chat with us if something goes wrong</p>
+          </div>
+          <span style={{ fontFamily: 'Space Grotesk', fontSize: '1.2rem', color: '#A29884' }}>→</span>
+        </div>
+
+        {/* ════════ 10. Report Issue ════════ */}
         <AnimatePresence>
           {!showReport ? (
             <motion.div

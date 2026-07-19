@@ -1079,9 +1079,19 @@ export default function WorkshopRoom() {
   function accept(id: string) {
     const freeStation = stations.find(s => !s.job);
     if (!freeStation) { addToast('All presses are busy — finish a run first', 'printer', 'warn'); return; }
-    setOrders(prev => prev.map(o => o.id === id ? { ...o, status: 'printing' as const, station: freeStation.id, progress: 0.02 } : o));
-    setStations(prev => prev.map(s => s.id === freeStation.id ? { ...s, job: id } : s));
-    addToast(`#${id} on ${freeStation.name}`, 'play', 'good');
+    assignToStation(id, freeStation.id);
+  }
+
+  function assignToStation(orderId: string, stationId: string) {
+    const targetStation = stations.find(s => s.id === stationId);
+    if (!targetStation) return;
+    if (targetStation.job) {
+      addToast(`${targetStation.name} is currently busy`, 'alert', 'warn');
+      return;
+    }
+    setOrders(prev => prev.map(o => o.id === orderId ? { ...o, status: 'printing' as const, station: targetStation.id, progress: 0.02 } : o));
+    setStations(prev => prev.map(s => s.id === targetStation.id ? { ...s, job: orderId } : s));
+    addToast(`#${orderId} dropped on ${targetStation.name}`, 'play', 'good');
     setEziMoodState('focused');
   }
 
@@ -1208,6 +1218,16 @@ export default function WorkshopRoom() {
     return (
       <article
         className={`ws-docket${isUrgentNew ? ' urgent-card' : ''}${activeId === o.id ? ' sel' : ''}`}
+        draggable={o.status === 'new'}
+        onDragStart={(e) => {
+          e.dataTransfer.setData('text/plain', o.id);
+          e.dataTransfer.effectAllowed = 'move';
+          // Make it look grabbed
+          e.currentTarget.style.opacity = '0.5';
+        }}
+        onDragEnd={(e) => {
+          e.currentTarget.style.opacity = '1';
+        }}
         onClick={() => openDrawer(o.id)}>
         <div className="ws-stub">
           <span className="hole t" />
@@ -1252,7 +1272,19 @@ export default function WorkshopRoom() {
           {stations.map(s => {
             const job = s.job ? orders.find(o => o.id === s.job) : null;
             return (
-              <div key={s.id} className={`ws-station${job ? ' busy' : ''}`}>
+              <div 
+                key={s.id} 
+                className={`ws-station${job ? ' busy' : ''}`}
+                onDragOver={(e) => {
+                  e.preventDefault(); // Necessary to allow dropping
+                  e.dataTransfer.dropEffect = 'move';
+                }}
+                onDrop={(e) => {
+                  e.preventDefault();
+                  const orderId = e.dataTransfer.getData('text/plain');
+                  if (orderId) assignToStation(orderId, s.id);
+                }}
+              >
                 <div className="ws-st-icon"><Ic name="printer" size={16} /></div>
                 <div className="ws-st-main">
                   <div className="ws-st-name">{s.name}</div>
@@ -1345,7 +1377,20 @@ export default function WorkshopRoom() {
           {stations.map(s => {
             const job = s.job ? orders.find(o => o.id === s.job) : null;
             return (
-              <div key={s.id} className={`ws-station${job?' busy':''}`} style={{ padding: '16px 0' }}>
+              <div 
+                key={s.id} 
+                className={`ws-station${job?' busy':''}`} 
+                style={{ padding: '16px 0' }}
+                onDragOver={(e) => {
+                  e.preventDefault();
+                  e.dataTransfer.dropEffect = 'move';
+                }}
+                onDrop={(e) => {
+                  e.preventDefault();
+                  const orderId = e.dataTransfer.getData('text/plain');
+                  if (orderId) assignToStation(orderId, s.id);
+                }}
+              >
                 <div className="ws-st-icon" style={{ width: 44, height: 44 }}><Ic name="printer" size={20} /></div>
                 <div className="ws-st-main">
                   <div className="ws-st-name" style={{ fontSize: 15 }}>{s.name}</div>
@@ -1534,6 +1579,25 @@ export default function WorkshopRoom() {
               <tr><td>Spiral binding</td><td className="ws-rowact"><span className="mono" style={{ fontFamily: 'Space Grotesk' }}>₹35</span></td></tr>
               <tr><td>Soft binding</td><td className="ws-rowact"><span className="mono" style={{ fontFamily: 'Space Grotesk' }}>₹80</span></td></tr>
             </tbody></table>
+          </div>
+
+          {/* Support & Help */}
+          <div className="ws-ledger" style={{ marginBottom: '18px' }}>
+            <div className="ws-ledger-head"><h3>Support & Help</h3></div>
+            <div style={{ padding: '14px 17px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              <button 
+                onClick={() => window.open('mailto:help@ezee.edu', '_blank')}
+                style={{ width: '100%', padding: '12px', background: night ? 'rgba(255, 255, 255, 0.08)' : '#f5efe7', border: night ? '1px solid rgba(255, 255, 255, 0.15)' : '1px solid var(--paper-edge)', borderRadius: '8px', color: night ? '#FAF7F1' : '#232221', fontWeight: 600, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', cursor: 'pointer', fontFamily: 'Space Grotesk', fontSize: '13.5px' }}
+              >
+                💡 Help Center
+              </button>
+              <button 
+                onClick={() => window.open('mailto:support@ezee.edu', '_blank')}
+                style={{ width: '100%', padding: '12px', background: night ? 'rgba(255, 255, 255, 0.08)' : '#f5efe7', border: night ? '1px solid rgba(255, 255, 255, 0.15)' : '1px solid var(--paper-edge)', borderRadius: '8px', color: night ? '#FAF7F1' : '#232221', fontWeight: 600, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', cursor: 'pointer', fontFamily: 'Space Grotesk', fontSize: '13.5px' }}
+              >
+                🎧 Contact Support
+              </button>
+            </div>
           </div>
 
           {/* Account Actions */}

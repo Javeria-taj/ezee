@@ -548,7 +548,8 @@ export default function StudentDesk() {
 
     timersRef.current.push(setTimeout(() => {
       setCheckoutStep('tracking');
-      toast(`${shop!.name} accepted #${slipNo}`);
+      const currentShopName = shop?.name || confirmedOrder?.items[0]?.shop?.name || printingItems[0]?.shop?.name || 'Shop';
+      toast(`${currentShopName} accepted #${slipNo}`);
       // Progress bar
       let p = 0;
       const iv = setInterval(() => {
@@ -577,7 +578,8 @@ export default function StudentDesk() {
     setSpineActive(6);
     setHasUnread(true);
     eziSays(`Code ${code}. Go get it while it's warm.`, 'happy', 6000);
-    toast(`Ready at ${shop!.name} — code ${code}`);
+    const currentShopName = shop?.name || confirmedOrder?.items[0]?.shop?.name || printingItems[0]?.shop?.name || 'Shop';
+    toast(`Ready at ${currentShopName} — code ${code}`);
   };
 
   const collect = () => {
@@ -608,10 +610,11 @@ export default function StudentDesk() {
       const p = priceParts();
       const cost = p.total;
       const saved = Math.round(p.total * 0.5);
+      const currentShopName = shop?.name || confirmedOrder?.items[0]?.shop?.name || printingItems[0]?.shop?.name || 'Campus Central Print';
       newFiles.push({
         title: shortName(title),
         pages: pages * copies,
-        shop: shop!.name,
+        shop: currentShopName,
         at: now,
         cost,
         saved
@@ -694,6 +697,20 @@ export default function StudentDesk() {
           <span>{wx}</span>
           <span className={styles.mono}>{clock}</span>
         </div>
+
+        {/* Mobile quick upload button */}
+        <button 
+          className={styles.mobileQuickUpload}
+          title="Upload Document" 
+          onClick={() => fileInputRef.current?.click()}
+        >
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+            <polyline points="17 8 12 3 7 8" />
+            <line x1="12" y1="3" x2="12" y2="15" />
+          </svg>
+          <span>Upload</span>
+        </button>
 
         {/* Bell */}
         <button className={styles.headerIcon} style={{ position: 'relative' }} title="Letters" onClick={() => { setActiveModal('notifications'); setHasUnread(false); }}>
@@ -806,11 +823,26 @@ export default function StudentDesk() {
                     <line x1="14" y1="50" x2="42" y2="50" stroke="#DDD4C0" strokeWidth="2.5" strokeLinecap="round" />
                   </svg>
                   <div>
-                    <div className={styles.dzHint}>Place your notes on the desk</div>
+                    <div className={styles.dzHint}>Tap or drop your notes on the desk</div>
                     <div className={styles.dzSub}>
-                      Your first print is waiting to happen. Drop a file above.
+                      Select a PDF, Word, PPT or Image file to print.
                     </div>
                   </div>
+                  <button 
+                    type="button" 
+                    className={styles.uploadBtn}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      fileInputRef.current?.click();
+                    }}
+                  >
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                      <polyline points="17 8 12 3 7 8" />
+                      <line x1="12" y1="3" x2="12" y2="15" />
+                    </svg>
+                    <span>Choose File / Document</span>
+                  </button>
                 </div>
               )}
               <input
@@ -846,7 +878,16 @@ export default function StudentDesk() {
                       </div>
                       <span style={{ fontSize: '11.5px', color: 'var(--ink-3)' }}>{guessNote}</span>
                     </div>
-                    <div className={styles.swap}><u onClick={resetAll}>put a different file on the desk</u></div>
+                    <div className={styles.swap}>
+                      <button type="button" className={styles.swapBtn} onClick={resetAll}>
+                        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                          <polyline points="17 8 12 3 7 8" />
+                          <line x1="12" y1="3" x2="12" y2="15" />
+                        </svg>
+                        <span>Choose a different file</span>
+                      </button>
+                    </div>
                   </div>
                 </div>
               )}
@@ -1238,7 +1279,7 @@ export default function StudentDesk() {
                 <div className={styles.ocCode} style={{ textAlign: 'center', margin: '16px 0 32px' }}>
                   Pickup Code: <span>{confirmedOrder.pickupCode}</span>
                   <div className={styles.ocShopInfo} style={{ display: 'block', marginTop: 12 }}>
-                    Ready at <b>{confirmedOrder.items[0].shop.name}</b> in {confirmedOrder.items[0].shop.eta[0]}-{confirmedOrder.items[0].shop.eta[1]} mins
+                    Ready at <b>{confirmedOrder.items[0]?.shop?.name || 'Shop'}</b>{confirmedOrder.items[0]?.shop?.eta ? ` in ${confirmedOrder.items[0].shop.eta[0]}-${confirmedOrder.items[0].shop.eta[1]} mins` : ''}
                   </div>
                 </div>
 

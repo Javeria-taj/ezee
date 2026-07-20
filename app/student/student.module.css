@@ -499,6 +499,71 @@
   text-underline-offset: 3px;
 }
 
+.uploadBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  border-radius: 100px;
+  background: linear-gradient(165deg, #34322e, var(--ink));
+  color: var(--paper);
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: var(--hover);
+  cursor: pointer;
+  margin-top: 8px;
+  transition: transform var(--soft), background var(--soft), box-shadow var(--soft);
+}
+
+.uploadBtn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(42, 41, 40, 0.2);
+}
+
+.mobileQuickUpload {
+  display: none;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border-radius: 20px;
+  background: linear-gradient(165deg, #d07a5c, var(--terracotta));
+  color: #fff;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 3px 10px rgba(194, 103, 74, 0.35);
+  transition: transform var(--soft);
+}
+
+.mobileQuickUpload:active {
+  transform: scale(0.96);
+}
+
+.swapBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 10px;
+  padding: 7px 14px;
+  border-radius: 8px;
+  border: 1px solid var(--paper-edge);
+  background: #fff;
+  color: var(--plum);
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 12.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background var(--soft);
+}
+
+.swapBtn:hover {
+  background: var(--paper-2);
+}
+
 /* Placed document card */
 .placed {
   display: none;
@@ -2079,9 +2144,21 @@
     padding: 0 clamp(12px, 4vw, 24px) 80px;
   }
 
+  .mobileQuickUpload {
+    display: inline-flex;
+  }
+
   /* Upload drop zone: full width, comfortable touch target */
-  .dropZone {
-    padding: 32px 20px !important;
+  .dropzone {
+    padding: 32px 18px !important;
+  }
+
+  .uploadBtn {
+    width: 100%;
+    max-width: 280px;
+    justify-content: center;
+    padding: 13px 20px;
+    font-size: 15px;
   }
 
   /* Slip paper form */

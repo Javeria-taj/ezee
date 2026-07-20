@@ -222,6 +222,8 @@ table.obs-table tbody tr:last-child td{border-bottom:none}
   background:linear-gradient(160deg,#34322e,var(--ink));color:var(--paper);box-shadow:var(--hover);
   animation:obs-toastin 520ms cubic-bezier(.34,1.4,.5,1) both}
 @keyframes obs-toastin{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@keyframes obs-modal-fade{from{opacity:0}to{opacity:1}}
+@keyframes obs-modal-pop{from{opacity:0;transform:scale(0.94) translateY(8px)}to{opacity:1;transform:scale(1) translateY(0)}}
 
 /* Mobile Responsive Overrides */
 @media (max-width: 820px) {
@@ -461,6 +463,10 @@ export default function ObservatoryRoom() {
   const toastCounter = useRef(0);
   const [mounted, setMounted] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [confirmModal, setConfirmModal] = useState<{
+    isOpen: boolean;
+    type: 'signout' | 'delete' | null;
+  }>({ isOpen: false, type: null });
 
   // Inject CSS once
   useEffect(() => {
@@ -968,23 +974,13 @@ export default function ObservatoryRoom() {
           <div className="obs-ledger-head"><h3>Account Actions</h3></div>
           <div style={{ padding: '14px 17px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
             <button 
-              onClick={() => {
-                if (window.confirm('Are you sure you want to sign out from the observatory?')) {
-                  document.cookie = "ezee_admin_session=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-                  window.location.href = '/observatory/login';
-                }
-              }}
+              onClick={() => setConfirmModal({ isOpen: true, type: 'signout' })}
               style={{ width: '100%', padding: '12px', background: night ? 'rgba(255, 255, 255, 0.08)' : '#f5efe7', border: night ? '1px solid rgba(255, 255, 255, 0.15)' : '1px solid var(--paper-edge)', borderRadius: '8px', color: night ? '#FAF7F1' : '#232221', fontWeight: 600, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', cursor: 'pointer', fontFamily: 'Space Grotesk', fontSize: '13.5px' }}
             >
               🚪 Sign Out
             </button>
             <button 
-              onClick={() => {
-                if (window.confirm('Are you sure you want to permanently delete this administrator account? This action is irreversible.')) {
-                  document.cookie = "ezee_admin_session=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-                  window.location.href = '/observatory/login';
-                }
-              }}
+              onClick={() => setConfirmModal({ isOpen: true, type: 'delete' })}
               style={{ width: '100%', padding: '12px', background: night ? 'rgba(255, 99, 99, 0.12)' : 'rgba(155, 44, 44, 0.08)', border: night ? '1px solid rgba(255, 99, 99, 0.35)' : '1px solid rgba(155, 44, 44, 0.25)', borderRadius: '8px', color: night ? '#ff8b8b' : 'var(--crimson)', fontWeight: 600, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', cursor: 'pointer', fontFamily: 'Space Grotesk', fontSize: '13.5px' }}
             >
               🗑️ Delete Account
@@ -1131,6 +1127,126 @@ export default function ObservatoryRoom() {
           </div>
         </main>
       </div>
+
+      {/* Custom Confirmation Modal */}
+      {confirmModal.isOpen && (
+        <div 
+          onClick={(e) => {
+            if (e.target === e.currentTarget) setConfirmModal({ isOpen: false, type: null });
+          }}
+          style={{
+            position: 'fixed',
+            inset: 0,
+            zIndex: 1000,
+            background: 'rgba(20, 18, 24, 0.65)',
+            backdropFilter: 'blur(8px)',
+            WebkitBackdropFilter: 'blur(8px)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: '20px',
+            animation: 'obs-modal-fade 0.2s ease-out'
+          }}
+        >
+          <div 
+            style={{
+              width: '100%',
+              maxWidth: '420px',
+              background: night 
+                ? 'linear-gradient(165deg, #2E2A36, #23202D)' 
+                : 'linear-gradient(165deg, #FFFDF8, #F5EFE7)',
+              border: night ? '1px solid #4F4A5E' : '1px solid var(--paper-edge)',
+              borderRadius: '16px',
+              padding: '28px 24px',
+              boxShadow: night 
+                ? '0 25px 50px -12px rgba(0, 0, 0, 0.6)' 
+                : '0 25px 50px -12px rgba(42, 41, 40, 0.2)',
+              color: night ? '#FAF7F1' : '#2A2928',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '18px',
+              animation: 'obs-modal-pop 0.22s cubic-bezier(0.16, 1, 0.3, 1)'
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'flex-start', gap: '14px' }}>
+              <div style={{
+                width: '44px',
+                height: '44px',
+                borderRadius: '12px',
+                background: confirmModal.type === 'delete' 
+                  ? (night ? 'rgba(255, 99, 99, 0.18)' : 'rgba(155, 44, 44, 0.12)')
+                  : (night ? 'rgba(255, 255, 255, 0.1)' : 'rgba(42, 41, 40, 0.08)'),
+                display: 'grid',
+                placeItems: 'center',
+                fontSize: '22px',
+                flexShrink: 0
+              }}>
+                {confirmModal.type === 'delete' ? '🗑️' : '🚪'}
+              </div>
+              <div>
+                <h3 style={{ 
+                  fontFamily: 'Space Grotesk', 
+                  fontSize: '18px', 
+                  fontWeight: 700, 
+                  margin: 0,
+                  color: confirmModal.type === 'delete' ? (night ? '#ff8b8b' : 'var(--crimson)') : (night ? '#FAF7F1' : '#2A2928')
+                }}>
+                  {confirmModal.type === 'delete' ? 'Delete Account' : 'Sign Out'}
+                </h3>
+                <p style={{ margin: '6px 0 0 0', fontSize: '14px', color: night ? 'rgba(250,247,241,0.65)' : 'rgba(42,41,40,0.65)', lineHeight: 1.45 }}>
+                  {confirmModal.type === 'delete'
+                    ? 'Are you sure you want to permanently delete this administrator account? This action is irreversible.'
+                    : 'Are you sure you want to sign out from the observatory dashboard?'}
+                </p>
+              </div>
+            </div>
+
+            <div style={{ display: 'flex', gap: '10px', marginTop: '4px', justifyContent: 'flex-end' }}>
+              <button
+                onClick={() => setConfirmModal({ isOpen: false, type: null })}
+                style={{
+                  padding: '10px 18px',
+                  borderRadius: '9px',
+                  border: night ? '1px solid rgba(255,255,255,0.15)' : '1px solid var(--paper-edge)',
+                  background: night ? 'rgba(255,255,255,0.06)' : '#fff',
+                  color: night ? '#FAF7F1' : '#2A2928',
+                  fontFamily: 'Space Grotesk',
+                  fontWeight: 600,
+                  fontSize: '13.5px',
+                  cursor: 'pointer',
+                  transition: 'all 0.15s ease'
+                }}
+              >
+                Cancel
+              </button>
+
+              <button
+                onClick={() => {
+                  document.cookie = "ezee_admin_session=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+                  window.location.href = '/observatory/login';
+                }}
+                style={{
+                  padding: '10px 18px',
+                  borderRadius: '9px',
+                  border: 'none',
+                  background: confirmModal.type === 'delete'
+                    ? 'linear-gradient(165deg, #d32f2f, #9b2c2c)'
+                    : 'linear-gradient(165deg, #34322e, var(--ink))',
+                  color: '#fff',
+                  fontFamily: 'Space Grotesk',
+                  fontWeight: 600,
+                  fontSize: '13.5px',
+                  cursor: 'pointer',
+                  boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+                  transition: 'all 0.15s ease'
+                }}
+              >
+                {confirmModal.type === 'delete' ? 'Yes, Delete Account' : 'Yes, Sign Out'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Toasts */}
       <div className="obs-toasts">

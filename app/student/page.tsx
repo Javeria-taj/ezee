@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { AnimatePresence } from 'framer-motion';
 import styles from './student.module.css';
-import Notifications from '@/app/components/dashboard/Notifications';
+import Notifications, { EziLetter } from '@/app/components/dashboard/Notifications';
 import Settings from '@/app/components/dashboard/Settings';
 import Payments from '@/app/components/dashboard/Payments';
 import EziTip from '@/app/components/dashboard/EziTip';
@@ -188,6 +188,7 @@ export default function StudentDesk() {
   const [showOnboarding, setShowOnboarding] = useState(false);
   const [hasUnread, setHasUnread] = useState(true);
   const [settingsInitialTab, setSettingsInitialTab] = useState<'settings' | 'history'>('settings');
+  const [notificationsList, setNotificationsList] = useState<EziLetter[]>([]);
   const [toasts, setToasts] = useState<{ id: number; msg: string }[]>([]);
   const [dragActive, setDragActive] = useState(false);
 
@@ -451,6 +452,38 @@ export default function StudentDesk() {
     window.scrollTo({ top: 0, behavior: 'instant' });
   };
 
+  const handleCheckoutCart = (itemsToPrint: CartItem[]) => {
+    if (itemsToPrint.length === 0) return;
+    setActiveModal('none');
+    setPrintingItems(itemsToPrint);
+    
+    // Remove printed items from cart
+    setCart(prev => prev.filter(item => !itemsToPrint.some(p => p.id === item.id)));
+    setCheckedCartItemIds(prev => prev.filter(id => !itemsToPrint.some(p => p.id === id)));
+    
+    const totalP = itemsToPrint.reduce((sum, item) => sum + item.pages * item.copies, 0);
+    const totalCost = itemsToPrint.reduce((sum, item) => sum + item.totalCost, 0);
+    const mainShop = itemsToPrint[0].shop;
+    
+    // Build confirmed order for cart items
+    setConfirmedOrder({
+      items: itemsToPrint,
+      pickupCode: '',
+      totalCost: totalCost,
+      totalSaved: Math.round(totalCost * 0.5),
+    });
+
+    setFileName(itemsToPrint.length === 1 ? itemsToPrint[0].fileName : `${itemsToPrint.length} files`);
+    setPages(totalP);
+    setShop(mainShop);
+    setCheckoutStep('pay');
+    setShowCheckout(true);
+    
+    setTimeout(() => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }, 100);
+  };
+
   const payCart = (itemsToPrint: CartItem[]) => {
     if (itemsToPrint.length === 0) return;
     setActiveModal('none');
@@ -583,8 +616,33 @@ export default function StudentDesk() {
     setSpineActive(6);
     setHasUnread(true);
     eziSays(`Code ${code}. Go get it while it's warm.`, 'happy', 6000);
-    const currentShopName = shop?.name || confirmedOrder?.items[0]?.shop?.name || printingItems[0]?.shop?.name || 'Shop';
+    const currentShopName = shop?.name || confirmedOrder?.items[0]?.shop?.name || printingItems[0]?.shop?.name || 'Campus Print';
     toast(`Ready at ${currentShopName} — code ${code}`);
+
+    const now = new Date();
+    const timeStr = now.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+    const dateStr = now.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+    
+    const itemsSummary = confirmedOrder
+      ? confirmedOrder.items.map(it => `${shortName(it.fileName)} (${it.pages} pgs × ${it.copies})`).join(', ')
+      : `${shortName(fileName || 'Document')} (${pages} pgs × ${copies})`;
+
+    const totalAmt = confirmedOrder ? confirmedOrder.totalCost : priceParts().total;
+
+    const printNotification: EziLetter = {
+      id: `print-ready-${Date.now()}`,
+      isRead: false,
+      stampEmoji: '🖨️',
+      from: currentShopName,
+      message: `Your print job for ${itemsSummary} is ready for pickup at ${currentShopName}! Total Paid: ₹${totalAmt}. Please show pickup code ${code} at the counter.`,
+      date: dateStr,
+      time: timeStr,
+      pickupCode: code,
+      shopName: currentShopName,
+      itemDetails: itemsSummary,
+    };
+
+    setNotificationsList(prev => [printNotification, ...prev]);
   };
 
   const collect = () => {
@@ -656,7 +714,7 @@ export default function StudentDesk() {
   /* --- Derived --- */
   const p = priceParts();
   const { g, sub } = getGreeting();
-  const canSend = fileUploaded && shop;
+  const canSend = Boolean((fileUploaded || confirmedOrder) && (shop || confirmedOrder?.items[0]?.shop));
 
   const eziMoodResolved = night && eziMood === 'calm' ? 'sleepy' : eziMood;
 
@@ -1119,19 +1177,36 @@ export default function StudentDesk() {
                       <div className={styles.receiptHeader}>RECEIPT</div>
                       
                       <div className={styles.receiptRows}>
-                        <div className={styles.receiptRow}>
-                          <span>{pages} Pages</span>
-                          <span className={styles.mono}>₹{p.print.toLocaleString('en-IN')}</span>
-                        </div>
-                        <div className={styles.receiptRow}>
-                          <span>{copies} Copies</span>
-                          <span className={styles.mono}>× {copies}</span>
-                        </div>
-                        {p.bind > 0 && (
-                          <div className={styles.receiptRow}>
-                            <span>Binding</span>
-                            <span className={styles.mono}>₹{p.bind.toLocaleString('en-IN')}</span>
-                          </div>
+                        {confirmedOrder ? (
+                          confirmedOrder.items.map((it, idx) => (
+                            <div key={idx} className={styles.receiptRow}>
+                              <span>{shortName(it.fileName)} ({it.pages}p × {it.copies})</span>
+                              <span className={styles.mono}>₹{it.totalCost.toLocaleString('en-IN')}</span>
+                            </div>
+                          ))
+                        ) : (
+                          <>
+                            <div className={styles.receiptRow}>
+                              <span>{pages} Pages</span>
+                              <span className={styles.mono}>₹{p.print.toLocaleString('en-IN')}</span>
+                            </div>
+                            <div className={styles.receiptRow}>
+                              <span>{copies} Copies</span>
+                              <span className={styles.mono}>× {copies}</span>
+                            </div>
+                            {p.bind > 0 && (
+                              <div className={styles.receiptRow}>
+                                <span>Binding</span>
+                                <span className={styles.mono}>₹{p.bind.toLocaleString('en-IN')}</span>
+                              </div>
+                            )}
+                            {p.rush > 0 && (
+                              <div className={styles.receiptRow}>
+                                <span>🔥 Rush Order</span>
+                                <span className={styles.mono}>₹{p.rush.toLocaleString('en-IN')}</span>
+                              </div>
+                            )}
+                          </>
                         )}
                       </div>
                       
@@ -1139,7 +1214,9 @@ export default function StudentDesk() {
                       
                       <div className={styles.receiptTotalRow}>
                         <span className={styles.receiptTotalLabel}>Total</span>
-                        <span className={`${styles.receiptTotalAmt} ${styles.mono}`}>₹{p.total.toLocaleString('en-IN')}</span>
+                        <span className={`${styles.receiptTotalAmt} ${styles.mono}`}>
+                          ₹{(confirmedOrder ? confirmedOrder.totalCost : p.total).toLocaleString('en-IN')}
+                        </span>
                       </div>
                     </div>
                   </div>
@@ -1382,7 +1459,15 @@ export default function StudentDesk() {
       {/* ========== MODALS ========== */}
       {activeModal !== 'none' && (
         <div className={styles.modalOverlay} onClick={e => { if (e.target === e.currentTarget) setActiveModal('none'); }}>
-          {activeModal === 'notifications' && <Notifications onClose={() => setActiveModal('none')} />}
+          {activeModal === 'notifications' && (
+            <Notifications
+              customLetters={notificationsList}
+              onClose={() => {
+                setActiveModal('none');
+                setHasUnread(false);
+              }}
+            />
+          )}
           {activeModal === 'settings' && (
             <Settings
               onClose={() => setActiveModal('none')}
@@ -1402,7 +1487,7 @@ export default function StudentDesk() {
           {activeModal === 'cart' && (() => {
             const selectedCartItems = cart.filter(item => checkedCartItemIds.includes(item.id));
             const totalCost = selectedCartItems.reduce((sum, item) => sum + item.totalCost, 0);
-            const isPayDisabled = selectedCartItems.length === 0 || cardRisen;
+            const isOrderDisabled = selectedCartItems.length === 0;
 
             return (
               <div className={styles.cartModal} onClick={e => e.stopPropagation()}>
@@ -1471,61 +1556,16 @@ export default function StudentDesk() {
                         </div>
                       </div>
 
-                      <div style={{ marginTop: 24, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                        <div className={styles.walletWrapper} style={{ transform: 'scale(0.95)' }}>
-                          <div className={`${styles.coin} ${styles.coin5_1}`}>5</div>
-                          <div className={`${styles.coin} ${styles.coin5_2}`}>5</div>
-                          <div className={`${styles.coin} ${styles.coin1}`}>1</div>
-
-                          <div className={styles.walletBack} />
-
-                          <button
-                            className={`${styles.creditCard} ${cardRisen ? styles.risen : ''}`}
-                            disabled={isPayDisabled}
-                            onClick={() => {
-                              setCardRisen(true);
-                              setTimeout(() => {
-                                payCart(selectedCartItems);
-                              }, 600);
-                            }}
-                          >
-                            <div className={styles.cardHeader}>
-                              <span className={styles.cardBrand}>STUDENT UPI</span>
-                              <svg className={styles.wirelessIcon} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                                <path d="M5 8a9.99 9.99 0 0 1 14 0" />
-                                <path d="M7.83 10.83a6 6 0 0 1 8.34 0" />
-                                <path d="M10.66 13.66a2 2 0 0 1 2.68 0" />
-                              </svg>
-                            </div>
-                            
-                            <div className={styles.cardChip}>
-                              <div className={styles.chipInner} />
-                            </div>
-                            
-                            <div className={styles.cardFooter}>
-                              <span className={styles.cardNumber}>•••• 4092</span>
-                              <span className={styles.payNowBadge}>PAY NOW</span>
-                            </div>
-                          </button>
-
-                          <div className={styles.walletFront}>
-                            <button
-                              className={styles.walletPayBadge}
-                              disabled={isPayDisabled}
-                              onClick={() => {
-                                setCardRisen(true);
-                                setTimeout(() => {
-                                  payCart(selectedCartItems);
-                                }, 600);
-                              }}
-                            >
-                              PAY NOW
-                            </button>
-                          </div>
-                        </div>
-                        <div className={styles.tapInstruction} style={{ marginTop: 8 }}>
-                          Tap card to pay now
-                        </div>
+                      <div style={{ marginTop: 16 }}>
+                        <button
+                          className={styles.cartOrderNowBtn}
+                          style={{ backgroundColor: '#C2674A', color: '#FFFFFF' }}
+                          disabled={isOrderDisabled}
+                          onClick={() => handleCheckoutCart(selectedCartItems)}
+                        >
+                          <span>Order Now · Proceed to Checkout</span>
+                          <span className={styles.mono}>₹{totalCost} →</span>
+                        </button>
                       </div>
                     </>
                   )}

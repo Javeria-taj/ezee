@@ -5,9 +5,10 @@ import { motion, AnimatePresence } from 'framer-motion';
 
 interface NotificationsProps {
   onClose: () => void;
+  customLetters?: EziLetter[];
 }
 
-interface EziLetter {
+export interface EziLetter {
   id: string;
   isRead: boolean;
   stampEmoji: string;
@@ -15,6 +16,9 @@ interface EziLetter {
   from: string;
   date: string;
   time: string;
+  pickupCode?: string;
+  shopName?: string;
+  itemDetails?: string;
 }
 
 const getContextualLetters = (): EziLetter[] => {
@@ -65,9 +69,12 @@ const getContextualLetters = (): EziLetter[] => {
   ];
 };
 
-export default function Notifications({ onClose }: NotificationsProps) {
-  const [letters] = useState<EziLetter[]>(getContextualLetters);
-  const [openLetterId, setOpenLetterId] = useState<string | null>(null);
+export default function Notifications({ onClose, customLetters = [] }: NotificationsProps) {
+  const [letters] = useState<EziLetter[]>(() => [
+    ...customLetters,
+    ...getContextualLetters(),
+  ]);
+  const [openLetterId, setOpenLetterId] = useState<string | null>(customLetters.length > 0 ? customLetters[0].id : null);
   const [readSet, setReadSet] = useState<Set<string>>(
     new Set(letters.filter(l => l.isRead).map(l => l.id))
   );
@@ -247,6 +254,30 @@ export default function Notifications({ onClose }: NotificationsProps) {
                         }}>
                           {letter.message}
                         </p>
+
+                        {letter.pickupCode && (
+                          <div style={{
+                            marginTop: '1.2rem',
+                            padding: '14px 18px',
+                            background: '#FAF2E6',
+                            border: '1.5px dashed #C2674A',
+                            borderRadius: '8px',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'space-between',
+                            boxShadow: '0 2px 8px rgba(194,103,74,0.1)'
+                          }}>
+                            <div>
+                              <div style={{ fontFamily: 'Space Grotesk', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.08em', color: '#8A7B6B', fontWeight: 600 }}>Pickup Code</div>
+                              <div style={{ fontFamily: 'Space Grotesk', fontSize: '24px', fontWeight: 'bold', color: '#C2674A', letterSpacing: '2px', marginTop: '2px' }}>{letter.pickupCode}</div>
+                            </div>
+                            <div style={{ textAlign: 'right' }}>
+                              <div style={{ fontFamily: 'Space Grotesk', fontSize: '11px', color: '#8A7B6B' }}>Location</div>
+                              <div style={{ fontFamily: 'Space Grotesk', fontSize: '13px', fontWeight: '700', color: '#2A2928', marginTop: '2px' }}>🏪 {letter.shopName || 'Print Shop'}</div>
+                            </div>
+                          </div>
+                        )}
+
                         <div style={{
                           marginTop: '1rem',
                           display: 'flex',

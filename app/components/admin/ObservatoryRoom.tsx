@@ -87,15 +87,15 @@ const CSS = `
 .obs-root ::selection{background:var(--terracotta-soft);color:var(--paper)}
 .obs-grain{position:fixed;inset:0;pointer-events:none;z-index:9999;opacity:.035;
   background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 220 220' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
-.obs-app{display:grid;grid-template-columns:260px 1fr;min-height:100vh;transition:grid-template-columns var(--spring)}
-.obs-app.obs-closed{grid-template-columns:80px 1fr}
+.obs-app{display:flex;height:100vh;overflow:hidden;transition:all var(--spring)}
+.obs-app.obs-closed{}
 /* rail */
-.obs-rail{position:sticky;top:0;align-self:start;height:100vh;padding:26px 18px;
-  display:flex;flex-direction:column;gap:8px;
+.obs-rail{position:fixed;top:0;left:0;bottom:0;height:100vh;width:260px;padding:26px 18px;
+  display:flex;flex-direction:column;gap:8px;z-index:50;
   background:linear-gradient(180deg,rgba(255,255,255,.5),rgba(243,237,227,.35));
   border-right:1px solid var(--paper-edge);backdrop-filter:blur(2px);
-  overflow:hidden;transition:padding var(--spring)}
-.obs-app.obs-closed .obs-rail{padding:26px 14px}
+  overflow-y:auto;transition:width var(--spring),padding var(--spring)}
+.obs-app.obs-closed .obs-rail{width:80px;padding:26px 14px}
 .obs-app.obs-closed .obs-brand div,
 .obs-app.obs-closed .obs-nav span:not(.obs-ic) {
   display:none;
@@ -120,7 +120,8 @@ const CSS = `
   display:grid;place-items:center;border-radius:6px;background:rgba(42,41,40,.06);color:var(--ink-2)}
 .obs-nav button.on .obs-count{background:var(--plum);color:#fff}
 /* main */
-.obs-main{min-width:0;display:flex;flex-direction:column}
+.obs-main{flex:1;height:100vh;overflow-y:auto;margin-left:260px;min-width:0;display:flex;flex-direction:column;transition:margin-left var(--spring)}
+.obs-app.obs-closed .obs-main{margin-left:80px}
 .obs-topbar{position:sticky;top:0;z-index:30;display:flex;align-items:center;gap:16px;
   padding:18px 30px;border-bottom:1px solid var(--paper-edge);
   background:linear-gradient(180deg,rgba(250,247,241,.92),rgba(250,247,241,.78));backdrop-filter:blur(8px)}
@@ -227,6 +228,9 @@ table.obs-table tbody tr:last-child td{border-bottom:none}
 
 /* Mobile Responsive Overrides */
 @media (max-width: 820px) {
+  .obs-app, .obs-app.obs-closed { display: flex !important; flex-direction: column !important; height: auto !important; overflow: visible !important; }
+  .obs-rail { position: static !important; width: 100% !important; height: auto !important; }
+  .obs-main { margin-left: 0 !important; height: auto !important; overflow-y: visible !important; }
   .obs-grid { grid-template-columns: 1fr; gap: 16px; }
   .obs-two-col { grid-template-columns: 1fr; gap: 24px; }
   .obs-canvas { padding: 16px 12px 60px; }

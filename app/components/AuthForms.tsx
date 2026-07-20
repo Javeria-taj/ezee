@@ -61,11 +61,8 @@ export default function AuthForms({ state, setState, passwordVisible, setPasswor
       style={{ 
         boxShadow: '0 20px 40px rgba(42, 41, 40, 0.08), inset 0 0 0 1px rgba(255,255,255,0.5)',
         background: '#FAF7F1',
-        backgroundImage: 'linear-gradient(#EAE4DD 1px, transparent 1px)',
-        backgroundSize: '100% 2.5rem',
-        backgroundPosition: '0 1.2rem',
-        borderRadius: '8px 24px 24px 8px',
-        borderLeft: '12px solid #7A6D8C'
+        borderRadius: '16px',
+        border: '1.5px solid rgba(42, 41, 40, 0.18)'
       }}
       initial="initial"
       animate={state === 'success' ? { opacity: 0, scale: 0.95 } : "animate"}
@@ -75,8 +72,8 @@ export default function AuthForms({ state, setState, passwordVisible, setPasswor
         {state === 'login' && (
           <motion.form key="login" variants={variants} initial="initial" animate="animate" exit="exit" onSubmit={handleLogin} style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', paddingTop: '1rem' }}>
             <div style={{ paddingBottom: '1rem' }}>
-              <h1 className={styles.heading} style={{ fontSize: '2rem', color: '#2A2928' }}>Guestbook</h1>
-              <p className={styles.subtitle} style={{ fontStyle: 'italic', color: '#7A6D8C' }}>Welcome back. Ezi kept your spot.</p>
+              <h1 className={styles.heading} style={{ fontSize: '2rem', color: '#2A2928' }}>Sign In</h1>
+              <p className={styles.subtitle} style={{ color: '#7A6D8C' }}>Welcome back! Please enter your details.</p>
             </div>
             
             <div style={{ position: 'relative' }}>
@@ -88,7 +85,7 @@ export default function AuthForms({ state, setState, passwordVisible, setPasswor
               <Key style={{ position: 'absolute', top: '12px', left: '0', color: '#A9B59D' }} size={20} />
               <input 
                 type="password" 
-                placeholder="Passcode" 
+                placeholder="Password" 
                 className={styles.inputField} 
                 style={{ paddingLeft: '2rem', paddingRight: '2.5rem', background: 'transparent', fontFamily: 'Instrument Sans' }} 
                 required 
@@ -106,16 +103,16 @@ export default function AuthForms({ state, setState, passwordVisible, setPasswor
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '0.5rem' }}>
               <div className={styles.bookmarkRibbon} onClick={() => setRememberMe(!rememberMe)}>
                 <div className={`${styles.bookmarkIcon} ${rememberMe ? styles.bookmarkIconActive : ''}`} />
-                <span style={{ fontFamily: 'Instrument Sans' }}>Keep bookmark</span>
+                <span style={{ fontFamily: 'Instrument Sans' }}>Remember me</span>
               </div>
-              <span style={{ cursor: 'pointer', color: '#D48A70', fontWeight: 500, fontFamily: 'Instrument Sans' }} onClick={() => setState('forgot')}>Lost passcode?</span>
+              <span style={{ cursor: 'pointer', color: '#D48A70', fontWeight: 500, fontFamily: 'Instrument Sans' }} onClick={() => setState('forgot')}>Lost password?</span>
             </div>
             
             <button type="submit" className={styles.primaryButton} style={{ background: '#2A2928', color: '#FAF7F1', borderRadius: '4px', marginTop: '1.5rem' }}>Sign In</button>
             
-            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.75rem', marginTop: '1rem', borderTop: '1px dashed #EAE4DD', paddingTop: '1.5rem' }}>
-              <span style={{ fontSize: '0.95rem', color: '#7A6D8C', fontStyle: 'italic' }}>First time visiting?</span>
-              <button type="button" className={styles.secondaryButton} style={{ border: '1px solid #A9B59D', color: '#5b554f', borderRadius: '4px' }} onClick={() => setState('signup')}>Sign the Guestbook</button>
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.75rem', marginTop: '1rem', paddingTop: '1.5rem' }}>
+              <span style={{ fontSize: '0.95rem', color: '#7A6D8C' }}>Don't have an account?</span>
+              <button type="button" className={styles.secondaryButton} style={{ border: '1px solid #A9B59D', color: '#5b554f', borderRadius: '4px' }} onClick={() => setState('signup')}>Create Account</button>
             </div>
           </motion.form>
         )}
@@ -123,12 +120,12 @@ export default function AuthForms({ state, setState, passwordVisible, setPasswor
         {state === 'signup' && (
           <motion.form key="signup" variants={variants} initial="initial" animate="animate" exit="exit" onSubmit={handleSignup} style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', paddingTop: '1rem' }}>
             <div style={{ paddingBottom: '0.5rem' }}>
-              <h1 className={styles.heading} style={{ fontSize: '2rem' }}>New Entry</h1>
-              <p className={styles.subtitle} style={{ fontStyle: 'italic' }}>Let's prepare your nook.</p>
+              <h1 className={styles.heading} style={{ fontSize: '2rem' }}>Create Account</h1>
+              <p className={styles.subtitle}>Fill in your details to get started.</p>
             </div>
 
             <div style={{ display: 'flex', gap: '1rem', paddingBottom: '1rem' }}>
-               {['Who', 'Where', 'Lock', 'Done'].map((step, idx) => (
+               {['Personal', 'Academic', 'Password', 'Done'].map((step, idx) => (
                  <div key={step} style={{ 
                    opacity: signupStep === idx ? 1 : 0.4, 
                    fontWeight: signupStep === idx ? 600 : 400,
@@ -188,7 +185,7 @@ export default function AuthForms({ state, setState, passwordVisible, setPasswor
                       <Key style={{ position: 'absolute', top: '12px', left: '0', color: '#A9B59D' }} size={20} />
                       <input 
                         type="password" 
-                        placeholder="Passcode" 
+                        placeholder="Password" 
                         className={styles.inputField} 
                         style={{ paddingLeft: '2rem', paddingRight: '2.5rem', background: 'transparent' }} 
                         required 
@@ -207,7 +204,7 @@ export default function AuthForms({ state, setState, passwordVisible, setPasswor
                       <Check style={{ position: 'absolute', top: '12px', left: '0', color: '#A9B59D' }} size={20} />
                       <input 
                         type="password" 
-                        placeholder="Confirm Passcode" 
+                        placeholder="Confirm Password" 
                         className={styles.inputField} 
                         style={{ paddingLeft: '2rem', paddingRight: '2.5rem', background: 'transparent' }} 
                         required 
@@ -224,27 +221,27 @@ export default function AuthForms({ state, setState, passwordVisible, setPasswor
                   </motion.div>
                 )}
                 {signupStep === 3 && (
-                  <motion.div key="step3" variants={variants} initial="initial" animate="animate" exit="exit" style={{ textAlign: 'center', color: '#7A6D8C', fontStyle: 'italic', paddingTop: '2rem' }}>
-                    The ink is drying. We're ready.
+                  <motion.div key="step3" variants={variants} initial="initial" animate="animate" exit="exit" style={{ textAlign: 'center', color: '#7A6D8C', paddingTop: '2rem' }}>
+                    All steps completed. Ready to register.
                   </motion.div>
                 )}
               </AnimatePresence>
             </div>
 
             <button type="submit" className={styles.primaryButton} style={{ borderRadius: '4px', marginTop: '1rem' }}>
-              {signupStep < 3 ? 'Turn Page' : 'Finish Entry'}
+              {signupStep < 3 ? 'Continue' : 'Submit & Register'}
             </button>
             
             <p style={{ textAlign: 'center', marginTop: '0.5rem' }}>
-              <span style={{ cursor: 'pointer', color: '#7A6D8C', fontStyle: 'italic', fontFamily: 'Instrument Sans' }} onClick={() => { setSignupStep(0); setState('login'); }}>Nevermind, I'll go back.</span>
+              <span style={{ cursor: 'pointer', color: '#7A6D8C', fontFamily: 'Instrument Sans' }} onClick={() => { setSignupStep(0); setState('login'); }}>Already have an account? Sign In</span>
             </p>
           </motion.form>
         )}
 
         {state === 'otp' && (
           <motion.div key="otp" variants={variants} initial="initial" animate="animate" exit="exit" style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', alignItems: 'center', paddingTop: '1rem' }}>
-            <h1 className={styles.heading} style={{ textAlign: 'center', fontSize: '2rem' }}>Wax Seal</h1>
-            <p className={styles.subtitle} style={{ textAlign: 'center', fontStyle: 'italic' }}>We sent a letter to your address. Please verify.</p>
+            <h1 className={styles.heading} style={{ textAlign: 'center', fontSize: '2rem' }}>Verify OTP</h1>
+            <p className={styles.subtitle} style={{ textAlign: 'center' }}>We've sent a 4-digit verification code to your email.</p>
             
             <div className={styles.otpContainer}>
                {[0, 1, 2, 3].map(i => (
@@ -262,7 +259,7 @@ export default function AuthForms({ state, setState, passwordVisible, setPasswor
             </div>
 
             <button className={styles.primaryButton} style={{ borderRadius: '4px', marginTop: '2rem' }} onClick={() => setState('success')}>
-              Break Seal
+              Verify &amp; Continue
             </button>
           </motion.div>
         )}
@@ -270,8 +267,8 @@ export default function AuthForms({ state, setState, passwordVisible, setPasswor
         {state === 'forgot' && (
           <motion.form key="forgot" variants={variants} initial="initial" animate="animate" exit="exit" onSubmit={(e) => { e.preventDefault(); setState('loading'); setTimeout(() => setState('login'), 500); }} style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', paddingTop: '1rem' }}>
             <div>
-              <h1 className={styles.heading} style={{ fontSize: '2rem' }}>Lost Key</h1>
-              <p className={styles.subtitle} style={{ fontStyle: 'italic' }}>We'll help you find it.</p>
+              <h1 className={styles.heading} style={{ fontSize: '2rem' }}>Forgot Password</h1>
+              <p className={styles.subtitle}>Enter your email address to reset your password.</p>
             </div>
             
             <div style={{ position: 'relative' }}>
@@ -279,10 +276,10 @@ export default function AuthForms({ state, setState, passwordVisible, setPasswor
               <input type="email" placeholder="Recovery Email" className={styles.inputField} style={{ paddingLeft: '2rem', background: 'transparent' }} required autoFocus />
             </div>
             
-            <button type="submit" className={styles.primaryButton} style={{ borderRadius: '4px', marginTop: '1.5rem' }}>Send Lantern</button>
+            <button type="submit" className={styles.primaryButton} style={{ borderRadius: '4px', marginTop: '1.5rem' }}>Send Reset Link</button>
             
             <p style={{ textAlign: 'center', marginTop: '1rem' }}>
-              <span style={{ cursor: 'pointer', color: '#7A6D8C', fontStyle: 'italic' }} onClick={() => setState('login')}>Return</span>
+              <span style={{ cursor: 'pointer', color: '#7A6D8C' }} onClick={() => setState('login')}>Back to Sign In</span>
             </p>
           </motion.form>
         )}
@@ -294,15 +291,15 @@ export default function AuthForms({ state, setState, passwordVisible, setPasswor
               transition={{ repeat: Infinity, duration: 2, ease: "linear" }}
               style={{ width: '40px', height: '40px', border: '2px solid #EAE4DD', borderTopColor: '#D48A70', borderRadius: '50%' }} 
             />
-            <p className={styles.subtitle} style={{ fontStyle: 'italic' }}>Flipping pages...</p>
+            <p className={styles.subtitle}>Loading...</p>
           </motion.div>
         )}
 
         {state === 'error' && (
           <motion.div key="error" variants={variants} initial="initial" animate="animate" exit="exit" style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', alignItems: 'center', justifyContent: 'center', textAlign: 'center', paddingTop: '2rem' }}>
-            <h1 className={styles.heading} style={{ fontSize: '2rem' }}>Hmm…</h1>
-            <p className={styles.subtitle} style={{ fontStyle: 'italic' }}>The ink smudged. Let's try again.</p>
-            <button className={styles.primaryButton} style={{ borderRadius: '4px' }} onClick={() => setState('login')}>Rewrite</button>
+            <h1 className={styles.heading} style={{ fontSize: '2rem' }}>Authentication Failed</h1>
+            <p className={styles.subtitle}>Please check your details and try again.</p>
+            <button className={styles.primaryButton} style={{ borderRadius: '4px' }} onClick={() => setState('login')}>Try Again</button>
           </motion.div>
         )}
 

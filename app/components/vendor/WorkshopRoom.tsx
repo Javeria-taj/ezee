@@ -263,15 +263,15 @@ const CSS = `
 .ws-root ::selection{background:var(--terracotta-soft);color:var(--paper)}
 .ws-grain{position:fixed;inset:0;pointer-events:none;z-index:9999;opacity:.035;
   background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 220 220' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
-.ws-app{display:grid;grid-template-columns:262px 1fr;min-height:100vh;transition:grid-template-columns var(--spring)}
-.ws-app.ws-closed{grid-template-columns:68px 1fr}
+.ws-app{display:flex;height:100vh;overflow:hidden;transition:all var(--spring)}
+.ws-app.ws-closed{}
 /* rail */
-.ws-rail{position:sticky;top:0;align-self:start;height:100vh;padding:22px 16px;
-  display:flex;flex-direction:column;gap:6px;
+.ws-rail{position:fixed;top:0;left:0;bottom:0;height:100vh;width:262px;padding:22px 16px;
+  display:flex;flex-direction:column;gap:6px;z-index:50;
   background:linear-gradient(180deg,rgba(255,255,255,.5),rgba(243,237,227,.35));
   border-right:1px solid var(--paper-edge);backdrop-filter:blur(2px);
-  overflow:hidden;transition:padding var(--spring)}
-.ws-app.ws-closed .ws-rail{padding:22px 10px}
+  overflow-y:auto;transition:width var(--spring),padding var(--spring)}
+.ws-app.ws-closed .ws-rail{width:68px;padding:22px 10px}
 .ws-app.ws-closed .ws-brand div,
 .ws-app.ws-closed .ws-ezi-card,
 .ws-app.ws-closed .ws-nav span:not(.ic),
@@ -315,7 +315,8 @@ const CSS = `
 .ws-sw.on{background:var(--sage)}.ws-sw.on::after{transform:translateX(17px)}
 .ws-sw.brass.on{background:var(--brass)}
 /* main */
-.ws-main{min-width:0;display:flex;flex-direction:column}
+.ws-main{flex:1;height:100vh;overflow-y:auto;margin-left:262px;min-width:0;display:flex;flex-direction:column;transition:margin-left var(--spring)}
+.ws-app.ws-closed .ws-main{margin-left:68px}
 .ws-topbar{position:sticky;top:0;z-index:30;display:flex;align-items:center;gap:16px;
   padding:14px 26px;border-bottom:1px solid var(--paper-edge);
   background:linear-gradient(180deg,rgba(250,247,241,.92),rgba(250,247,241,.78));backdrop-filter:blur(8px)}
@@ -500,7 +501,7 @@ table.ws-table tbody tr:last-child td{border-bottom:none}
 .ws-tick .tk-main small{color:var(--ink-3);font-size:11.5px}
 /* ── WorkshopRoom Mobile — all inside @media, desktop untouched ── */
 @media(max-width:820px){
-  .ws-app,.ws-app.ws-closed{display:flex!important;flex-direction:column!important;grid-template-columns:none!important}
+  .ws-app,.ws-app.ws-closed{display:flex!important;flex-direction:column!important;height:auto!important;overflow:visible!important}
   
   /* Make the sidebar a static top header */
   .ws-rail{position:static!important;width:100%!important;height:auto!important;min-height:auto!important;border:none!important;padding:0!important;flex-shrink:0}
@@ -531,7 +532,7 @@ table.ws-table tbody tr:last-child td{border-bottom:none}
   .ws-count{position:absolute!important;top:8px!important;right:calc(50% - 20px)!important;padding:2px 5px!important;font-size:9px!important}
   
   /* Main content area */
-  .ws-main{min-height:0!important;overflow-x:hidden;padding-bottom:80px!important} /* padding for bottom nav */
+  .ws-main{margin-left:0!important;height:auto!important;overflow-y:visible!important;min-height:0!important;overflow-x:hidden;padding-bottom:80px!important} /* padding for bottom nav */
   
   /* Topbar (Title, clock, toggles) */
   .ws-topbar{display:flex!important;flex-direction:row!important;flex-wrap:wrap!important;gap:12px!important;justify-content:flex-start!important;padding:16px!important;align-items:center!important}
@@ -585,6 +586,12 @@ table.ws-table tbody tr:last-child td{border-bottom:none}
   /* Scale up layout & spacing */
   .ws-main {
     padding: 0 !important; /* Reset wrapper padding, spacing is handled by topbar/canvas */
+    margin-left: 280px !important;
+    height: 100vh !important;
+    overflow-y: auto !important;
+  }
+  .ws-app.ws-closed .ws-main {
+    margin-left: 96px !important;
   }
   .ws-canvas {
     padding: 30px 40px 80px !important;
@@ -1094,6 +1101,7 @@ export default function WorkshopRoom() {
     const freeStation = stations.find(s => !s.job);
     if (!freeStation) { addToast('All presses are busy — finish a run first', 'printer', 'warn'); return; }
     assignToStation(id, freeStation.id);
+    closeDrawer();
   }
 
   function assignToStation(orderId: string, stationId: string) {
@@ -1117,6 +1125,7 @@ export default function WorkshopRoom() {
       return { ...o, status: 'ready' as const, progress: 1, pickup };
     }));
     setStations(prev => prev.map(s => s.job === id ? { ...s, job: null } : s));
+    closeDrawer();
   }
 
   function handOver(id: string, code: string) {
@@ -1236,7 +1245,6 @@ export default function WorkshopRoom() {
         onDragStart={(e) => {
           e.dataTransfer.setData('text/plain', o.id);
           e.dataTransfer.effectAllowed = 'move';
-          // Make it look grabbed
           e.currentTarget.style.opacity = '0.5';
         }}
         onDragEnd={(e) => {
@@ -1861,12 +1869,6 @@ export default function WorkshopRoom() {
           </nav>
 
           <div style={{ flex: 1 }} />
-          <div className="ws-rail-foot">
-            <div className="ws-toggle">
-              <span>Ambient sound</span>
-              <button className="ws-sw brass" onClick={e => (e.currentTarget as HTMLButtonElement).classList.toggle('on')} />
-            </div>
-          </div>
         </aside>
 
         {/* MAIN */}

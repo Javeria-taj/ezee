@@ -82,15 +82,6 @@ const EziCharacter = React.memo(function EziCharacter({
                 <path d="M 75 95 Q 85 90 90 95" stroke="#2A2928" strokeWidth="3" fill="none" strokeLinecap="round" />
                 <path d="M 110 95 Q 115 90 125 95" stroke="#2A2928" strokeWidth="3" fill="none" strokeLinecap="round" />
               </>
-            ) : state === 'otp' ? (
-              // Glasses mode
-              <>
-                <circle cx="85" cy="105" r="15" fill="none" stroke="#2A2928" strokeWidth="3" />
-                <circle cx="115" cy="105" r="15" fill="none" stroke="#2A2928" strokeWidth="3" />
-                <line x1="100" y1="105" x2="100" y2="105" stroke="#2A2928" strokeWidth="3" />
-                <circle cx="85" cy="105" r="4" fill="#2A2928" />
-                <circle cx="115" cy="105" r="4" fill="#2A2928" />
-              </>
             ) : (
               // Normal eyes
               <>

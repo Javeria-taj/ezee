@@ -114,6 +114,7 @@
   width: 100%;
   max-width: 440px;
   box-shadow: var(--shadow-paper);
+  border: 1.5px solid rgba(42, 41, 40, 0.18);
   position: relative;
   z-index: 20;
   transition: all var(--transition-spring);
@@ -138,7 +139,7 @@
 .inputField {
   background: transparent;
   border: none;
-  border-bottom: 2px solid rgba(42, 41, 40, 0.1);
+  border-bottom: 2px solid rgba(42, 41, 40, 0.18);
   padding: 0.75rem 0;
   font-family: var(--font-body);
   font-size: 1.125rem;

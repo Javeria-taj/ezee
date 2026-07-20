@@ -490,34 +490,7 @@ export default function Settings({
           </form>
         </div>
 
-        {/* ════════ 3. Room Radio Toggle ════════ */}
-        <div style={sectionCard}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <div>
-              <h4 style={{ fontFamily: 'Space Grotesk', fontSize: '1rem', color: '#2A2928', margin: '0 0 0.2rem 0' }}>Room Radio Toggle</h4>
-              <p style={{ fontFamily: 'Instrument Sans', fontSize: '0.9rem', color: '#7A6D8C', margin: 0 }}>Lofi beats &amp; rainfall</p>
-            </div>
-            <div
-              onClick={() => {
-                const nextSound = !soundEnabled;
-                setSoundEnabled(nextSound);
-                audio.toggle(nextSound);
-              }}
-              style={togglePill(soundEnabled)}
-            >
-              <motion.div
-                animate={{ x: soundEnabled ? 24 : 2 }}
-                transition={{ type: 'spring', stiffness: 500, damping: 30 }}
-                style={{
-                  width: '24px', height: '24px',
-                  background: '#FAF7F1', borderRadius: '50%',
-                  position: 'absolute', top: '2px',
-                  boxShadow: '0 2px 5px rgba(0,0,0,0.2)',
-                }}
-              />
-            </div>
-          </div>
-        </div>
+
 
         {/* ════════ 4. Dark Mode Toggle ════════ */}
         <div style={sectionCard}>

@@ -927,6 +927,19 @@ export default function WorkshopRoom() {
     isDestructive: false,
     onConfirm: () => {}
   });
+  const [pickupPromptModal, setPickupPromptModal] = useState<{
+    isOpen: boolean;
+    orderId: string;
+    studentName: string;
+    pickupHint: string;
+    value: string;
+  }>({
+    isOpen: false,
+    orderId: '',
+    studentName: '',
+    pickupHint: '',
+    value: '',
+  });
 
   const triggerConfirm = (title: string, message: string, actionLabel: string, cancelLabel: string, isDestructive: boolean, onConfirm: () => void) => {
     setConfirmModal({
@@ -1699,8 +1712,13 @@ export default function WorkshopRoom() {
         <>
           <button className="ws-btn ghost" onClick={closeDrawer}>Close</button>
           <button className="ws-btn brass" onClick={() => {
-            const code = window.prompt(`Ask ${o.student.split(' ')[0]} for their pickup code:\n\n(hint: ${o.pickup})`);
-            if (code !== null) handOver(o.id, code.trim());
+            setPickupPromptModal({
+              isOpen: true,
+              orderId: o.id,
+              studentName: o.student.split(' ')[0],
+              pickupHint: o.pickup || '',
+              value: '',
+            });
           }}><Ic name="hand" size={15} /> Confirm pickup</button>
         </>
       );
@@ -1957,6 +1975,97 @@ export default function WorkshopRoom() {
                 {confirmModal.actionLabel}
               </button>
             </div>
+          </div>
+        </div>
+      )}
+      {/* Custom Pickup Prompt Modal */}
+      {pickupPromptModal.isOpen && (
+        <div 
+          className="ws-modal-overlay" 
+          onClick={e => { if (e.target === e.currentTarget) setPickupPromptModal(prev => ({ ...prev, isOpen: false })); }}
+        >
+          <div className="ws-modal-card" style={{ maxWidth: 420 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 4 }}>
+              <div style={{
+                width: 40, height: 40, borderRadius: 10,
+                background: night ? 'rgba(212, 175, 55, 0.18)' : 'rgba(184, 145, 46, 0.14)',
+                color: 'var(--brass)', display: 'grid', placeItems: 'center',
+                fontSize: 20, flexShrink: 0
+              }}>
+                <Ic name="hand" size={20} />
+              </div>
+              <div>
+                <h3 className="ws-modal-title" style={{ margin: 0, fontSize: 18 }}>Confirm Pickup</h3>
+                <p className="ws-modal-message" style={{ margin: '2px 0 0', fontSize: 13.5 }}>
+                  Ask <b>{pickupPromptModal.studentName}</b> for their pickup code:
+                </p>
+              </div>
+            </div>
+
+            <div style={{
+              background: night ? 'rgba(255, 255, 255, 0.05)' : 'rgba(42, 41, 40, 0.04)',
+              border: night ? '1px solid rgba(255,255,255,0.08)' : '1px solid var(--paper-edge)',
+              padding: '10px 14px', borderRadius: 8,
+              fontSize: 13, color: 'var(--brass)', fontFamily: 'Space Grotesk',
+              fontWeight: 600, margin: '14px 0 16px'
+            }}>
+              💡 (hint: {pickupPromptModal.pickupHint})
+            </div>
+
+            <form onSubmit={e => {
+              e.preventDefault();
+              if (pickupPromptModal.value.trim()) {
+                const ok = handOver(pickupPromptModal.orderId, pickupPromptModal.value.trim());
+                if (ok !== false) {
+                  setPickupPromptModal(prev => ({ ...prev, isOpen: false }));
+                }
+              }
+            }}>
+              <input
+                type="text"
+                autoFocus
+                placeholder="e.g. C44"
+                value={pickupPromptModal.value}
+                onChange={e => setPickupPromptModal(prev => ({ ...prev, value: e.target.value }))}
+                style={{
+                  width: '100%',
+                  padding: '12px 14px',
+                  borderRadius: 9,
+                  border: night ? '1px solid rgba(255,255,255,0.2)' : '1px solid var(--paper-edge)',
+                  background: night ? 'rgba(0,0,0,0.25)' : '#fff',
+                  color: night ? '#FAF7F1' : '#2A2928',
+                  fontFamily: 'Space Grotesk',
+                  fontSize: 16,
+                  fontWeight: 600,
+                  letterSpacing: '0.08em',
+                  textTransform: 'uppercase',
+                  outline: 'none',
+                  boxShadow: 'inset 0 1px 3px rgba(0,0,0,0.06)',
+                  marginBottom: 18
+                }}
+              />
+
+              <div className="ws-modal-actions">
+                <button 
+                  type="button" 
+                  className="ws-modal-btn cancel" 
+                  onClick={() => setPickupPromptModal(prev => ({ ...prev, isOpen: false }))}
+                >
+                  Cancel
+                </button>
+                <button 
+                  type="submit" 
+                  className="ws-modal-btn confirm primary"
+                  disabled={!pickupPromptModal.value.trim()}
+                  style={{
+                    opacity: !pickupPromptModal.value.trim() ? 0.6 : 1,
+                    cursor: !pickupPromptModal.value.trim() ? 'not-allowed' : 'pointer'
+                  }}
+                >
+                  Verify &amp; Hand Over
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}

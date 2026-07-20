@@ -28,6 +28,7 @@ interface CartItem {
   copies: number;
   shop: ShopDef;
   totalCost: number;
+  urgent?: boolean;
 }
 
 
@@ -171,6 +172,7 @@ export default function StudentDesk() {
   const [shop, setShop] = useState<ShopDef | null>(null);
   const [phase, setPhase] = useState<Phase>('desk');
   const [fileUploaded, setFileUploaded] = useState(false);
+  const [isRush, setIsRush] = useState(false);
 
   const [eziMood, setEziMood] = useState('calm');
   const [eziText, setEziText] = useState('');
@@ -213,7 +215,7 @@ export default function StudentDesk() {
   const [showCheckout, setShowCheckout] = useState(false);
   const [checkoutStep, setCheckoutStep] = useState<'pay' | 'confirmed' | 'tracking' | 'ready'>('pay');
   const [confirmedOrder, setConfirmedOrder] = useState<{
-    items: { fileName: string; pages: number; copies: number; mode: string; shop: ShopDef; totalCost: number }[];
+    items: { fileName: string; pages: number; copies: number; mode: string; shop: ShopDef; totalCost: number; urgent?: boolean }[];
     pickupCode: string;
     totalCost: number;
     totalSaved: number;
@@ -343,7 +345,8 @@ export default function StudentDesk() {
       print = Math.round(pages * per * copies * sidedMult);
     }
     const bind = BIND[binding] * copies;
-    return { print, bind, total: print + bind, per };
+    const rush = isRush ? 15 * copies : 0;
+    return { print, bind, rush, total: print + bind + rush, per };
   };
 
 
@@ -393,6 +396,7 @@ export default function StudentDesk() {
     setSize('a4');
     setBinding('none');
     setCopies(1);
+    setIsRush(false);
     setShowEcoPrompt(false);
     setCardRisen(false);
     setShowCheckout(false);
@@ -415,7 +419,8 @@ export default function StudentDesk() {
       binding,
       copies,
       shop: shop!,
-      totalCost: p.total
+      totalCost: p.total,
+      urgent: isRush,
     };
     setCart(prev => [...prev, item]);
     setCheckedCartItemIds(prev => [...prev, item.id]);
@@ -435,7 +440,7 @@ export default function StudentDesk() {
     const saved = Math.round(cost * 0.5);
     
     setConfirmedOrder({
-      items: [{ fileName, pages, copies, mode, shop: shop!, totalCost: cost }],
+      items: [{ fileName, pages, copies, mode, shop: shop!, totalCost: cost, urgent: isRush }],
       pickupCode: '', // will be set after payment
       totalCost: cost,
       totalSaved: saved,
@@ -970,6 +975,23 @@ export default function StudentDesk() {
               </div>
             </div>
 
+            {/* Rush Priority */}
+            <div className={styles.frow}>
+              <div className={styles.frowQ}>Priority Rush<small>Fast-track queue for urgent exams 🔥</small></div>
+              <div className={styles.opts}>
+                <button className={`${styles.opt} ${!isRush ? styles.on : ''}`} onClick={() => setIsRush(false)}>Standard</button>
+                <button 
+                  className={`${styles.opt} ${styles.rushOpt} ${isRush ? styles.on : ''}`} 
+                  onClick={() => {
+                    setIsRush(true);
+                    eziSays('Rush order activated! 🔥 Ezi moves your file to the front of the queue.', 'curious', 4000);
+                  }}
+                >
+                  🔥 Rush Order <span className={styles.optPrice}>+₹15</span>
+                </button>
+              </div>
+            </div>
+
             {/* Copies */}
             <div className={styles.frow}>
               <div className={styles.frowQ}>Copies</div>
@@ -990,6 +1012,12 @@ export default function StudentDesk() {
                 <div className={styles.tline}>
                   <span>Binding — {BINDL[binding].toLowerCase()} × {copies}</span>
                   <span className={styles.mono}>₹{p.bind}</span>
+                </div>
+              )}
+              {p.rush > 0 && (
+                <div className={styles.tline}>
+                  <span>🔥 Rush priority queue × {copies}</span>
+                  <span className={styles.mono}>₹{p.rush}</span>
                 </div>
               )}
               <div className={styles.ttotal}>

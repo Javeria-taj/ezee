@@ -1,12 +1,33 @@
 "use client";
 
-import React, { useRef } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import Link from "next/link";
 import { Reveal } from "./Reveal";
-import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
+import { motion, useMotionValue, useSpring, useTransform, useScroll } from "framer-motion";
 
 export default function HeroSection() {
   const containerRef = useRef<HTMLElement>(null);
+
+  // Typewriter cycling subheadlines
+  const subtitles = [
+    "No more waiting in queues.",
+    "Deadline? Already handled.",
+    "Your notes, warm and waiting.",
+  ];
+  const [subIdx, setSubIdx] = useState(0);
+  const [subVisible, setSubVisible] = useState(true);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setSubVisible(false);
+      setTimeout(() => {
+        setSubIdx((i) => (i + 1) % subtitles.length);
+        setSubVisible(true);
+      }, 400);
+    }, 3500);
+    return () => clearInterval(interval);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // For 3D Tilt
   const x = useMotionValue(0);
@@ -31,6 +52,10 @@ export default function HeroSection() {
     x.set(0);
     y.set(0);
   };
+
+  const { scrollY } = useScroll();
+  const yParallax = useTransform(scrollY, [0, 800], [0, 150]);
+  const opParallax = useTransform(scrollY, [0, 600], [1, 0.2]);
 
   return (
     <section
@@ -168,12 +193,48 @@ export default function HeroSection() {
               lineHeight: 1.6,
               color: "var(--text-secondary)",
               maxWidth: 430,
-              margin: "0 0 36px",
+              margin: "0 0 12px",
             }}
           >
             Upload your notes, customise every print, and collect them from a
-            cozy shop nearby — no more waiting in queues.
+            cozy shop nearby.
           </p>
+
+          {/* Cycling typewriter tagline */}
+          <div
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 8,
+              marginBottom: 34,
+            }}
+          >
+            <span
+              style={{
+                display: "inline-block",
+                width: 8,
+                height: 8,
+                borderRadius: "50%",
+                background: "var(--accent-primary)",
+                animation: "sunpulse 2s ease-in-out infinite",
+                flexShrink: 0,
+              }}
+            />
+            <span
+              style={{
+                fontFamily: "'Space Grotesk', sans-serif",
+                fontWeight: 600,
+                fontSize: "clamp(14px,1.3vw,16px)",
+                color: "var(--accent-primary)",
+                opacity: subVisible ? 1 : 0,
+                transform: subVisible ? "translateY(0)" : "translateY(6px)",
+                transition: "opacity 0.4s ease, transform 0.4s ease",
+                display: "inline-block",
+              }}
+            >
+              {subtitles[subIdx]}
+            </span>
+          </div>
 
           <div
             className="mobile-center-items"
@@ -260,18 +321,21 @@ export default function HeroSection() {
         </Reveal>
 
         {/* Hero Illustration */}
-        <Reveal
-          delay={0.15}
-          duration="1.2s"
+        {/* Right side graphic */}
+        <motion.div
+          className="mobile-hide"
           style={{
-            flex: "1 1 440px",
-            maxWidth: 560,
-            perspective: "1200px",
+            flex: "1 1 480px",
+            height: 520,
+            perspective: 1200,
+            position: "relative",
+            y: yParallax,
+            opacity: opParallax,
           }}
+          onMouseMove={handleMouseMove}
+          onMouseLeave={handleMouseLeave}
         >
           <motion.div
-            onMouseMove={handleMouseMove}
-            onMouseLeave={handleMouseLeave}
             style={{
               position: "relative",
               width: "100%",
@@ -407,7 +471,7 @@ export default function HeroSection() {
               </g>
             </svg>
           </motion.div>
-        </Reveal>
+        </motion.div>
       </div>
 
       {/* scroll cue */}

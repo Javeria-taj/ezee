@@ -134,6 +134,12 @@ body {
   outline-offset: 2px;
 }
 
+@keyframes livePing {
+  0%   { box-shadow: 0 0 0 0 rgba(110,231,183,.5); }
+  70%  { box-shadow: 0 0 0 6px rgba(110,231,183,0); }
+  100% { box-shadow: 0 0 0 0 rgba(110,231,183,0); }
+}
+
 @keyframes riseIn {
   from {
     opacity: 0.35;

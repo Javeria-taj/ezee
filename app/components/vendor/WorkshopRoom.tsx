@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useCallback, useRef } from 'react';
+import { Reorder } from 'framer-motion';
 
 /* ───────────────────────────────────────────────
    EZEE UNIVERSE — Workshop (Vendor) Dashboard
@@ -1351,7 +1352,22 @@ export default function WorkshopRoom() {
               ))}
             </div>
             {list.length ? (
-              <div className="ws-queue">{list.map(o => <Docket key={o.id} o={o} />)}</div>
+              <Reorder.Group 
+                axis="y" 
+                values={list} 
+                onReorder={(newOrder) => {
+                  const otherOrders = orders.filter(o => o.status !== vendorTab);
+                  setOrders([...newOrder, ...otherOrders]);
+                }} 
+                className="ws-queue" 
+                style={{ listStyle: 'none', padding: 0, margin: 0 }}
+              >
+                {list.map(o => (
+                  <Reorder.Item key={o.id} value={o} style={{ position: 'relative' }}>
+                    <Docket o={o} />
+                  </Reorder.Item>
+                ))}
+              </Reorder.Group>
             ) : (
               <div className="ws-empty">
                 <Ic name="bench" size={54} />

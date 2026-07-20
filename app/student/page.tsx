@@ -1,10 +1,14 @@
 'use client';
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { AnimatePresence } from 'framer-motion';
 import styles from './student.module.css';
 import Notifications from '@/app/components/dashboard/Notifications';
 import Settings from '@/app/components/dashboard/Settings';
 import Payments from '@/app/components/dashboard/Payments';
+import EziTip from '@/app/components/dashboard/EziTip';
+import Onboarding from '@/app/components/dashboard/Onboarding';
+import DeskStickers from '@/app/components/dashboard/DeskStickers';
 
 /* =====================================================================
    TYPE DEFINITIONS
@@ -81,6 +85,8 @@ const MEM = {
   set plant(v: number) { if (typeof window !== 'undefined') localStorage.setItem('ezee_print_plant', String(Math.min(3, v))); },
   get files(): ShelfFile[] { try { return JSON.parse(localStorage.getItem('ezee_print_files') || '[]'); } catch { return []; } },
   set files(v: ShelfFile[]) { if (typeof window !== 'undefined') localStorage.setItem('ezee_print_files', JSON.stringify(v.slice(-14))); },
+  get visited() { return typeof window !== 'undefined' ? localStorage.getItem('ezee_visited') === 'true' : false; },
+  set visited(v: boolean) { if (typeof window !== 'undefined') localStorage.setItem('ezee_visited', String(v)); },
 };
 
 /* =====================================================================
@@ -177,6 +183,7 @@ export default function StudentDesk() {
 
   const [spineActive, setSpineActive] = useState(1);
   const [activeModal, setActiveModal] = useState<ActiveModal>('none');
+  const [showOnboarding, setShowOnboarding] = useState(false);
   const [hasUnread, setHasUnread] = useState(true);
   const [settingsInitialTab, setSettingsInitialTab] = useState<'settings' | 'history'>('settings');
   const [toasts, setToasts] = useState<{ id: number; msg: string }[]>([]);
@@ -251,6 +258,12 @@ export default function StudentDesk() {
     // Load student name
     const storedName = localStorage.getItem('ezee_student_name');
     if (storedName) setStudentName(storedName);
+    
+    // Onboarding
+    if (!localStorage.getItem('ezee_onboarded')) {
+      setShowOnboarding(true);
+      localStorage.setItem('ezee_onboarded', 'true');
+    }
   }, []);
 
   /* --- Greeting --- */
@@ -345,6 +358,15 @@ export default function StudentDesk() {
     setSpineActive(2);
     setGuessNote('our guess — fix it if we\'re off');
     setSided('single');
+    if (!MEM.visited) {
+      setTimeout(() => eziSays("Ah, a new face. Welcome to the desk.", "happy", 4000), 1000);
+      MEM.visited = true;
+      setShowOnboarding(true);
+    } else {
+      setTimeout(() => {
+        eziSays(Math.random() > 0.5 ? "Back to the grind?" : "Desk is clear. Ready when you are.", "calm", 3500);
+      }, 1000);
+    }
     if (p > 40) {
       setShowEcoPrompt(true);
       eziSays(`Ooh, ${p} pages is a thick stack. Want to print double-sided to save money and a tree?`, 'curious', 8000);
@@ -736,6 +758,9 @@ export default function StudentDesk() {
                 <span>{sub}</span>
               </div>
 
+              {/* Ezi Tip of the day */}
+              <EziTip style={{ marginTop: 14, maxWidth: 360 }} />
+
           <div className={styles.deskScene}>
             {/* Ezi perch */}
             <div className={styles.eziPerch}>
@@ -757,7 +782,8 @@ export default function StudentDesk() {
               <div className={styles.breathe} dangerouslySetInnerHTML={{ __html: eziSVG(eziMoodResolved, night) }} />
             </div>
 
-            <div className={styles.desk}>
+            <div id="student-desk-area" className={styles.desk} style={{ position: 'relative' }}>
+              <DeskStickers />
               {/* Dropzone */}
               {!fileUploaded && (
                 <div
@@ -782,7 +808,7 @@ export default function StudentDesk() {
                   <div>
                     <div className={styles.dzHint}>Place your notes on the desk</div>
                     <div className={styles.dzSub}>
-                      drop a file here, or tap to browse
+                      Your first print is waiting to happen. Drop a file above.
                     </div>
                   </div>
                 </div>
@@ -1152,7 +1178,7 @@ export default function StudentDesk() {
                   
                   <div className={styles.trackLine}></div>
                   
-                  <div className={styles.trackStage}>
+                  <div className={`${styles.trackStage}`}>
                     <div className={styles.trackStageIcon}>
                       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
                     </div>
@@ -1264,6 +1290,12 @@ export default function StudentDesk() {
           <span>EZEE — print. study. repeat.</span>
           <span className={styles.footerQuote}>{footQ}</span>
         </footer>
+        {/* Onboarding Overlay */}
+        <AnimatePresence>
+          {showOnboarding && (
+            <Onboarding onComplete={() => setShowOnboarding(false)} />
+          )}
+        </AnimatePresence>
       </main>
 
       {/* ========== PAPER PLANE ========== */}

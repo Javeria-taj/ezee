@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 
@@ -9,6 +9,7 @@ import Image from "next/image";
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [isDark, setIsDark] = useState(false);
+  const [scrollPct, setScrollPct] = useState(0);
 
   useEffect(() => {
     // Force light mode on load
@@ -46,22 +47,48 @@ export default function Navbar() {
         nav.style.transform = "translateX(-50%) translateY(0px)";
       }
     };
+    const onScrollProgress = () => {
+      const doc = document.documentElement;
+      const total = doc.scrollHeight - doc.clientHeight;
+      if (total > 0) setScrollPct((window.scrollY / total) * 100);
+    };
     window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("scroll", onScrollProgress, { passive: true });
     onScroll();
-    return () => window.removeEventListener("scroll", onScroll);
+    onScrollProgress();
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("scroll", onScrollProgress);
+    };
   }, []);
 
   const closeMenu = () => setMenuOpen(false);
 
   return (
     <>
+      {/* Scroll progress bar */}
+      <div
+        aria-hidden
+        style={{
+          position: "fixed",
+          top: 0,
+          left: 0,
+          zIndex: 9000,
+          height: 2.5,
+          width: `${scrollPct}%`,
+          background: "linear-gradient(to right, #D48A70, #A9B59D)",
+          transition: "width 0.1s linear",
+          pointerEvents: "none",
+          borderRadius: "0 2px 2px 0",
+        }}
+      />
       <nav
         id="main-nav"
         style={{
           position: "fixed",
           top: 20,
           left: "50%",
-          transform: "translateX(-50%)",
+          transform: "translateX(-50%) translateY(0px)",
           zIndex: 8000,
           opacity: menuOpen ? 0 : 1,
           pointerEvents: menuOpen ? "none" : "auto",
@@ -75,7 +102,7 @@ export default function Navbar() {
           border: "1px solid var(--nav-border)",
           borderRadius: 32,
           boxShadow:
-            "inset 0 1px 0 rgba(255,255,255,.9), 0 10px 30px -12px rgba(42,41,40,.08), 0 2px 6px rgba(42,41,40,.02)",
+            "inset 0 1px 0 rgba(255,255,255,.05), 0 10px 30px -12px rgba(0,0,0,.1), 0 2px 6px rgba(0,0,0,.05)",
           transition: "opacity .3s ease, box-shadow .4s ease, background .4s ease, transform .4s cubic-bezier(.16, 1, .3, 1)",
         }}
       >

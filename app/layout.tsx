@@ -8,6 +8,18 @@ export const metadata: Metadata = {
   title: "EZEE — Print. Study. Repeat.",
   description:
     "Upload your notes, customise every print, and collect them from a cozy shop nearby — no more waiting in queues.",
+  openGraph: {
+    title: "EZEE — Print. Study. Repeat.",
+    description: "Upload your notes, customise every print, and collect them from a cozy shop nearby.",
+    url: 'https://ezee.edu',
+    siteName: 'EZEE',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: "EZEE — Print. Study. Repeat.",
+    description: "Upload your notes, customise every print, and collect them from a cozy shop nearby.",
+  }
 };
 
 export default function RootLayout({

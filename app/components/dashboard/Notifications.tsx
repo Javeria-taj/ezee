@@ -137,6 +137,13 @@ export default function Notifications({ onClose }: NotificationsProps) {
 
         {/* Letter Stack */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+          {letters.length === 0 && (
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '40px 20px', gap: 10, textAlign: 'center' }}>
+              <span style={{ fontSize: 40 }}>😴</span>
+              <p style={{ fontFamily: "'Space Grotesk', sans-serif", fontWeight: 700, fontSize: 16, color: '#2A2928', margin: 0 }}>All quiet here.</p>
+              <p style={{ fontFamily: "'Instrument Sans', sans-serif", fontSize: 13, color: 'rgba(42,41,40,.5)', margin: 0, fontStyle: 'italic' }}>Ezi's napping. Check back later.</p>
+            </div>
+          )}
           {letters.map((letter, idx) => {
             const isOpen = readSet.has(letter.id);
             return (

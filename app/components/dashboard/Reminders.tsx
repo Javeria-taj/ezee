@@ -97,6 +97,30 @@ export default function Reminders({ onClose }: RemindersProps) {
         {/* Sticky Notes Grid */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(185px, 1fr))', gap: '1.5rem', minHeight: '200px', marginBottom: '1.5rem' }}>
           <AnimatePresence>
+          {reminders.length === 0 && (
+            <motion.div
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              style={{
+                gridColumn: '1 / -1',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: 8,
+                padding: '40px 0',
+                color: 'rgba(250,247,241,0.45)',
+              }}
+            >
+              <span style={{ fontSize: 36 }}>🌿</span>
+              <p style={{ fontFamily: "'Space Grotesk', sans-serif", fontWeight: 600, fontSize: 15, margin: 0, textAlign: 'center' }}>
+                Nothing due today.
+              </p>
+              <p style={{ fontFamily: "'Instrument Sans', sans-serif", fontSize: 13, margin: 0, fontStyle: 'italic', textAlign: 'center' }}>
+                Ezi approves.
+              </p>
+            </motion.div>
+          )}
           {reminders.map((reminder) => (
             <motion.div
               key={reminder.id}

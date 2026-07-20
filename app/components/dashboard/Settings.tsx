@@ -250,13 +250,80 @@ export default function Settings({
                       </div>
                     </div>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                      <div style={{
-                        fontFamily: 'Space Grotesk',
-                        fontWeight: 600,
-                        fontSize: '0.95rem',
-                        color: '#2A2928',
-                      }}>
-                        ₹{costVal}
+                      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '4px' }}>
+                        <div style={{
+                          fontFamily: 'Space Grotesk',
+                          fontWeight: 600,
+                          fontSize: '0.95rem',
+                          color: '#2A2928',
+                        }}>
+                          ₹{costVal}
+                        </div>
+                        <button
+                          onClick={() => {
+                            const printWindow = window.open('', '_blank');
+                            if (!printWindow) return;
+                            printWindow.document.write(`
+                              <html>
+                                <head>
+                                  <title>Receipt - ${f.title}</title>
+                                  <style>
+                                    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; padding: 40px; color: #2A2928; max-width: 400px; margin: 0 auto; }
+                                    .header { border-bottom: 2px solid #2A2928; padding-bottom: 20px; margin-bottom: 20px; }
+                                    h1 { margin: 0; font-size: 24px; font-weight: 800; }
+                                    .row { display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 14px; }
+                                    .total { font-weight: bold; border-top: 1px dashed #A9B59D; padding-top: 15px; margin-top: 20px; font-size: 18px; color: #D48A70; }
+                                  </style>
+                                </head>
+                                <body>
+                                  <div class="header">
+                                    <h1>EZEE Receipt</h1>
+                                    <p style="color: #7A6D8C; font-size: 12px; margin-top: 5px;">${dateStr}</p>
+                                  </div>
+                                  <div class="row">
+                                    <span style="color: #7A6D8C;">Document</span>
+                                    <span style="font-weight: 600;">${f.title}</span>
+                                  </div>
+                                  <div class="row">
+                                    <span style="color: #7A6D8C;">Pages</span>
+                                    <span style="font-weight: 600;">${f.pages}</span>
+                                  </div>
+                                  <div class="row">
+                                    <span style="color: #7A6D8C;">Shop</span>
+                                    <span style="font-weight: 600;">${f.shop}</span>
+                                  </div>
+                                  <div class="row total">
+                                    <span>Total Paid</span>
+                                    <span>₹${costVal}</span>
+                                  </div>
+                                  <p style="margin-top:40px; font-size:12px; color:#A9B59D; text-align: center; font-weight: 600;">Print. Study. Repeat.</p>
+                                  <script>
+                                    window.onload = () => { window.print(); }
+                                  </script>
+                                </body>
+                              </html>
+                            `);
+                            printWindow.document.close();
+                            if (onToast) onToast(`Opening receipt for ${f.title}...`);
+                          }}
+                          style={{
+                            background: 'none',
+                            border: 'none',
+                            padding: 0,
+                            fontFamily: 'Space Grotesk',
+                            fontSize: '0.7rem',
+                            color: '#7A6D8C',
+                            textDecoration: 'underline',
+                            cursor: 'pointer',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '3px'
+                          }}
+                          aria-label="Download receipt"
+                        >
+                          <svg viewBox="0 0 24 24" width="10" height="10" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                          Receipt
+                        </button>
                       </div>
                       <button 
                         onClick={() => {

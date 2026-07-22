@@ -18,12 +18,46 @@ export default function WorkshopLogin() {
   const [shopName, setShopName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [location, setLocation] = useState('');
+  const [loadingLocation, setLoadingLocation] = useState(false);
 
   useEffect(() => {
     setMounted(true);
     // Ensure the universe is set to "Rain" for the entrance vibe
     setUniverseState({ weather: 'rain', timeOfDay: 'goldenHour' });
   }, [setUniverseState]);
+
+  const handleGetLocation = () => {
+    if (!navigator.geolocation) {
+      alert('Geolocation is not supported by your browser.');
+      return;
+    }
+    setLoadingLocation(true);
+    navigator.geolocation.getCurrentPosition(
+      async (position) => {
+        try {
+          const { latitude, longitude } = position.coords;
+          const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&accept-language=en`);
+          if (res.ok) {
+            const data = await res.json();
+            const address = data.display_name || `${data.address?.road || 'Campus Road'}, ${data.address?.suburb || 'College Area'}`;
+            setLocation(address);
+          } else {
+            setLocation('Campus Hub, Block C (Auto-detected)');
+          }
+        } catch (error) {
+          setLocation('Campus Hub, Block C (Auto-detected)');
+        } finally {
+          setLoadingLocation(false);
+        }
+      },
+      (error) => {
+        setLoadingLocation(false);
+        alert('Unable to retrieve location. Please type manually or enable location permissions.');
+      },
+      { enableHighAccuracy: true, timeout: 8000 }
+    );
+  };
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -35,6 +69,18 @@ export default function WorkshopLogin() {
     if (shopId === 'error') {
       setLoginState('error');
       return;
+    }
+
+    if (authMode === 'signup') {
+      const details = {
+        id: shopId || 'WK-1024',
+        name: shopName || 'Morning Star Press',
+        email: email || 'morningstar@ezee.prints',
+        college: 'Ezee Institute of Technology',
+        joined: new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' }),
+        location: location || 'Admin block'
+      };
+      localStorage.setItem('ezee_shop_details', JSON.stringify(details));
     }
 
     // Call the API route — it sets the httpOnly cookie via Set-Cookie header
@@ -202,6 +248,28 @@ export default function WorkshopLogin() {
                     disabled={loginState === 'loading' || loginState === 'success'}
                     style={{ padding: '0.8rem', border: '1px solid #DDD', borderRadius: '6px', background: '#FAF9F7', fontSize: '1rem', outline: 'none', transition: 'border 0.3s' }}
                     placeholder="shop@example.com"
+                  />
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                  <label style={{ fontSize: '0.9rem', fontWeight: 600, color: '#444', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <span>Location</span>
+                    <button 
+                      type="button"
+                      onClick={handleGetLocation}
+                      disabled={loadingLocation || loginState === 'loading' || loginState === 'success'}
+                      style={{ background: 'none', border: 'none', color: '#8A5034', fontSize: '0.8rem', fontWeight: 600, cursor: 'pointer', textDecoration: 'underline', outline: 'none', display: 'flex', alignItems: 'center', gap: '4px' }}
+                    >
+                      {loadingLocation ? 'Detecting...' : '📍 Access Current Location'}
+                    </button>
+                  </label>
+                  <input 
+                    type="text" 
+                    value={location}
+                    onChange={(e) => setLocation(e.target.value)}
+                    disabled={loginState === 'loading' || loginState === 'success'}
+                    style={{ padding: '0.8rem', border: '1px solid #DDD', borderRadius: '6px', background: '#FAF9F7', fontSize: '1rem', outline: 'none', transition: 'border 0.3s' }}
+                    placeholder="Enter manually or auto-detect"
+                    required
                   />
                 </div>
               </>

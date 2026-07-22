@@ -170,6 +170,16 @@ export default function StudentDesk() {
   }, []);
 
   const [shop, setShop] = useState<ShopDef | null>(null);
+  const [dynamicShop, setDynamicShop] = useState<any>(null);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const stored = localStorage.getItem('ezee_shop_details');
+      if (stored) {
+        try { setDynamicShop(JSON.parse(stored)); } catch (e) {}
+      }
+    }
+  }, []);
   const [phase, setPhase] = useState<Phase>('desk');
   const [fileUploaded, setFileUploaded] = useState(false);
   const [isRush, setIsRush] = useState(false);
@@ -365,7 +375,6 @@ export default function StudentDesk() {
     if (!MEM.visited) {
       setTimeout(() => eziSays("Ah, a new face. Welcome to the desk.", "happy", 4000), 1000);
       MEM.visited = true;
-      setShowOnboarding(true);
     } else {
       setTimeout(() => {
         eziSays(Math.random() > 0.5 ? "Back to the grind?" : "Desk is clear. Ready when you are.", "calm", 3500);
@@ -1099,32 +1108,45 @@ export default function StudentDesk() {
           <p className={styles.lede}>Three shops near campus, each with its own temperament. The time shown is until your pages are warm and ready.</p>
 
           <div className={styles.shops}>
-            {SHOPS.map(s => (
-              <button
-                key={s.id}
-                className={`${styles.shop} ${shop?.id === s.id ? styles.on : ''}`}
-                style={{ '--shop-accent': s.accent } as React.CSSProperties}
-                onClick={() => {
-                  setShop(s);
-                  setSpineActive(4);
-                  eziSays(`${s.name}. Their window's already glowing.`, 'happy', 3000);
-                  setTimeout(() => {
-                    s4NextRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                  }, 350);
-                }}
-              >
-                <span className={styles.picktick}>
-                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6L9 17l-5-5" /></svg>
-                </span>
-              <div className={styles.storefront}>
-                  <div className={styles.awning}></div>
-                  <div className={styles.shopwin}></div>
-                </div>
-                <h4>{s.name}</h4>
-                <div className={styles.pers}>{s.pers}</div>
-                <div className={styles.eta}>~{s.eta[0]}–{s.eta[1]} min</div>
-              </button>
-            ))}
+            {SHOPS.map(s => {
+              const locationsMap: Record<string, string> = {
+                central: 'Block A · Main gate',
+                nightowl: 'Hostel circle',
+                morning: dynamicShop?.location || 'Admin block',
+              };
+              const displayName = s.id === 'morning' && dynamicShop?.name ? dynamicShop.name : s.name;
+              const displayLoc = locationsMap[s.id] || 'Campus Area';
+              return (
+                <button
+                  key={s.id}
+                  className={`${styles.shop} ${shop?.id === s.id ? styles.on : ''}`}
+                  style={{ '--shop-accent': s.accent } as React.CSSProperties}
+                  onClick={() => {
+                    const selectedShopDef = { ...s, name: displayName };
+                    setShop(selectedShopDef);
+                    setSpineActive(4);
+                    eziSays(`${displayName}. Their window's already glowing.`, 'happy', 3000);
+                    setTimeout(() => {
+                      s4NextRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }, 350);
+                  }}
+                >
+                  <span className={styles.picktick}>
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6L9 17l-5-5" /></svg>
+                  </span>
+                  <div className={styles.storefront}>
+                    <div className={styles.awning}></div>
+                    <div className={styles.shopwin}></div>
+                  </div>
+                  <h4>{displayName}</h4>
+                  <div style={{ fontSize: '0.8rem', color: '#D48A70', fontWeight: 600, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '3px', marginTop: '2px', marginBottom: '4px' }}>
+                    <span>📍 {displayLoc}</span>
+                  </div>
+                  <div className={styles.pers}>{s.pers}</div>
+                  <div className={styles.eta}>~{s.eta[0]}–{s.eta[1]} min</div>
+                </button>
+              );
+            })}
           </div>
         </section>
 

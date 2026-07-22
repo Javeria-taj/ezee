@@ -975,7 +975,8 @@ export default function WorkshopRoom() {
       name: 'Morning Star Press',
       email: 'morningstar@ezee.prints',
       college: 'Ezee Institute of Technology',
-      joined: 'March 2026'
+      joined: 'March 2026',
+      location: 'Admin block'
     };
   });
 
@@ -1575,6 +1576,15 @@ export default function WorkshopRoom() {
                       style={{ padding: '8px', border: '1px solid var(--paper-edge)', borderRadius: '6px', fontSize: '13px', background: '#fff', color: 'var(--ink)', outline: 'none' }}
                     />
                   </div>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                    <label style={{ fontSize: '11px', fontWeight: 600, color: 'var(--ink-3)', textTransform: 'uppercase', fontFamily: 'Space Grotesk' }}>Location</label>
+                    <input 
+                      type="text" 
+                      value={shopDetails.location || ''} 
+                      onChange={e => setShopDetails({ ...shopDetails, location: e.target.value })}
+                      style={{ padding: '8px', border: '1px solid var(--paper-edge)', borderRadius: '6px', fontSize: '13px', background: '#fff', color: 'var(--ink)', outline: 'none' }}
+                    />
+                  </div>
                 </div>
               ) : (
                 <div className="ws-kv">
@@ -1588,6 +1598,8 @@ export default function WorkshopRoom() {
                   <span className="v">{shopDetails.college}</span>
                   <span className="k">Joined</span>
                   <span className="v">{shopDetails.joined}</span>
+                  <span className="k">Location</span>
+                  <span className="v">{shopDetails.location || 'Admin block'}</span>
                 </div>
               )}
             </div>

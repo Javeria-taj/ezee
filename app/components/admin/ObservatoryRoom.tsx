@@ -443,6 +443,16 @@ export default function ObservatoryRoom() {
   const [activeBar, setActiveBar] = useState<number | null>(null);
   const [timeframe, setTimeframe] = useState<'daily' | 'weekly' | 'monthly'>('daily');
   const [selectedPeriod, setSelectedPeriod] = useState<string | null>(null);
+  const [dynamicShop, setDynamicShop] = useState<any>(null);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const stored = localStorage.getItem('ezee_shop_details');
+      if (stored) {
+        try { setDynamicShop(JSON.parse(stored)); } catch (e) {}
+      }
+    }
+  }, []);
 
   useEffect(() => {
     document.body.classList.toggle('night', night);
@@ -696,14 +706,22 @@ export default function ObservatoryRoom() {
           <table className="obs-table">
             <thead><tr><th>Shop</th><th>Presses</th><th>Load</th><th>Rating</th><th>Today</th><th>Status</th></tr></thead>
             <tbody>
-              {VENDORS_DATA.filter((_, i) => vendorStates[i]?.status === 'ok').map((v, i) => (
-                <tr key={v[0] as string}>
-                  <td><div className="obs-cell-name"><div className="obs-avatar" style={{ background: v[8] as string }}>{v[7]}</div><div><b>{v[0]}</b><small>{v[1]}</small></div></div></td>
-                  <td>{v[3]}</td><td><LoadBadge l={v[4] as string} /></td>
-                  <td className="mono">★ {v[5]}</td><td className="mono">{v[6]}</td>
-                  <td><span className="obs-badge ok"><span className="d" />Healthy</span></td>
-                </tr>
-              ))}
+              {VENDORS_DATA.filter((_, i) => vendorStates[i]?.status === 'ok').map((v, i) => {
+                let shopName = v[0];
+                let shopLocation = v[1];
+                if (v[0] === 'Morning Star Press' && dynamicShop) {
+                  shopName = dynamicShop.name || shopName;
+                  shopLocation = dynamicShop.location || shopLocation;
+                }
+                return (
+                  <tr key={v[0] as string}>
+                    <td><div className="obs-cell-name"><div className="obs-avatar" style={{ background: v[8] as string }}>{v[7]}</div><div><b>{shopName}</b><small>{shopLocation}</small></div></div></td>
+                    <td>{v[3]}</td><td><LoadBadge l={v[4] as string} /></td>
+                    <td className="mono">★ {v[5]}</td><td className="mono">{v[6]}</td>
+                    <td><span className="obs-badge ok"><span className="d" />Healthy</span></td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </div>
@@ -723,6 +741,12 @@ export default function ObservatoryRoom() {
           <thead><tr><th>Shop</th><th>KYC</th><th>Presses</th><th>Rating</th><th>Revenue (mo)</th><th /></tr></thead>
           <tbody>
             {VENDORS_DATA.map((v, i) => {
+              let shopName = v[0];
+              let shopLocation = v[1];
+              if (v[0] === 'Morning Star Press' && dynamicShop) {
+                shopName = dynamicShop.name || shopName;
+                shopLocation = dynamicShop.location || shopLocation;
+              }
               const st = vendorStates[i]?.status || 'pend';
               const kyc = st === 'ok'
                 ? <span className="obs-badge ok"><span className="d" />Verified</span>
@@ -731,7 +755,7 @@ export default function ObservatoryRoom() {
                 : <span className="obs-badge pend"><span className="d" />Pending</span>;
               const act = st === 'pend' ? (
                 <>
-                  <button className="obs-btn ghost sm" onClick={() => addToast(`Opening KYC documents for ${v[0]}…`, 'scroll')}>
+                  <button className="obs-btn ghost sm" onClick={() => addToast(`Opening KYC documents for ${shopName}…`, 'scroll')}>
                     <Ic name="scroll" size={14} /> Docs
                   </button>
                   <button className="obs-btn sage sm" onClick={() => approveVendor(i)}>
@@ -745,7 +769,7 @@ export default function ObservatoryRoom() {
               );
               return (
                 <tr key={v[0] as string}>
-                  <td><div className="obs-cell-name"><div className="obs-avatar" style={{ background: v[8] as string }}>{v[7]}</div><div><b>{v[0]}</b><small>{v[1]}</small></div></div></td>
+                  <td><div className="obs-cell-name"><div className="obs-avatar" style={{ background: v[8] as string }}>{v[7]}</div><div><b>{shopName}</b><small>{shopLocation}</small></div></div></td>
                   <td>{kyc}</td><td>{v[3]}</td>
                   <td className="mono">{v[5] ? `★ ${v[5]}` : '—'}</td>
                   <td className="mono">{v[6]}</td>

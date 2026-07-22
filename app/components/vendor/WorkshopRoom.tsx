@@ -1479,7 +1479,6 @@ export default function WorkshopRoom() {
         <div className="ws-stats">
           <Stat label="Today" big={`₹${earnedToday.toLocaleString('en-IN')}`} color="var(--sage)" trail={`${doneCount} orders`} />
           <Stat label="This week" big="₹9,640" color="var(--ink)" trail="+12% vs last" />
-          <Stat label="Platform fee" big="₹964" color="var(--ink-3)" trail="10% commission" />
           <Stat label="Next payout" big="₹8,676" color="var(--brass)" trail="settles Friday" />
         </div>
         <div className="ws-ledger">

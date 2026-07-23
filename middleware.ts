@@ -24,9 +24,27 @@ export function middleware(request: NextRequest) {
     }
   }
 
+  // Protect /student routes
+  if (pathname === '/student' || pathname.startsWith('/student/')) {
+    const hasStudentSession = request.cookies.has('ezee_student_session');
+
+    // Redirect to login if no session and not already on student auth page
+    if (!hasStudentSession && pathname !== '/student/auth' && pathname !== '/auth') {
+      return NextResponse.redirect(new URL('/auth', request.url));
+    }
+  }
+
+  // Redirect to /student if already logged in and visiting auth page
+  if (pathname === '/auth' || pathname === '/student/auth') {
+    const hasStudentSession = request.cookies.has('ezee_student_session');
+    if (hasStudentSession) {
+      return NextResponse.redirect(new URL('/student', request.url));
+    }
+  }
+
   return NextResponse.next();
 }
 
 export const config = {
-  matcher: ['/observatory/:path*', '/workshop/:path*'],
+  matcher: ['/observatory/:path*', '/workshop/:path*', '/student/:path*', '/auth', '/student/auth'],
 };

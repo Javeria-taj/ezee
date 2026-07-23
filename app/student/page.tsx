@@ -262,8 +262,15 @@ export default function StudentDesk() {
     return () => clearInterval(iv);
   }, []);
 
-  /* --- Load shelf from localStorage --- */
+  /* --- Load shelf from localStorage & auth check --- */
   useEffect(() => {
+    const hasCookie = typeof document !== 'undefined' && document.cookie.includes('ezee_student_session=true');
+    const hasLocalSession = typeof window !== 'undefined' && localStorage.getItem('ezee_student_session') === 'true';
+    if (!hasCookie && !hasLocalSession) {
+      window.location.href = '/auth';
+      return;
+    }
+
     setShelfFiles(MEM.files);
     setShelfOrders(MEM.orders);
     setShelfPages(MEM.pages);

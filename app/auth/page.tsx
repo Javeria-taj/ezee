@@ -34,10 +34,18 @@ export default function AuthPage() {
   // Handle signature transition on success
   useEffect(() => {
     if (authState === 'success') {
+      fetch('/api/auth/student', { method: 'POST' }).catch(() => {});
+      document.cookie = 'ezee_student_session=true; path=/; sameSite=lax';
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('ezee_student_session', 'true');
+        if (!localStorage.getItem('ezee_student_name')) {
+          localStorage.setItem('ezee_student_name', 'Student');
+        }
+      }
       const timer = setTimeout(() => {
         setZoomIn(true);
         setTimeout(() => {
-          router.push('/student');
+          window.location.href = '/student';
         }, 500);
       }, 600);
       return () => clearTimeout(timer);

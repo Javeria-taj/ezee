@@ -61,20 +61,23 @@ export default function Settings({
     }
   };
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
     if (typeof window !== 'undefined') {
       localStorage.removeItem('ezee_student_name');
+      localStorage.removeItem('ezee_student_session');
       document.cookie = 'ezee_student_session=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+      await fetch('/api/auth/student', { method: 'DELETE' }).catch(() => {});
       window.location.href = '/auth';
     }
   };
 
-  const handleDelete = () => {
+  const handleDelete = async () => {
     if (typeof window !== 'undefined') {
       // Clear all ezee data
       const keys = Object.keys(localStorage).filter(k => k.startsWith('ezee_'));
       keys.forEach(k => localStorage.removeItem(k));
       document.cookie = 'ezee_student_session=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+      await fetch('/api/auth/student', { method: 'DELETE' }).catch(() => {});
       window.location.href = '/auth';
     }
   };

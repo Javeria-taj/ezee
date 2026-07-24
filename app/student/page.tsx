@@ -164,7 +164,8 @@ export default function StudentDesk() {
   const [size, setSize] = useState<'a4' | 'a3'>('a4');
   const [binding, setBinding] = useState<'none' | 'staple' | 'spiral' | 'hardcover'>('none');
   const [copies, setCopies] = useState(1);
-  const [slipNo] = useState<number>(() => 1000 + Math.floor(Math.random() * 9000));
+  const [slipNo, setSlipNo] = useState<number | null>(null);
+  const [dynamicShop, setDynamicShop] = useState<Record<string, string> | null>(null);
   const [shop, setShop] = useState<ShopDef | null>(null);
 
   const [phase, setPhase] = useState<Phase>('desk');
@@ -175,15 +176,19 @@ export default function StudentDesk() {
   const [eziText, setEziText] = useState('');
   const [eziVisible, setEziVisible] = useState(false);
   const [showEcoPrompt, setShowEcoPrompt] = useState(false);
-  const [dynamicShop] = useState<Record<string, string> | null>(() => {
-    if (typeof window !== 'undefined') {
-      const stored = localStorage.getItem('ezee_shop_details');
-      if (stored) {
-        try { return JSON.parse(stored); } catch {}
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setSlipNo(1000 + Math.floor(Math.random() * 9000));
+      if (typeof window !== 'undefined') {
+        const stored = localStorage.getItem('ezee_shop_details');
+        if (stored) {
+          try { setDynamicShop(JSON.parse(stored)); } catch {}
+        }
       }
-    }
-    return null;
-  });
+    }, 0);
+    return () => clearTimeout(timer);
+  }, []);
   const [journeyStep, setJourneyStep] = useState(-1);
   const [barWidth, setBarWidth] = useState(0);
   const [pickupCode, setPickupCode] = useState('');
@@ -708,68 +713,53 @@ export default function StudentDesk() {
           <span className={styles.mono}>{clock}</span>
         </div>
 
-        {/* Mobile quick upload button */}
-        <button 
-          className={styles.mobileQuickUpload}
-          title="Upload Document" 
-          onClick={() => fileInputRef.current?.click()}
-        >
-          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-            <polyline points="17 8 12 3 7 8" />
-            <line x1="12" y1="3" x2="12" y2="15" />
-          </svg>
-          <span>Upload</span>
-        </button>
+        {/* Header Action Buttons */}
+        <div className={styles.headerActions}>
+          {/* Cart (Desktop only in header) */}
+          <button 
+            className={`${styles.headerIcon} ${styles.desktopOnlyHeaderIcon}`} 
+            style={{ position: 'relative' }}
+            title="Cart" 
+            onClick={() => {
+              if (cart.length > 0) {
+                setActiveModal('cart');
+              } else {
+                toast("Your cart is empty");
+              }
+            }}
+          >
+            {cart.length > 0 && (
+              <span className={styles.cartBadgeCount}>{cart.length}</span>
+            )}
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+              <circle cx="9" cy="21" r="1" />
+              <circle cx="20" cy="21" r="1" />
+              <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
+            </svg>
+          </button>
 
-        {/* Bell */}
-        <button className={styles.headerIcon} style={{ position: 'relative' }} title="Letters" onClick={() => { setActiveModal('notifications'); setHasUnread(false); }}>
-          {hasUnread && <span className={styles.unreadDot} />}
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
-            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 0 1-3.46 0" />
-          </svg>
-        </button>
+          {/* Lamp (Desktop only in header) */}
+          <button
+            className={`${styles.headerIcon} ${styles.desktopOnlyHeaderIcon}`}
+            title="Lamp"
+            onClick={toggleNight}
+          >
+            <span className={styles.glowdot} />
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"><path d="M8 3h8l3 8H5l3-8zM12 11v7M8 21h8" /></svg>
+          </button>
 
-        {/* Cart */}
-        <button 
-          className={styles.headerIcon} 
-          style={{ position: 'relative' }}
-          title="Cart" 
-          onClick={() => {
-            if (cart.length > 0) {
-              setActiveModal('cart');
-            } else {
-              toast("Your cart is empty");
-            }
-          }}
-        >
-          {cart.length > 0 && (
-            <span className={styles.cartBadgeCount}>{cart.length}</span>
-          )}
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-            <circle cx="9" cy="21" r="1" />
-            <circle cx="20" cy="21" r="1" />
-            <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
-          </svg>
-        </button>
+          {/* Notifications (Always in top header) */}
+          <button className={styles.headerIcon} style={{ position: 'relative' }} title="Notifications" onClick={() => { setActiveModal('notifications'); setHasUnread(false); }}>
+            {hasUnread && <span className={styles.unreadDot} />}
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
+              <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 0 1-3.46 0" />
+            </svg>
+          </button>
 
-
-
-
-
-        {/* Lamp (night toggle) */}
-        <button
-          className={styles.headerIcon}
-          title="Lamp"
-          onClick={toggleNight}
-        >
-          <span className={styles.glowdot} />
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"><path d="M8 3h8l3 8H5l3-8zM12 11v7M8 21h8" /></svg>
-        </button>
-
-        {/* Avatar */}
-        <div className={styles.avatarCircle} onClick={() => { setSettingsInitialTab('settings'); setActiveModal('settings'); }}>
-          {studentName === 'friend' ? '✦' : studentName.charAt(0).toUpperCase()}
+          {/* Avatar / Profile (Always in top header) */}
+          <div className={styles.avatarCircle} title="Profile" onClick={() => { setSettingsInitialTab('settings'); setActiveModal('settings'); }}>
+            {studentName === 'friend' ? '✦' : studentName.charAt(0).toUpperCase()}
+          </div>
         </div>
       </header>
 
@@ -1412,6 +1402,72 @@ export default function StudentDesk() {
       <svg ref={planeRef} className={styles.plane} viewBox="0 0 24 24" fill="none" stroke="#2A2928" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
         <path d="M22 2 11 13M22 2l-7 20-4-9-9-4 20-7z" fill="#FAF7F1" />
       </svg>
+
+      {/* ========== MOBILE BOTTOM NAVIGATION BAR ========== */}
+      <nav className={styles.mobileBottomNav}>
+        {/* Desk */}
+        <button 
+          className={styles.mobileNavBtn} 
+          onClick={() => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          }}
+        >
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+            <polyline points="9 22 9 12 15 12 15 22" />
+          </svg>
+          <span>Desk</span>
+        </button>
+
+        {/* History */}
+        <button 
+          className={styles.mobileNavBtn} 
+          onClick={() => {
+            setSettingsInitialTab('history');
+            setActiveModal('settings');
+          }}
+        >
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+            <circle cx="12" cy="12" r="10" />
+            <polyline points="12 6 12 12 16 14" />
+          </svg>
+          <span>History</span>
+        </button>
+
+        {/* Cart */}
+        <button 
+          className={styles.mobileNavBtn} 
+          style={{ position: 'relative' }} 
+          onClick={() => {
+            if (cart.length > 0) {
+              setActiveModal('cart');
+            } else {
+              toast("Your cart is empty");
+            }
+          }}
+        >
+          {cart.length > 0 && (
+            <span className={styles.mobileNavCartBadge}>{cart.length}</span>
+          )}
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+            <circle cx="9" cy="21" r="1" />
+            <circle cx="20" cy="21" r="1" />
+            <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
+          </svg>
+          <span>Cart</span>
+        </button>
+
+        {/* Lamp */}
+        <button 
+          className={styles.mobileNavBtn} 
+          onClick={toggleNight}
+        >
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
+            <path d="M8 3h8l3 8H5l3-8zM12 11v7M8 21h8" />
+          </svg>
+          <span>Lamp</span>
+        </button>
+      </nav>
 
       {/* ========== TOASTS ========== */}
       <div className={styles.toasts}>

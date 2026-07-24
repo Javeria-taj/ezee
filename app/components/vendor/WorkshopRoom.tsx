@@ -234,6 +234,18 @@ const CSS = `
   color:#FAF7F1 !important;
   border-color:#4F4A5E !important;
 }
+.ws-root.night .ws-tab.on .pill {
+  background:var(--terracotta-soft) !important;
+  color:#FAF7F1 !important;
+}
+.ws-root.night .ws-nav button.on {
+  background:rgba(255,255,255,.14) !important;
+  color:#FAF7F1 !important;
+  box-shadow:0 1px 4px rgba(0,0,0,.3) !important;
+}
+.ws-root.night .ws-nav button.on .ic {
+  color:var(--terracotta-soft) !important;
+}
 .ws-root.night .ws-docket {
   background:linear-gradient(180deg,#3E3A49,#2E2A36) !important;
 }
@@ -249,7 +261,8 @@ const CSS = `
 }
 .ws-root.night .ws-nav button:hover,
 .ws-root.night .ws-tab:hover {
-  background:rgba(255,255,255,.05) !important;
+  background:rgba(255,255,255,.07) !important;
+  color:#FAF7F1 !important;
 }
 .ws-root.night input,
 .ws-root.night select,
@@ -520,10 +533,25 @@ table.ws-table tbody tr:last-child td{border-bottom:none}
   .ws-nav{position:fixed!important;bottom:0!important;left:0!important;right:0!important;height:64px!important;background:rgba(255,255,255,.96)!important;backdrop-filter:blur(10px)!important;border-top:1px solid var(--paper-edge)!important;z-index:9000!important;display:flex!important;flex-direction:row!important;justify-content:space-around!important;align-items:center!important;padding:0 8px!important;margin:0!important;gap:0!important}
   
   .ws-nav button{flex:1!important;display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;height:100%!important;border-radius:0!important;background:none!important;gap:4px!important;padding:0!important;font-size:10px!important;color:var(--ink-3)!important;position:relative!important;white-space:nowrap!important}
-  .ws-nav button.on{color:var(--ink)!important}
+  .ws-nav button.on{color:var(--ink)!important;background:rgba(122,109,140,.12)!important}
   .ws-nav button.on .ic{color:var(--terracotta)!important}
   .ws-nav button .ic{width:17px!important;height:17px!important}
   
+  .ws-root.night .ws-nav {
+    background: rgba(35, 32, 45, 0.96) !important;
+    border-top: 1px solid #4F4A5E !important;
+  }
+  .ws-root.night .ws-nav button {
+    color: #8A8392 !important;
+  }
+  .ws-root.night .ws-nav button.on {
+    color: #FAF7F1 !important;
+    background: rgba(255, 255, 255, 0.14) !important;
+  }
+  .ws-root.night .ws-nav button.on .ic {
+    color: var(--terracotta-soft) !important;
+  }
+
   /* Ensure closed-state hiding of labels doesn't apply on mobile nav */
   .ws-app.ws-closed .ws-nav span:not(.ic){display:inline!important}
   .ws-app.ws-closed .ws-nav button{justify-content:center!important;padding:0!important}
@@ -564,11 +592,13 @@ table.ws-table tbody tr:last-child td{border-bottom:none}
   .ws-dact{flex-direction:row!important;justify-content:space-between!important;align-items:center!important;width:100%!important;padding:10px 0 0 0!important;margin-top:0!important;border-top:1px dashed var(--paper-edge)!important}
   .ws-stamp{top:12px!important;right:12px!important}
   
-  /* Tables (Stations / Stock) */
+  /* Tables (Stations / Stock / Settings) */
   .ws-ledger{overflow-x:auto!important;-webkit-overflow-scrolling:touch}
-  table.ws-table{min-width:480px}
+  .ws-ledger table.ws-table{min-width:100%!important;width:100%!important}
+  .ws-ledger table.ws-table tbody td{padding:10px 12px!important}
   .ws-table-wrap{overflow-x:auto!important;-webkit-overflow-scrolling:touch}
   .ws-ledger-head{flex-wrap:wrap!important;gap:8px!important}
+  .ws-kv{grid-template-columns:100px 1fr!important;gap:8px 10px!important;word-break:break-word!important}
   
   /* Drawer (Order details overlay) */
   .ws-drawer{width:100%!important;max-width:100vw!important}
@@ -955,6 +985,14 @@ export default function WorkshopRoom() {
   };
 
   const [mounted, setMounted] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth <= 820);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   const [isEditingShop, setIsEditingShop] = useState(false);
   const [shopDetails, setShopDetails] = useState(() => {
@@ -1384,7 +1422,7 @@ export default function WorkshopRoom() {
                 style={{ listStyle: 'none', padding: 0, margin: 0 }}
               >
                 {list.map(o => (
-                  <Reorder.Item key={o.id} value={o} style={{ position: 'relative' }}>
+                  <Reorder.Item key={o.id} value={o} drag={isMobile ? false : "y"} style={{ position: 'relative' }}>
                     <Docket o={o} />
                   </Reorder.Item>
                 ))}
@@ -1634,13 +1672,13 @@ export default function WorkshopRoom() {
             <div style={{ padding: '14px 17px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
               <button 
                 onClick={() => window.open('mailto:help@ezee.edu', '_blank')}
-                style={{ width: '100%', padding: '12px', background: night ? 'rgba(255, 255, 255, 0.08)' : '#f5efe7', border: night ? '1px solid rgba(255, 255, 255, 0.15)' : '1px solid var(--paper-edge)', borderRadius: '8px', color: night ? '#FAF7F1' : '#232221', fontWeight: 600, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', cursor: 'pointer', fontFamily: 'Space Grotesk', fontSize: '13.5px' }}
+                style={{ width: '100%', maxWidth: '100%', boxSizing: 'border-box', flexWrap: 'wrap', padding: '12px 14px', background: night ? 'rgba(255, 255, 255, 0.08)' : '#f5efe7', border: night ? '1px solid rgba(255, 255, 255, 0.15)' : '1px solid var(--paper-edge)', borderRadius: '8px', color: night ? '#FAF7F1' : '#232221', fontWeight: 600, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', cursor: 'pointer', fontFamily: 'Space Grotesk', fontSize: '13.5px' }}
               >
                 💡 Help Center
               </button>
               <button 
                 onClick={() => window.open('mailto:support@ezee.edu', '_blank')}
-                style={{ width: '100%', padding: '12px', background: night ? 'rgba(255, 255, 255, 0.08)' : '#f5efe7', border: night ? '1px solid rgba(255, 255, 255, 0.15)' : '1px solid var(--paper-edge)', borderRadius: '8px', color: night ? '#FAF7F1' : '#232221', fontWeight: 600, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', cursor: 'pointer', fontFamily: 'Space Grotesk', fontSize: '13.5px' }}
+                style={{ width: '100%', maxWidth: '100%', boxSizing: 'border-box', flexWrap: 'wrap', padding: '12px 14px', background: night ? 'rgba(255, 255, 255, 0.08)' : '#f5efe7', border: night ? '1px solid rgba(255, 255, 255, 0.15)' : '1px solid var(--paper-edge)', borderRadius: '8px', color: night ? '#FAF7F1' : '#232221', fontWeight: 600, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', cursor: 'pointer', fontFamily: 'Space Grotesk', fontSize: '13.5px' }}
               >
                 🎧 Contact Support
               </button>
@@ -1665,7 +1703,7 @@ export default function WorkshopRoom() {
                     }
                   );
                 }}
-                 style={{ width: '100%', padding: '12px', background: night ? 'rgba(255, 255, 255, 0.08)' : '#f5efe7', border: night ? '1px solid rgba(255, 255, 255, 0.15)' : '1px solid var(--paper-edge)', borderRadius: '8px', color: night ? '#FAF7F1' : '#232221', fontWeight: 600, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', cursor: 'pointer', fontFamily: 'Space Grotesk', fontSize: '13.5px' }}
+                 style={{ width: '100%', maxWidth: '100%', boxSizing: 'border-box', flexWrap: 'wrap', padding: '12px 14px', background: night ? 'rgba(255, 255, 255, 0.08)' : '#f5efe7', border: night ? '1px solid rgba(255, 255, 255, 0.15)' : '1px solid var(--paper-edge)', borderRadius: '8px', color: night ? '#FAF7F1' : '#232221', fontWeight: 600, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', cursor: 'pointer', fontFamily: 'Space Grotesk', fontSize: '13.5px' }}
               >
                 🚪 Sign Out
               </button>
@@ -1683,7 +1721,7 @@ export default function WorkshopRoom() {
                     }
                   );
                 }}
-                style={{ width: '100%', padding: '12px', background: night ? 'rgba(255, 99, 99, 0.12)' : 'rgba(155, 44, 44, 0.08)', border: night ? '1px solid rgba(255, 99, 99, 0.35)' : '1px solid rgba(155, 44, 44, 0.25)', borderRadius: '8px', color: night ? '#ff8b8b' : 'var(--crimson)', fontWeight: 600, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', cursor: 'pointer', fontFamily: 'Space Grotesk', fontSize: '13.5px' }}
+                style={{ width: '100%', maxWidth: '100%', boxSizing: 'border-box', flexWrap: 'wrap', padding: '12px 14px', background: night ? 'rgba(255, 99, 99, 0.12)' : 'rgba(155, 44, 44, 0.08)', border: night ? '1px solid rgba(255, 99, 99, 0.35)' : '1px solid rgba(155, 44, 44, 0.25)', borderRadius: '8px', color: night ? '#ff8b8b' : 'var(--crimson)', fontWeight: 600, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', cursor: 'pointer', fontFamily: 'Space Grotesk', fontSize: '13.5px' }}
               >
                 🗑️ Delete Account
               </button>

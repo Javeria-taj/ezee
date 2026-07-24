@@ -2066,7 +2066,7 @@ export default function WorkshopRoom() {
 
       {/* Mobile Bottom Navigation */}
       <nav className="ws-nav ws-mobile-nav">
-        {navItems.map(([ic, label, key]) => (
+        {navItems.filter(([, , key]) => key !== 'settings').map(([ic, label, key]) => (
           <button key={key} className={section === key ? 'on' : ''} onClick={() => setSection(key)}>
             <span className="ic"><Ic name={ic} /></span>
             <span>{label}</span>

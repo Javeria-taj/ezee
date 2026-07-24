@@ -627,6 +627,11 @@ table.ws-table tbody tr:last-child td{border-bottom:none}
   
   /* Main content area */
   .ws-canvas{padding:74px 14px 80px!important}
+
+  /* Position toasts above bottom nav on mobile */
+  .ws-toasts {
+    bottom: 74px !important;
+  }
   
   /* Stats grid */
   .ws-stats{grid-template-columns:1fr 1fr!important;gap:10px!important}

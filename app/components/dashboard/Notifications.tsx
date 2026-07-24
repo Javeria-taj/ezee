@@ -105,7 +105,29 @@ export default function Notifications({ onClose, customLetters = [] }: Notificat
       }}
       onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
     >
+      <style>{`
+        .letter-modal-box {
+          padding: 3rem 2.5rem !important;
+        }
+        @media (max-width: 600px) {
+          .letter-modal-box {
+            padding: 2rem 1.25rem 1.5rem !important;
+            max-height: 90vh !important;
+          }
+          .envelope-card {
+            padding: 0.9rem 1rem !important;
+          }
+          .unfolded-pad {
+            padding: 0.9rem !important;
+            margin-top: 0.8rem !important;
+          }
+          .unfolded-message {
+            font-size: 0.95rem !important;
+          }
+        }
+      `}</style>
       <motion.div
+        className="letter-modal-box"
         style={{
           background: '#F5EFE7',
           borderRadius: '8px',
@@ -133,7 +155,7 @@ export default function Notifications({ onClose, customLetters = [] }: Notificat
         {/* Header */}
         <div style={{ marginBottom: '2.5rem' }}>
           <h2 style={{ fontFamily: 'Instrument Sans', fontSize: '2rem', color: '#2A2928', margin: '0 0 0.3rem 0', fontWeight: 400 }}>
-            Letters
+            Notifications
           </h2>
           <p style={{ fontFamily: 'Space Grotesk', fontSize: '0.85rem', color: 'rgba(42,41,40,0.45)', margin: 0, fontStyle: 'italic' }}>
             Ezi left a few things on the desk.
@@ -154,6 +176,7 @@ export default function Notifications({ onClose, customLetters = [] }: Notificat
             return (
               <motion.div
                 key={letter.id}
+                className="envelope-card"
                 whileHover={{ y: -2, rotate: 0.5 }}
                 transition={{ type: 'spring', damping: 20 }}
                 onClick={() => handleOpenLetter(letter.id)}
@@ -190,10 +213,10 @@ export default function Notifications({ onClose, customLetters = [] }: Notificat
                     {letter.stampEmoji}
                   </div>
 
-                  <div style={{ flex: 1 }}>
+                  <div style={{ flex: 1, minWidth: 0 }}>
                     <div style={{ fontFamily: 'Instrument Sans', fontSize: '0.8rem', color: 'rgba(42,41,40,0.5)', marginBottom: '0.2rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                       <span>From <span style={{ fontWeight: 'bold', color: '#2A2928' }}>{letter.from}</span></span>
-                      <span style={{ fontSize: '0.75rem', fontStyle: 'italic', color: 'rgba(42,41,40,0.4)', fontFamily: 'Space Grotesk' }}>{letter.date} · {letter.time}</span>
+                      <span style={{ fontSize: '0.75rem', fontStyle: 'italic', color: 'rgba(42,41,40,0.4)', fontFamily: 'Space Grotesk' }}>{letter.date}</span>
                     </div>
                     <p style={{
                       fontFamily: 'Instrument Sans',
@@ -202,9 +225,8 @@ export default function Notifications({ onClose, customLetters = [] }: Notificat
                       margin: 0,
                       lineHeight: 1.4,
                       overflow: 'hidden',
-                      display: '-webkit-box',
-                      WebkitLineClamp: isOpen ? 'unset' : 1,
-                      WebkitBoxOrient: 'vertical',
+                      textOverflow: 'ellipsis',
+                      whiteSpace: 'nowrap',
                       transition: 'all 0.4s ease',
                     }}>
                       {letter.message}
@@ -232,7 +254,7 @@ export default function Notifications({ onClose, customLetters = [] }: Notificat
                       transition={{ duration: 0.45, ease: [0.25, 1, 0.5, 1] }}
                       style={{ overflow: 'hidden' }}
                     >
-                      <div style={{
+                      <div className="unfolded-pad" style={{
                         marginTop: '1.2rem',
                         paddingTop: '1.2rem',
                         borderTop: '1px dashed rgba(42,41,40,0.12)',
@@ -242,7 +264,7 @@ export default function Notifications({ onClose, customLetters = [] }: Notificat
                         backgroundImage: 'repeating-linear-gradient(transparent, transparent 23px, rgba(42,41,40,0.07) 24px)',
                         backgroundSize: '100% 24px',
                       }}>
-                        <p style={{
+                        <p className="unfolded-message" style={{
                           fontFamily: 'Instrument Sans',
                           fontSize: '1.05rem',
                           lineHeight: 1.7,

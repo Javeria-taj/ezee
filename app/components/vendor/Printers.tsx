@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 
 interface Props {
@@ -8,6 +8,8 @@ interface Props {
 }
 
 export default function Printers({ isClosingTime }: Props) {
+  const [isJammed] = useState(() => !isClosingTime && (Date.now() % 5 === 0));
+
   return (
     <div style={{ display: 'flex', gap: '3rem', position: 'relative', zIndex: 10 }}>
       
@@ -23,20 +25,16 @@ export default function Printers({ isClosingTime }: Props) {
         }}
       >
         <div style={{ position: 'absolute', top: '10px', width: '140px', height: '20px', background: '#2A2928', borderRadius: '2px' }} />
-        {/* Paper feeder */}
-        <div style={{ position: 'absolute', top: '-30px', width: '100px', height: '40px', background: '#F5EFE7', transform: 'perspective(100px) rotateX(20deg)', border: '1px solid #CCC' }} />
+        {/* Status Light */}
+        <div style={{ position: 'absolute', top: '15px', right: '15px', width: '8px', height: '8px', borderRadius: '50%', background: isClosingTime ? '#555' : '#4CAF50', boxShadow: isClosingTime ? 'none' : '0 0 8px #4CAF50' }} />
         
-        {/* Brass Details */}
-        <div style={{ position: 'absolute', left: '10px', top: '40px', width: '10px', height: '10px', borderRadius: '50%', background: '#D4AF37', boxShadow: 'inset 0 0 5px rgba(0,0,0,0.5)' }} />
-        <div style={{ position: 'absolute', right: '10px', top: '40px', width: '10px', height: '10px', borderRadius: '50%', background: '#D4AF37', boxShadow: 'inset 0 0 5px rgba(0,0,0,0.5)' }} />
-        
-        {/* Printing Slot */}
-        <div style={{ position: 'absolute', bottom: '20px', width: '120px', height: '10px', background: '#111', borderRadius: '4px' }}>
+        {/* Paper Slot */}
+        <div style={{ position: 'absolute', top: '45px', width: '130px', height: '8px', background: '#111', borderRadius: '2px' }}>
           {!isClosingTime && (
             <motion.div
-              animate={{ y: [0, 20], opacity: [0, 1, 0] }}
-              transition={{ duration: 3, repeat: Infinity, ease: 'linear' }}
-              style={{ width: '80px', height: '30px', background: '#F5EFE7', margin: '0 auto', border: '1px solid #CCC' }}
+              animate={{ y: [0, 50], opacity: [0, 1, 0] }}
+              transition={{ duration: 1.2, repeat: Infinity, ease: 'linear' }}
+              style={{ width: '110px', height: '40px', background: '#FAF7F1', margin: '0 auto', border: '1px solid #DDD' }}
             />
           )}
         </div>
@@ -53,7 +51,6 @@ export default function Printers({ isClosingTime }: Props) {
         animate={{ x: isClosingTime ? 0 : [-1, 1, -1] }}
         transition={{ duration: 0.1, repeat: Infinity }}
         style={{
-          width: '140px', height: '160px', background: '#4A4E59', borderRadius: '8px 8px 0 0',
           width: '140px', height: '160px', background: '#2C2B2A', borderRadius: '8px',
           boxShadow: '0 20px 40px rgba(0,0,0,0.5)', position: 'relative',
           display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'space-between', padding: '1rem',

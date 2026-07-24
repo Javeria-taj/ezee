@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import styles from './library.module.css';
 import { audio } from '../AudioEngine';
@@ -304,7 +304,7 @@ export default function MemoryLibrary({ onClose, isNight = false, weather = 'sun
       )}
 
       {/* Dust floating particles */}
-      {dustParticles.map(p => (
+      {dustParticles.map((p: { id: number; left: string; top: string; size: number; delay: number; duration: number }) => (
         <div
           key={p.id}
           className={styles.dustParticle}

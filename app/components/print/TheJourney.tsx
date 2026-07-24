@@ -197,7 +197,8 @@ function DiwaliLanterns() {
 }
 
 // ─── RAMADAN LANTERNS ─────────────────────────────────────────────
-function RamadanLanterns() {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+function RamadanLanterns({ tod: _tod }: { tod?: string }) {
   const positions = [10, 25, 40, 55, 70, 85];
   return (
     <svg
@@ -224,7 +225,8 @@ function RamadanLanterns() {
 }
 
 // ─── CHRISTMAS TWINKLES ──────────────────────────────────────────
-function ChristmasTwinkles() {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+function ChristmasTwinkles({ tod: _tod }: { tod?: string }) {
   const colors = ['#F4D03F', '#D48A70', '#A9B59D', '#7A6D8C', '#FAF7F1'];
   return (
     <>
@@ -285,7 +287,8 @@ function SpringBlossoms() {
 }
 
 // ─── EXAM WEEK STICKY NOTES ───────────────────────────────────────
-function ExamStickyNotes() {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+function ExamStickyNotes({ tod: _tod }: { tod?: string }) {
   const notes = ['Study hard!', 'You can do it ✓', 'Almost there'];
   const colors = ['#F4D03F', '#A9B59D', '#D48A70'];
   return (

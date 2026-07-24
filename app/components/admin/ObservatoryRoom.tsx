@@ -443,6 +443,15 @@ export default function ObservatoryRoom() {
   const [activeBar, setActiveBar] = useState<number | null>(null);
   const [timeframe, setTimeframe] = useState<'daily' | 'weekly' | 'monthly'>('daily');
   const [selectedPeriod, setSelectedPeriod] = useState<string | null>(null);
+  const [dynamicShop] = useState<Record<string, string> | null>(() => {
+    if (typeof window !== 'undefined') {
+      const stored = localStorage.getItem('ezee_shop_details');
+      if (stored) {
+        try { return JSON.parse(stored); } catch { }
+      }
+    }
+    return null;
+  });
 
 
   useEffect(() => {

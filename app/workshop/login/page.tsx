@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 import { useUniverse } from '../../universe/UniverseProvider';
@@ -116,7 +116,7 @@ export default function WorkshopLogin() {
         
         {/* Background Window & Rain */}
         <div style={{ position: 'absolute', top: 0, left: '20%', width: '60%', height: '80%', background: '#1A120B', overflow: 'hidden', borderRadius: '0 0 100px 100px', border: '8px solid #2A1A0B' }}>
-          {rainDrops.map(r => (
+          {rainDrops.map((r: { id: string; x: number; delay: number; duration: number }) => (
             <motion.div key={r.id} style={{ position: 'absolute', left: `${r.x}%`, top: -50, width: '1px', height: '15px', background: 'rgba(212, 175, 55, 0.2)' }} animate={{ y: [0, 800] }} transition={{ duration: r.duration, delay: r.delay, repeat: Infinity, ease: "linear" }} />
           ))}
         </div>

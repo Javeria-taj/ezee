@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 
 const TIPS = [
   { icon: '🌙', text: 'Pro tip: Upload your files the night before. Morning Ezi is ready when you are.' },

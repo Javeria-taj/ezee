@@ -5,6 +5,7 @@ import styles from './print.module.css';
 import { CartItem } from './PrintDesk';
 
 interface PrintTicketProps {
+  orderNum?: number;
   cartItems: CartItem[];
   etaMinutes: number;
   isNight: boolean;

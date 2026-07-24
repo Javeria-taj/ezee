@@ -175,6 +175,19 @@ export default function StudentDesk() {
   const [eziText, setEziText] = useState('');
   const [eziVisible, setEziVisible] = useState(false);
   const [showEcoPrompt, setShowEcoPrompt] = useState(false);
+  const [dynamicShop] = useState<Record<string, string> | null>(() => {
+    if (typeof window !== 'undefined') {
+      const stored = localStorage.getItem('ezee_shop_details');
+      if (stored) {
+        try { return JSON.parse(stored); } catch {}
+      }
+    }
+    return null;
+  });
+  const [journeyStep, setJourneyStep] = useState(-1);
+  const [barWidth, setBarWidth] = useState(0);
+  const [pickupCode, setPickupCode] = useState('');
+  const [orderConfirmed, setOrderConfirmed] = useState(false);
 
 
 

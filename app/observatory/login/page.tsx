@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { motion } from 'framer-motion';
 
 import { useUniverse } from '../../universe/UniverseProvider';
@@ -100,7 +100,7 @@ export default function ObservatoryLogin() {
         
         {/* Background Window & Moonlight/Rain */}
         <div style={{ position: 'absolute', top: 0, left: '20%', width: '40%', height: '100%', background: '#111', overflow: 'hidden' }}>
-           {rainDrops.map(r => (
+           {rainDrops.map((r: { id: string; x: number; delay: number; duration: number }) => (
             <motion.div key={r.id} style={{ position: 'absolute', left: `${r.x}%`, top: -50, width: '1px', height: '10px', background: 'rgba(255,255,255,0.1)' }} animate={{ y: [0, 1000] }} transition={{ duration: r.duration, delay: r.delay, repeat: Infinity, ease: "linear" }} />
           ))}
           {/* Subtle Moonlight */}
@@ -108,7 +108,7 @@ export default function ObservatoryLogin() {
         </div>
 
         {/* Dust Particles */}
-        {dustParticles.map(p => (
+        {dustParticles.map((p: { id: number; x: number; y: number; size: number; duration: number; delay: number; driftX: number }) => (
           <motion.div key={p.id} style={{ position: 'absolute', width: p.size, height: p.size, background: 'rgba(255,255,255,0.4)', borderRadius: '50%', left: `${p.x}%`, top: `${p.y}%` }} animate={{ y: [0, -50, 0], x: [0, p.driftX, 0], opacity: [0, 0.5, 0] }} transition={{ duration: p.duration, delay: p.delay, repeat: Infinity, ease: "easeInOut" }} />
         ))}
 

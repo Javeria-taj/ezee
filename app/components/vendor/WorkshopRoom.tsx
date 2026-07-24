@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Reorder } from 'framer-motion';
 
 /* ───────────────────────────────────────────────
@@ -895,12 +895,7 @@ function ToastEl({ t, onRemove }: { t: Toast; onRemove: (id: number) => void }) 
 // ── Main Component ─────────────────────────────────────────────────────────────
 export default function WorkshopRoom() {
   const [orders, setOrders] = useState<Order[]>(() => initOrders());
-  const [stations, setStations] = useState<Station[]>(() => {
-    const s = initStations();
-    const printingOrders = orders.filter(o => o.status === 'printing');
-    // Can't reference orders in the same initializer so use a lazy approach
-    return s;
-  });
+  const [stations, setStations] = useState<Station[]>(() => initStations());
   const [stock, setStock] = useState<StockItem[]>(() => reclassStock(initStock()));
   const [section, setSection] = useState<string>('queue');
   const [vendorTab, setVendorTab] = useState<string>('new');
@@ -916,7 +911,6 @@ export default function WorkshopRoom() {
   const [eziSay, setEziSay] = useState('Quiet bench. I\'ll keep the trays tidy.');
   const [earnedToday, setEarnedToday] = useState(1290);
   const [doneCount, setDoneCount] = useState(3);
-  const toastCounter = useRef(0);
   const [confirmModal, setConfirmModal] = useState<{
     isOpen: boolean;
     title: string;
@@ -988,7 +982,8 @@ export default function WorkshopRoom() {
   };
 
   useEffect(() => {
-    setMounted(true);
+    const timer = setTimeout(() => setMounted(true), 0);
+    return () => clearTimeout(timer);
   }, []);
 
   useEffect(() => {
@@ -999,15 +994,18 @@ export default function WorkshopRoom() {
 
   // Assign printing orders to stations on mount
   useEffect(() => {
-    setStations(prev => {
-      const updated = prev.map(s => ({ ...s, job: null as string | null }));
-      const printing = orders.filter(o => o.status === 'printing');
-      printing.forEach((o, i) => {
-        const s = updated[i % 3];
-        if (s) { s.job = o.id; o.station = s.id; }
+    const timer = setTimeout(() => {
+      setStations(prev => {
+        const updated = prev.map(s => ({ ...s, job: null as string | null }));
+        const printing = orders.filter(o => o.status === 'printing');
+        printing.forEach((o, i) => {
+          const s = updated[i % 3];
+          if (s) { s.job = o.id; o.station = s.id; }
+        });
+        return updated;
       });
-      return updated;
-    });
+    }, 0);
+    return () => clearTimeout(timer);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -1083,14 +1081,15 @@ export default function WorkshopRoom() {
   useEffect(() => {
     const printing = orders.filter(o => o.status === 'printing').length;
     const waiting = orders.filter(o => o.status === 'new').length;
-    if (!shopOpen) { setEziMoodState('sleepy'); return; }
-    if (printing >= 2 || waiting >= 4) { setEziMoodState('focused'); return; }
-    setEziMoodState('calm');
+    const nextMood = !shopOpen ? 'sleepy' : (printing >= 2 || waiting >= 4) ? 'focused' : 'calm';
+    const timer = setTimeout(() => {
+      setEziMoodState(prev => prev === nextMood ? prev : nextMood);
+    }, 0);
+    return () => clearTimeout(timer);
   }, [orders, shopOpen]);
 
   const addToast = useCallback((msg: string, icon: string, kind = '') => {
-    const id = ++toastCounter.current;
-    setToasts(prev => [...prev, { id, msg, icon, kind }]);
+    setToasts(prev => [...prev, { id: prev.length + 1, msg, icon, kind }]);
   }, []);
 
   const removeToast = useCallback((id: number) => {
@@ -1352,13 +1351,13 @@ export default function WorkshopRoom() {
     );
   }
 
-  function QueueView() {
+  function renderQueueView() {
     const list = orders.filter(o => o.status === vendorTab)
       .sort((a, b) => (Number(b.urgent) - Number(a.urgent)) || (a.createdAt - b.createdAt));
     return (
       <>
         <div className="ws-stats">
-          <Stat label="In the queue" big={String(counts.new)} color="var(--plum)" trail={counts.new ? `oldest waiting ${waited(orders.filter(o=>o.status==='new').sort((a,b)=>a.createdAt-b.createdAt)[0]||{createdAt:Date.now()} as Order)}` : 'all clear'} />
+          <Stat label="In the queue" big={String(counts.new)} color="var(--plum)" trail={counts.new ? `oldest waiting ${waited(orders.filter(o=>o.status==='new').sort((a,b)=>a.createdAt-b.createdAt)[0]||{createdAt:0} as Order)}` : 'all clear'} />
           <Stat label="On the presses" big={String(counts.printing)} color="var(--brass)" trail={`${counts.printing} of 3 stations busy`} />
           <Stat label="Ready for pickup" big={String(counts.ready)} color="var(--sage)" trail={counts.ready ? 'shelf is filling' : 'shelf empty'} />
           <Stat label="Earned today" big={`₹${earnedToday.toLocaleString('en-IN')}`} color="var(--ink)" trail={`${doneCount} orders handed over`} />
@@ -1407,7 +1406,7 @@ export default function WorkshopRoom() {
     );
   }
 
-  function StationsPage() {
+  function renderStationsPage() {
     return (
       <div className="ws-ledger">
         <div className="ws-ledger-head"><h3>Presses</h3></div>
@@ -1450,7 +1449,7 @@ export default function WorkshopRoom() {
     );
   }
 
-  function StockPage() {
+  function renderStockPage() {
     return (
       <div className="ws-ledger">
         <div className="ws-ledger-head">
@@ -1474,7 +1473,7 @@ export default function WorkshopRoom() {
     );
   }
 
-  function EarningsPage() {
+  function renderEarningsPage() {
     return (
       <>
         <div className="ws-stats">
@@ -1500,7 +1499,7 @@ export default function WorkshopRoom() {
     );
   }
 
-  function ReviewsPage() {
+  function renderReviewsPage() {
     const revs = [
       ['Sneha Rao', 5, 'Resume printed in 10 minutes, crisp colour. Lifesaver before the interview.'],
       ['Rahul Menon', 5, 'Lab record binding was neat. Will come back.'],
@@ -1535,7 +1534,7 @@ export default function WorkshopRoom() {
     );
   }
 
-  function SettingsPage() {
+  function renderSettingsPage() {
     return (
       <div className="ws-two-col">
         <div>
@@ -1700,7 +1699,7 @@ export default function WorkshopRoom() {
     );
   }
 
-  function DrawerContent() {
+  function renderDrawerContent() {
     if (!drawerOrder) return null;
     const o = drawerOrder;
     const per = o.mode === 'color' ? 5 : 1.2;
@@ -1849,6 +1848,7 @@ export default function WorkshopRoom() {
               aria-label="Workshop Brand"
               disabled={isMenuOpen}
             >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src="/logo.png" alt="Ezee Logo" style={{ height: 34, width: 'auto', objectFit: 'contain', borderRadius: '22%' }} />
               <div><small>Workshop</small></div>
             </button>
@@ -1947,12 +1947,12 @@ export default function WorkshopRoom() {
           </div>
 
           <div className="ws-canvas">
-            {section === 'queue' && <QueueView />}
-            {section === 'stations' && <StationsPage />}
-            {section === 'stock' && <StockPage />}
-            {section === 'earnings' && <EarningsPage />}
-            {section === 'reviews' && <ReviewsPage />}
-            {section === 'settings' && <SettingsPage />}
+            {section === 'queue' && renderQueueView()}
+            {section === 'stations' && renderStationsPage()}
+            {section === 'stock' && renderStockPage()}
+            {section === 'earnings' && renderEarningsPage()}
+            {section === 'reviews' && renderReviewsPage()}
+            {section === 'settings' && renderSettingsPage()}
           </div>
         </main>
       </div>
@@ -1962,7 +1962,7 @@ export default function WorkshopRoom() {
 
       {/* Drawer */}
       <aside className={`ws-drawer${drawerOrder ? ' on' : ''}`}>
-        <DrawerContent />
+        {renderDrawerContent()}
       </aside>
 
       {/* Toasts */}

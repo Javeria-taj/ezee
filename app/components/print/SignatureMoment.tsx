@@ -186,10 +186,10 @@ export default function SignatureMoment({ shopName, isNight, onComplete }: Signa
             Your notes are on their way ✨
           </h2>
           <p className={styles.signatureSubline}>
-            Ezi is staying with them until they're ready.
+            Ezi is staying with them until they&apos;re ready.
           </p>
           <p style={{ fontFamily: 'Instrument Sans, sans-serif', fontSize: '0.8rem', color: 'rgba(122,109,140,0.7)', marginTop: '0.5rem', fontStyle: 'italic' }}>
-            You're not waiting alone.
+            You&apos;re not waiting alone.
           </p>
         </div>
       )}

@@ -164,22 +164,9 @@ export default function StudentDesk() {
   const [size, setSize] = useState<'a4' | 'a3'>('a4');
   const [binding, setBinding] = useState<'none' | 'staple' | 'spiral' | 'hardcover'>('none');
   const [copies, setCopies] = useState(1);
-  const [slipNo, setSlipNo] = useState<number | null>(null);
-  useEffect(() => {
-    setSlipNo(1000 + Math.floor(Math.random() * 9000));
-  }, []);
-
+  const [slipNo] = useState<number>(() => 1000 + Math.floor(Math.random() * 9000));
   const [shop, setShop] = useState<ShopDef | null>(null);
-  const [dynamicShop, setDynamicShop] = useState<any>(null);
 
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const stored = localStorage.getItem('ezee_shop_details');
-      if (stored) {
-        try { setDynamicShop(JSON.parse(stored)); } catch (e) {}
-      }
-    }
-  }, []);
   const [phase, setPhase] = useState<Phase>('desk');
   const [fileUploaded, setFileUploaded] = useState(false);
   const [isRush, setIsRush] = useState(false);
@@ -189,9 +176,8 @@ export default function StudentDesk() {
   const [eziVisible, setEziVisible] = useState(false);
   const [showEcoPrompt, setShowEcoPrompt] = useState(false);
 
-  const [journeyStep, setJourneyStep] = useState(-1);
-  const [barWidth, setBarWidth] = useState(0);
-  const [pickupCode, setPickupCode] = useState('');
+
+
 
   const [spineActive, setSpineActive] = useState(1);
   const [activeModal, setActiveModal] = useState<ActiveModal>('none');
@@ -214,7 +200,6 @@ export default function StudentDesk() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const sendBtnRef = useRef<HTMLButtonElement>(null);
   const planeRef = useRef<SVGSVGElement>(null);
-  const jbarRef = useRef<HTMLSpanElement>(null);
   const timersRef = useRef<ReturnType<typeof setTimeout>[]>([]);
   const eziTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const s2Ref = useRef<HTMLElement>(null);
@@ -222,7 +207,7 @@ export default function StudentDesk() {
   const confirmRef = useRef<HTMLDivElement>(null);
   const s4NextRef = useRef<HTMLElement>(null);
 
-  const [orderConfirmed, setOrderConfirmed] = useState(false);
+
   const [showCheckout, setShowCheckout] = useState(false);
   const [checkoutStep, setCheckoutStep] = useState<'pay' | 'confirmed' | 'tracking' | 'ready'>('pay');
   const [confirmedOrder, setConfirmedOrder] = useState<{
@@ -235,12 +220,13 @@ export default function StudentDesk() {
   /* --- Night mode --- */
   const applyNight = useCallback(() => {
     const n = nightOverride === null ? false : nightOverride;
-    setNight(n);
+    setNight((prev) => (prev === n ? prev : n));
     return n;
   }, [nightOverride]);
 
   useEffect(() => {
-    applyNight();
+    const timer = setTimeout(() => applyNight(), 0);
+    return () => clearTimeout(timer);
   }, [applyNight]);
 
   const toggleNight = () => {
@@ -271,19 +257,19 @@ export default function StudentDesk() {
       return;
     }
 
-    setShelfFiles(MEM.files);
-    setShelfOrders(MEM.orders);
-    setShelfPages(MEM.pages);
-    setPlantStage(MEM.plant);
-    // Load student name
-    const storedName = localStorage.getItem('ezee_student_name');
-    if (storedName) setStudentName(storedName);
-    
-    // Onboarding
-    if (!localStorage.getItem('ezee_onboarded')) {
-      setShowOnboarding(true);
-      localStorage.setItem('ezee_onboarded', 'true');
-    }
+    const timer = setTimeout(() => {
+      setShelfFiles(prev => (JSON.stringify(prev) === JSON.stringify(MEM.files) ? prev : MEM.files));
+      setShelfOrders(prev => (prev === MEM.orders ? prev : MEM.orders));
+      setShelfPages(prev => (prev === MEM.pages ? prev : MEM.pages));
+      setPlantStage(prev => (prev === MEM.plant ? prev : MEM.plant));
+      const storedName = localStorage.getItem('ezee_student_name');
+      if (storedName) setStudentName(storedName);
+      if (!localStorage.getItem('ezee_onboarded')) {
+        setShowOnboarding(true);
+        localStorage.setItem('ezee_onboarded', 'true');
+      }
+    }, 0);
+    return () => clearTimeout(timer);
   }, []);
 
   /* --- Greeting --- */
@@ -310,7 +296,10 @@ export default function StudentDesk() {
 
   /* --- Boot Ezi --- */
   useEffect(() => {
-    eziSays(isNightNow() ? "Still here? I'll stay." : 'Quiet day. The desk is yours.', 'calm', 5000);
+    const timer = setTimeout(() => {
+      eziSays(isNightNow() ? "Still here? I'll stay." : 'Quiet day. The desk is yours.', 'calm', 5000);
+    }, 0);
+    return () => clearTimeout(timer);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -502,69 +491,7 @@ export default function StudentDesk() {
     }, 100);
   };
 
-  const payCart = (itemsToPrint: CartItem[]) => {
-    if (itemsToPrint.length === 0) return;
-    setActiveModal('none');
-    setPrintingItems(itemsToPrint);
-    
-    // Remove printed items from cart
-    setCart(prev => prev.filter(item => !itemsToPrint.some(p => p.id === item.id)));
-    setCheckedCartItemIds(prev => prev.filter(id => !itemsToPrint.some(p => p.id === id)));
-    
-    const totalP = itemsToPrint.reduce((sum, item) => sum + item.pages * item.copies, 0);
-    const totalCost = itemsToPrint.reduce((sum, item) => sum + item.totalCost, 0);
-    const mainShop = itemsToPrint[0].shop;
-    
-    // Build confirmed order for cart items
-    setConfirmedOrder({
-      items: itemsToPrint,
-      pickupCode: '', // will be set later
-      totalCost: totalCost,
-      totalSaved: Math.round(totalCost * 0.5),
-    });
 
-    setShowCheckout(true);
-    window.scrollTo({ top: 0, behavior: 'instant' });
-
-    setFileName(itemsToPrint.length === 1 ? itemsToPrint[0].fileName : `${itemsToPrint.length} files`);
-    setPages(totalP);
-    setShop(mainShop);
-    
-    setPhase('journey');
-    setSpineActive(5);
-
-    if (planeRef.current) {
-      planeRef.current.classList.remove(styles.fly);
-      void planeRef.current.getBoundingClientRect();
-      planeRef.current.classList.add(styles.fly);
-    }
-
-    eziSays('Cart order placed! Let\'s watch them print.', 'happy');
-
-    timersRef.current.forEach(clearTimeout);
-    timersRef.current = [];
-    setJourneyStep(0);
-
-    timersRef.current.push(setTimeout(() => {
-      setOrderConfirmed(true);
-      setCheckoutStep('confirmed');
-    }, 1500));
-
-    timersRef.current.push(setTimeout(() => {
-      setCheckoutStep('tracking');
-      toast(`Shops accepted your print cart`);
-      
-      let p_val = 0;
-      const iv = setInterval(() => {
-        p_val = Math.min(100, p_val + 9 + Math.random() * 8);
-        setBarWidth(p_val);
-        if (p_val >= 100) {
-          clearInterval(iv);
-          finishPrint();
-        }
-      }, 900);
-    }, 4000));
-  };
 
   const handlePayClick = () => {
     if (!canSend || phase === 'journey' || phase === 'done') return;
@@ -575,7 +502,7 @@ export default function StudentDesk() {
   };
 
   /* --- Send + Journey --- */
-  const sendSlip = (cod = false) => {
+  const sendSlip = () => {
     setPhase('journey');
     setSpineActive(5);
 
@@ -665,7 +592,7 @@ export default function StudentDesk() {
 
   const collect = () => {
     const now = Date.now();
-    let newFiles = [...shelfFiles];
+    const newFiles = [...shelfFiles];
     let addedPages = 0;
     let addedOrders = 0;
 
@@ -739,19 +666,7 @@ export default function StudentDesk() {
   const footerQuotes = ["The desk keeps the light on.", "Quiet pages, warm ink.", "Everything ages. That's the point.", "Rain sounds nice on paper."];
   const footQ = footerQuotes[new Date().getDate() % footerQuotes.length];
 
-  /* --- Journey step classes --- */
-  const jStepClass = (idx: number) => {
-    if (journeyStep > idx || (journeyStep === 4 && idx <= 3)) return `${styles.jstep} ${styles.done}`;
-    if (journeyStep === idx) return `${styles.jstep} ${styles.doing}`;
-    return styles.jstep;
-  };
 
-  const jSteps = [
-    { t: 'Slip sent', d: `Paid ₹${p.total.toLocaleString('en-IN')} · flying to ${shop?.name || '…'}` },
-    { t: 'Shop accepted', d: `${shop?.name || '…'} picked up your slip` },
-    { t: 'On the press', d: `${pages} pages ${mode === 'color' ? 'in colour' : 'in crisp b/w'}${binding !== 'none' ? ', then ' + BINDL[binding].toLowerCase() : ''}` },
-    { t: 'Ready for pickup', d: 'Warm and waiting on the shelf' },
-  ];
 
   /* --- Render --- */
   return (
@@ -769,6 +684,7 @@ export default function StudentDesk() {
       {/* ========== HEADER ========== */}
       <header className={styles.header}>
         <div className={styles.wordmark}>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src="/logo.png" alt="Ezee Logo" style={{ height: 34, width: 'auto', objectFit: 'contain' }} />
         </div>
         <div className={styles.grow} />

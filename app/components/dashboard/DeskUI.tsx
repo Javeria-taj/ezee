@@ -125,7 +125,7 @@ export default function DeskUI({ onClose }: DeskUIProps) {
           <div style={{ position: 'absolute', top: '-8px', left: '25%', transform: 'rotate(-3deg)', width: '75px', height: '22px', background: 'rgba(212, 138, 112, 0.3)', borderRadius: '2px' }} />
 
           <div style={{ fontFamily: 'Space Grotesk', fontSize: '0.72rem', color: 'rgba(42,41,40,0.35)', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '1.5rem', paddingLeft: '0.5rem' }}>
-            Ezi's Journal
+            Ezi&apos;s Journal
           </div>
 
           <p style={{

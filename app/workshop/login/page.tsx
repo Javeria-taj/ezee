@@ -22,9 +22,9 @@ export default function WorkshopLogin() {
   const [loadingLocation, setLoadingLocation] = useState(false);
 
   useEffect(() => {
-    setMounted(true);
-    // Ensure the universe is set to "Rain" for the entrance vibe
+    const timer = setTimeout(() => setMounted(true), 0);
     setUniverseState({ weather: 'rain', timeOfDay: 'goldenHour' });
+    return () => clearTimeout(timer);
   }, [setUniverseState]);
 
   const handleGetLocation = () => {
@@ -45,13 +45,13 @@ export default function WorkshopLogin() {
           } else {
             setLocation('Campus Hub, Block C (Auto-detected)');
           }
-        } catch (error) {
+        } catch {
           setLocation('Campus Hub, Block C (Auto-detected)');
         } finally {
           setLoadingLocation(false);
         }
       },
-      (error) => {
+      () => {
         setLoadingLocation(false);
         alert('Unable to retrieve location. Please type manually or enable location permissions.');
       },
@@ -66,34 +66,35 @@ export default function WorkshopLogin() {
     // Simulate authentication delay
     await new Promise(r => setTimeout(r, 2000));
 
-    if (shopId === 'error') {
+    if (email === 'error@ezee.com') {
       setLoginState('error');
       return;
-    }
-
-    if (authMode === 'signup') {
-      const details = {
-        id: shopId || 'WK-1024',
-        name: shopName || 'Morning Star Press',
-        email: email || 'morningstar@ezee.prints',
-        college: 'Ezee Institute of Technology',
-        joined: new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' }),
-        location: location || 'Admin block'
-      };
-      localStorage.setItem('ezee_shop_details', JSON.stringify(details));
     }
 
     // Call the API route — it sets the httpOnly cookie via Set-Cookie header
     const res = await fetch('/api/auth/workshop', { method: 'POST' });
     if (!res.ok) { setLoginState('error'); return; }
 
+    // Save details to localStorage so shop name, college etc. show in WorkshopRoom
+    const savedDetails = {
+      id: 'WK-' + Math.floor(1000 + (Date.now() % 9000)),
+      name: shopName || 'Morning Star Press',
+      email: email || 'morningstar@ezee.prints',
+      college: 'Ezee Institute of Technology',
+      joined: 'March 2026',
+      location: location || 'Campus Hub, Block C'
+    };
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('ezee_shop_details', JSON.stringify(savedDetails));
+    }
+
     setLoginState('success');
-    setUniverseState({ timeOfDay: 'morning', weather: 'clear' });
+    setUniverseState({ weather: 'clear', timeOfDay: 'goldenHour' });
 
     // Hard navigation so the middleware re-runs and sees the new cookie
     setTimeout(() => {
       window.location.href = '/workshop';
-    }, 1800);
+    }, 2000);
   };
 
   const toggleAuthMode = () => {
@@ -101,9 +102,9 @@ export default function WorkshopLogin() {
     setLoginState('idle');
   };
 
-  const rainDrops = mounted ? Array.from({ length: 50 }).map((_, i) => ({
-    id: `rain-${i}`, x: Math.random() * 100, delay: Math.random() * 2, duration: Math.random() * 0.5 + 0.5,
-  })) : [];
+  const rainDrops = useMemo(() => Array.from({ length: 50 }).map((_, i) => ({
+    id: `rain-${i}`, x: (i * 3.33) % 100, delay: (i * 0.1) % 2, duration: 0.5 + ((i % 5) * 0.1),
+  })), []);
 
   if (!mounted) return null;
 
@@ -114,20 +115,12 @@ export default function WorkshopLogin() {
       <div className="mobile-hide" style={{ flex: 1, position: 'relative', borderRight: '4px solid #2A1A0B', background: '#2E2218', overflow: 'hidden' }}>
         
         {/* Background Window & Rain */}
-        <div style={{ position: 'absolute', top: '10%', left: '10%', width: '30%', height: '40%', border: '10px solid #1A1105', background: '#111', overflow: 'hidden' }}>
-           {rainDrops.map(r => (
-            <motion.div key={r.id} style={{ position: 'absolute', left: `${r.x}%`, top: -50, width: '2px', height: '15px', background: 'rgba(255,255,255,0.2)' }} animate={{ y: [0, 400] }} transition={{ duration: r.duration, delay: r.delay, repeat: Infinity, ease: "linear" }} />
+        <div style={{ position: 'absolute', top: 0, left: '20%', width: '60%', height: '80%', background: '#1A120B', overflow: 'hidden', borderRadius: '0 0 100px 100px', border: '8px solid #2A1A0B' }}>
+          {rainDrops.map(r => (
+            <motion.div key={r.id} style={{ position: 'absolute', left: `${r.x}%`, top: -50, width: '1px', height: '15px', background: 'rgba(212, 175, 55, 0.2)' }} animate={{ y: [0, 800] }} transition={{ duration: r.duration, delay: r.delay, repeat: Infinity, ease: "linear" }} />
           ))}
         </div>
 
-        {/* Warm Lamp */}
-        <motion.div 
-          animate={{ opacity: loginState === 'success' ? 1 : loginState === 'error' ? [0.4, 0.2, 0.4] : [0.6, 0.7, 0.6] }}
-          transition={{ duration: loginState === 'error' ? 0.5 : 4, repeat: Infinity, ease: 'easeInOut' }}
-          style={{ position: 'absolute', top: '10%', right: '20%', width: '400px', height: '400px', background: 'radial-gradient(circle, rgba(212,175,55,0.3) 0%, transparent 70%)', pointerEvents: 'none' }}
-        />
-
-        {/* The Workbench & Scene Elements */}
         <div style={{ position: 'absolute', bottom: '15%', left: '10%', width: '80%', height: '20px', background: '#5C3D1D', borderRadius: '4px' }}>
           
           {/* Coffee Mug & Steam */}
@@ -185,7 +178,7 @@ export default function WorkshopLogin() {
           {loginState === 'success' && (
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} style={{ position: 'absolute', inset: 0, zIndex: 50 }}>
               {Array.from({ length: 30 }).map((_, i) => (
-                <motion.div key={i} animate={{ y: [0, -100], opacity: [0, 1, 0] }} transition={{ duration: 2, delay: Math.random() * 1 }} style={{ position: 'absolute', left: `${Math.random() * 100}%`, bottom: '20%', width: '4px', height: '4px', background: '#D4AF37', borderRadius: '50%' }} />
+                <motion.div key={i} animate={{ y: [0, -100], opacity: [0, 1, 0] }} transition={{ duration: 2, delay: (i * 0.05) % 1 }} style={{ position: 'absolute', left: `${(i * 17) % 100}%`, bottom: '20%', width: '4px', height: '4px', background: '#D4AF37', borderRadius: '50%' }} />
               ))}
             </motion.div>
           )}

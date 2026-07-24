@@ -63,9 +63,9 @@ const navLinks = [
 ];
 
 const socialLinks = [
-  { href: "https://twitter.com/ezeeprint", label: "Follow us on X", icon: <XIcon /> },
-  { href: "https://instagram.com/ezeeprint", label: "Follow us on Instagram", icon: <InstagramIcon /> },
-  { href: "https://linkedin.com/company/ezeeprint", label: "Connect on LinkedIn", icon: <LinkedInIcon /> },
+  { href: "https://x.com/EzeePrintsIn", label: "Follow us on X", icon: <XIcon /> },
+  { href: "https://www.instagram.com/ezee.prints?igsh=MXE0ZDF0Y3B6cGE1bg==", label: "Follow us on Instagram", icon: <InstagramIcon /> },
+  { href: "https://www.linkedin.com/company/ezeeprints/", label: "Connect on LinkedIn", icon: <LinkedInIcon /> },
 ];
 
 export default function Footer() {

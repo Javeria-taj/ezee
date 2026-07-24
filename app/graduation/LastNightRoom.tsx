@@ -22,13 +22,13 @@ function useDustParticles(count: number): DustParticle[] {
   return useMemo(() => {
     return Array.from({ length: count }, (_, i) => ({
       id: i,
-      x: Math.random() * 100,
-      y: Math.random() * 100,
-      size: 2 + Math.random() * 4,
-      duration: 14 + Math.random() * 12,
-      delay: Math.random() * -20,
-      driftX: (Math.random() - 0.5) * 60,
-      driftY: -(20 + Math.random() * 50),
+      x: (i * 37) % 100,
+      y: (i * 53) % 100,
+      size: 2 + ((i * 3) % 4),
+      duration: 14 + ((i * 5) % 12),
+      delay: -((i * 7) % 20),
+      driftX: (((i * 11) % 100) / 100 - 0.5) * 60,
+      driftY: -(20 + ((i * 13) % 50)),
     }));
   }, [count]);
 }
@@ -48,11 +48,11 @@ function Bird({ delay, y }: { delay: number; y: number }) {
       }}
       animate={{ x: ['calc(-5vw)', 'calc(110vw)'] }}
       transition={{
-        duration: 18 + Math.random() * 8,
+        duration: 18 + (delay % 8),
         delay,
         repeat: Infinity,
         ease: 'linear',
-        repeatDelay: 6 + Math.random() * 8,
+        repeatDelay: 6 + (delay % 8),
       }}
     >
       <svg width="24" height="14" viewBox="0 0 24 14">
@@ -408,7 +408,8 @@ export default function LastNightRoom() {
   const dust = useDustParticles(28);
 
   React.useEffect(() => {
-    setMounted(true);
+    const timer = setTimeout(() => setMounted(true), 0);
+    return () => clearTimeout(timer);
   }, []);
 
   return (

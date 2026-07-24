@@ -443,16 +443,7 @@ export default function ObservatoryRoom() {
   const [activeBar, setActiveBar] = useState<number | null>(null);
   const [timeframe, setTimeframe] = useState<'daily' | 'weekly' | 'monthly'>('daily');
   const [selectedPeriod, setSelectedPeriod] = useState<string | null>(null);
-  const [dynamicShop, setDynamicShop] = useState<any>(null);
 
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const stored = localStorage.getItem('ezee_shop_details');
-      if (stored) {
-        try { setDynamicShop(JSON.parse(stored)); } catch (e) {}
-      }
-    }
-  }, []);
 
   useEffect(() => {
     document.body.classList.toggle('night', night);
@@ -482,13 +473,17 @@ export default function ObservatoryRoom() {
     type: 'signout' | 'delete' | null;
   }>({ isOpen: false, type: null });
 
+  const [alertsEnabled, setAlertsEnabled] = useState(true);
+  const [maintenanceMode, setMaintenanceMode] = useState(false);
+
   // Inject CSS once
   useEffect(() => {
-    setMounted(true);
-    if (document.getElementById('obs-style')) return;
+    const timer = setTimeout(() => setMounted(true), 0);
+    if (document.getElementById('obs-style')) return () => clearTimeout(timer);
     const el = document.createElement('style');
     el.id = 'obs-style'; el.textContent = CSS;
     document.head.appendChild(el);
+    return () => clearTimeout(timer);
   }, []);
 
   // Clock
@@ -610,11 +605,10 @@ export default function ObservatoryRoom() {
   }
 
   // ── Overview ─────────────────────────────────────────────────────────────
-  function Overview() {
+  function renderOverview() {
     const tf = TIMEFRAME_DATA[timeframe];
     const data = tf.data;
     const max = Math.max(...data);
-    const activeVendors = vendorStates.filter(v => v.status === 'ok').length;
     return (
       <>
         <div className="obs-grid">
@@ -706,13 +700,9 @@ export default function ObservatoryRoom() {
           <table className="obs-table">
             <thead><tr><th>Shop</th><th>Presses</th><th>Load</th><th>Rating</th><th>Today</th><th>Status</th></tr></thead>
             <tbody>
-              {VENDORS_DATA.filter((_, i) => vendorStates[i]?.status === 'ok').map((v, i) => {
-                let shopName = v[0];
-                let shopLocation = v[1];
-                if (v[0] === 'Morning Star Press' && dynamicShop) {
-                  shopName = dynamicShop.name || shopName;
-                  shopLocation = dynamicShop.location || shopLocation;
-                }
+              {VENDORS_DATA.filter((_, i) => vendorStates[i]?.status === 'ok').map((v) => {
+                const shopName = v[0];
+                const shopLocation = v[1];
                 return (
                   <tr key={v[0] as string}>
                     <td><div className="obs-cell-name"><div className="obs-avatar" style={{ background: v[8] as string }}>{v[7]}</div><div><b>{shopName}</b><small>{shopLocation}</small></div></div></td>
@@ -730,7 +720,7 @@ export default function ObservatoryRoom() {
   }
 
   // ── Vendors ───────────────────────────────────────────────────────────────
-  function Vendors() {
+  function renderVendors() {
     return (
       <div className="obs-ledger">
         <div className="obs-ledger-head">
@@ -784,7 +774,7 @@ export default function ObservatoryRoom() {
   }
 
   // ── Orders ────────────────────────────────────────────────────────────────
-  function Orders() {
+  function renderOrders() {
     let sample = [
       ['#A19','Final Year Thesis','Aisha Khan','Campus Central','₹240','done'],
       ['#A21','Resume','Sneha Rao','Morning Star','₹60','printing'],
@@ -843,7 +833,7 @@ export default function ObservatoryRoom() {
   }
 
   // ── Payments ──────────────────────────────────────────────────────────────
-  function Payments() {
+  function renderPayments() {
     const rows = [
       ['Campus Central', '38', '₹9,210', '₹921', '₹8,289'],
       ['Night Owl', '41', '₹10,040', '₹1,004', '₹9,036'],
@@ -884,7 +874,7 @@ export default function ObservatoryRoom() {
   }
 
   // ── Support ───────────────────────────────────────────────────────────────
-  function Support() {
+  function renderSupport() {
     return (
       <div className="obs-two-col">
         <div className="obs-ledger">
@@ -930,7 +920,7 @@ export default function ObservatoryRoom() {
   }
 
   // ── Audit ─────────────────────────────────────────────────────────────────
-  function AuditLog() {
+  function renderAuditLog() {
     return (
       <div className="obs-ledger">
         <div className="obs-ledger-head">
@@ -951,10 +941,7 @@ export default function ObservatoryRoom() {
   }
 
   // ── Settings ───────────────────────────────────────────────────────────────
-  function Settings() {
-    const [alertsEnabled, setAlertsEnabled] = useState(true);
-    const [maintenanceMode, setMaintenanceMode] = useState(false);
-
+  function renderSettings() {
     return (
       <div className="obs-two-col">
         <div className="obs-settings-card">
@@ -1058,6 +1045,7 @@ export default function ObservatoryRoom() {
               style={{ display: 'flex', alignItems: 'center', gap: '10px', cursor: isMenuOpen ? 'default' : 'pointer' }}
               title={isMenuOpen ? undefined : "Open Sidebar"}
             >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src="/logo.png" alt="Ezee Logo" style={{ height: 38, width: 'auto', objectFit: 'contain', borderRadius: '22%' }} />
               <div><small style={{ fontSize: '11px', letterSpacing: '.14em', textTransform: 'uppercase', color: 'var(--ink-3)', fontWeight: 600 }}>Observatory</small></div>
             </div>
@@ -1145,13 +1133,13 @@ export default function ObservatoryRoom() {
           </div>
 
           <div className="obs-canvas">
-            {section === 'overview' && <Overview />}
-            {section === 'vendors' && <Vendors />}
-            {section === 'orders' && <Orders />}
-            {section === 'payments' && <Payments />}
-            {section === 'support' && <Support />}
-            {section === 'audit' && <AuditLog />}
-            {section === 'settings' && <Settings />}
+            {section === 'overview' && renderOverview()}
+            {section === 'vendors' && renderVendors()}
+            {section === 'orders' && renderOrders()}
+            {section === 'payments' && renderPayments()}
+            {section === 'support' && renderSupport()}
+            {section === 'audit' && renderAuditLog()}
+            {section === 'settings' && renderSettings()}
           </div>
         </main>
       </div>

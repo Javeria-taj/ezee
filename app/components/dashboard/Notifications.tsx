@@ -84,8 +84,6 @@ export default function Notifications({ onClose, customLetters = [] }: Notificat
     setReadSet(prev => new Set([...prev, id]));
   };
 
-  const openLetter = letters.find(l => l.id === openLetterId) ?? null;
-
   // Colors for envelope backgrounds
   const envelopeColors = ['#EAE4DD', '#FAF7F1', '#E8E0D4'];
 
@@ -148,7 +146,7 @@ export default function Notifications({ onClose, customLetters = [] }: Notificat
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '40px 20px', gap: 10, textAlign: 'center' }}>
               <span style={{ fontSize: 40 }}>😴</span>
               <p style={{ fontFamily: "'Space Grotesk', sans-serif", fontWeight: 700, fontSize: 16, color: '#2A2928', margin: 0 }}>All quiet here.</p>
-              <p style={{ fontFamily: "'Instrument Sans', sans-serif", fontSize: 13, color: 'rgba(42,41,40,.5)', margin: 0, fontStyle: 'italic' }}>Ezi's napping. Check back later.</p>
+              <p style={{ fontFamily: "'Instrument Sans', sans-serif", fontSize: 13, color: 'rgba(42,41,40,.5)', margin: 0, fontStyle: 'italic' }}>Ezi&apos;s napping. Check back later.</p>
             </div>
           )}
           {letters.map((letter, idx) => {
@@ -307,7 +305,7 @@ export default function Notifications({ onClose, customLetters = [] }: Notificat
           fontFamily: 'Space Grotesk', fontSize: '0.8rem',
           color: 'rgba(42,41,40,0.35)', textAlign: 'center', fontStyle: 'italic',
         }}>
-          "Everything feels personal."
+          &quot;Everything feels personal.&quot;
         </div>
       </motion.div>
     </motion.div>

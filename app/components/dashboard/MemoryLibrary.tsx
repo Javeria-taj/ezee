@@ -132,7 +132,13 @@ export default function MemoryLibrary({ onClose, isNight = false, weather = 'sun
       };
     });
 
-    setAllMemories([...defaultMemories, ...userMemories]);
+    const timer = setTimeout(() => {
+      setAllMemories((prev) => {
+        const next = [...defaultMemories, ...userMemories];
+        return JSON.stringify(prev) === JSON.stringify(next) ? prev : next;
+      });
+    }, 0);
+    return () => clearTimeout(timer);
   }, [memory.printedFiles]);
 
   const handleOpenMemory = (capsule: MemoryCapsule) => {
@@ -150,15 +156,15 @@ export default function MemoryLibrary({ onClose, isNight = false, weather = 'sun
   const shelf2 = allMemories.slice(4, 8);
   const shelf3 = allMemories.slice(8);
 
-  // Generate random dust particles
-  const dustParticles = Array.from({ length: 25 }).map((_, i) => ({
+  // Generate dust particles
+  const dustParticles = useMemo(() => Array.from({ length: 25 }).map((_, i) => ({
     id: i,
-    left: `${Math.random() * 100}%`,
-    top: `${Math.random() * 100}%`,
-    size: Math.random() * 3 + 1,
-    delay: Math.random() * 12,
-    duration: Math.random() * 8 + 12
-  }));
+    left: `${(i * 17) % 100}%`,
+    top: `${(i * 23) % 100}%`,
+    size: (i % 3) + 1,
+    delay: (i * 0.5) % 12,
+    duration: (i % 8) + 12
+  })), []);
 
   // Dynamic Background styling based on Weather/Time
   const getBackgroundStyle = () => {
@@ -279,10 +285,10 @@ export default function MemoryLibrary({ onClose, isNight = false, weather = 'sun
               key={i}
               className={styles.raindrop}
               style={{
-                left: `${Math.random() * 100}%`,
-                animationDelay: `${Math.random() * 1.5}s`,
-                animationDuration: `${0.8 + Math.random() * 0.5}s`,
-                opacity: 0.15 + Math.random() * 0.2
+                left: `${(i * 3.33) % 100}%`,
+                animationDelay: `${(i * 0.1) % 1.5}s`,
+                animationDuration: `${0.8 + ((i % 5) * 0.1)}s`,
+                opacity: 0.15 + ((i % 4) * 0.05)
               }}
             />
           ))}
@@ -363,7 +369,7 @@ export default function MemoryLibrary({ onClose, isNight = false, weather = 'sun
             marginTop: '0.5rem'
           }}
         >
-          "Who was I when I printed this?"
+          &quot;Who was I when I printed this?&quot;
         </motion.p>
       </div>
 

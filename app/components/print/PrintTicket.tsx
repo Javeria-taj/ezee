@@ -5,7 +5,6 @@ import styles from './print.module.css';
 import { CartItem } from './PrintDesk';
 
 interface PrintTicketProps {
-  orderNum: number;
   cartItems: CartItem[];
   etaMinutes: number;
   isNight: boolean;
@@ -47,7 +46,7 @@ function EziSmall() {
 }
 
 export default function PrintTicket({
-  orderNum, cartItems, etaMinutes, isNight, onSendToShop,
+  cartItems, etaMinutes, isNight, onSendToShop,
 }: PrintTicketProps) {
   const today = new Date();
   const dateStr = today.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });

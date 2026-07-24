@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 
@@ -15,7 +15,6 @@ export default function Navbar() {
     // Force light mode on load
     document.documentElement.classList.remove("dark");
     localStorage.setItem("theme", "light");
-    setIsDark(false);
   }, []);
 
   const toggleTheme = () => {
@@ -106,7 +105,7 @@ export default function Navbar() {
           transition: "opacity .3s ease, box-shadow .4s ease, background .4s ease, transform .4s cubic-bezier(.16, 1, .3, 1)",
         }}
       >
-        <a
+        <Link
           href="/"
           style={{
             display: "flex",
@@ -134,7 +133,7 @@ export default function Navbar() {
               filter: "contrast(1.05)"
             }}
           />
-        </a>
+        </Link>
 
         {/* Divider — hidden on mobile via .nav-divider class */}
         <div className="nav-divider" style={{ width: 1, height: 16, background: "var(--border-subtle)" }} />

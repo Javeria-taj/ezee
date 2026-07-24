@@ -54,14 +54,18 @@ export default function Printers({ isClosingTime }: Props) {
         transition={{ duration: 0.1, repeat: Infinity }}
         style={{
           width: '140px', height: '160px', background: '#4A4E59', borderRadius: '8px 8px 0 0',
-          border: '2px solid #2A2928', borderBottom: 'none', position: 'relative',
-          display: 'flex', flexDirection: 'column', alignItems: 'center'
+          width: '140px', height: '160px', background: '#2C2B2A', borderRadius: '8px',
+          boxShadow: '0 20px 40px rgba(0,0,0,0.5)', position: 'relative',
+          display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'space-between', padding: '1rem',
+          border: '1px solid rgba(255,255,255,0.1)'
         }}
       >
-        {/* Sleek light strip */}
-        <div style={{ width: '100%', height: '5px', background: isClosingTime ? '#111' : '#00FFCC', boxShadow: isClosingTime ? 'none' : '0 0 10px #00FFCC', marginTop: '10px' }} />
-        
-        {/* Printing Action */}
+        <div style={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <div style={{ width: '10px', height: '10px', borderRadius: '50%', background: isClosingTime ? '#555' : '#2196F3', boxShadow: !isClosingTime ? '0 0 10px #2196F3' : 'none' }} />
+          <span style={{ fontFamily: 'Space Grotesk', fontSize: '0.6rem', color: '#AAA' }}>LASER</span>
+        </div>
+
+        {/* Paper Slot */}
         <div style={{ position: 'absolute', bottom: '10px', width: '100px', height: '8px', background: '#111', borderRadius: '4px' }}>
           {!isClosingTime && (
             <motion.div
@@ -73,7 +77,7 @@ export default function Printers({ isClosingTime }: Props) {
         </div>
 
         {/* Machine Jam Alert (Simulated occasionally) */}
-        {!isClosingTime && Math.random() > 0.8 && (
+        {!isClosingTime && isJammed && (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: [0, 1, 0] }} transition={{ duration: 1, repeat: Infinity }} style={{ position: 'absolute', top: '30px', left: '50%', transform: 'translateX(-50%)', background: '#9B2C2C', color: '#FFF', padding: '2px 5px', fontSize: '0.5rem', borderRadius: '2px', fontFamily: 'Space Grotesk' }}>
             JAMMED
           </motion.div>

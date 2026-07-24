@@ -96,7 +96,7 @@ export default function OrderDesk() {
               transition={{ 
                 y: { type: 'spring', delay: idx * 0.2, bounce: 0.4 },
                 opacity: { duration: 0.5 },
-                rotateZ: { duration: 4, repeat: Infinity, ease: 'easeInOut', delay: Math.random() }
+                rotateZ: { duration: 4, repeat: Infinity, ease: 'easeInOut', delay: (idx * 0.3) % 1 }
               }}
               whileHover={{ y: -10, scale: 1.05, zIndex: 20, rotateZ: order.rotation }}
               onClick={() => setSelectedLetter(order.id)}
@@ -127,7 +127,7 @@ export default function OrderDesk() {
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setSelectedLetter(null)} style={{ position: 'fixed', inset: 0, background: 'rgba(42,41,40,0.6)', backdropFilter: 'blur(4px)', zIndex: 100 }} />
             <motion.div initial={{ opacity: 0, scale: 0.9, y: 20 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.9, y: 20 }} style={{ position: 'fixed', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', background: '#F5EFE7', padding: '3rem', width: '400px', boxShadow: '0 30px 60px rgba(0,0,0,0.4)', borderRadius: '4px', zIndex: 101, fontFamily: 'Instrument Sans', color: '#2A2928' }}>
               <h2 style={{ fontFamily: 'Cabinet Grotesk', marginBottom: '1rem' }}>Order Details</h2>
-              <p style={{ fontStyle: 'italic', color: '#555', marginBottom: '2rem' }}>"We need this printed carefully. The margins are tight, but it's important."</p>
+              <p style={{ fontStyle: 'italic', color: '#555', marginBottom: '2rem' }}>&quot;We need this printed carefully. The margins are tight, but it&apos;s important.&quot;</p>
               <div style={{ display: 'flex', gap: '1rem' }}>
                 <button onClick={() => setSelectedLetter(null)} style={{ flex: 1, padding: '0.8rem', background: 'transparent', border: '1px solid #5C3D1D', color: '#5C3D1D', cursor: 'pointer', fontFamily: 'Space Grotesk' }}>Keep on Desk</button>
                 <button onClick={() => archiveOrder(selectedLetter)} style={{ flex: 1, padding: '0.8rem', background: '#5C3D1D', color: '#F5EFE7', border: 'none', cursor: 'pointer', fontFamily: 'Space Grotesk' }}>Archive Order</button>

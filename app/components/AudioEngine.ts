@@ -8,14 +8,18 @@
 
 class CozyAudioEngine {
   init() {}
-  toggle(_play: boolean) {}
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  toggle(_play?: boolean) {}
   playFeedbackClick() {}
   playWeatherCycleSound() {}
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   playClockTick(_isTick?: boolean) {}
   playBirdChirp() {}
   playPageFlip() {}
-  setVolume(_vol: number) {}
-  setWeatherState(_weather: any) {}
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  setVolume(_vol?: number) {}
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  setWeatherState(_weather?: unknown) {}
 }
 
 export const audio = new CozyAudioEngine();

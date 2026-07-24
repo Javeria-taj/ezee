@@ -111,7 +111,7 @@ export default function AuthForms({ state, setState, passwordVisible, setPasswor
             <button type="submit" className={styles.primaryButton} style={{ background: '#2A2928', color: '#FAF7F1', borderRadius: '4px', marginTop: '1.5rem' }}>Sign In</button>
             
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.75rem', marginTop: '1rem', paddingTop: '1.5rem' }}>
-              <span style={{ fontSize: '0.95rem', color: '#7A6D8C' }}>Don't have an account?</span>
+              <span style={{ fontSize: '0.95rem', color: '#7A6D8C' }}>Don&apos;t have an account?</span>
               <button type="button" className={styles.secondaryButton} style={{ border: '1px solid #A9B59D', color: '#5b554f', borderRadius: '4px' }} onClick={() => setState('signup')}>Create Account</button>
             </div>
           </motion.form>
@@ -241,7 +241,7 @@ export default function AuthForms({ state, setState, passwordVisible, setPasswor
         {state === 'otp' && (
           <motion.div key="otp" variants={variants} initial="initial" animate="animate" exit="exit" style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', alignItems: 'center', paddingTop: '1rem' }}>
             <h1 className={styles.heading} style={{ textAlign: 'center', fontSize: '2rem' }}>Verify OTP</h1>
-            <p className={styles.subtitle} style={{ textAlign: 'center' }}>We've sent a 4-digit verification code to your email.</p>
+            <p className={styles.subtitle} style={{ textAlign: 'center' }}>We&apos;ve sent a 4-digit verification code to your email.</p>
             
             <div className={styles.otpContainer}>
                {[0, 1, 2, 3].map(i => (

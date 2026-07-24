@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import styles from './journey.module.css';
 
@@ -224,7 +224,7 @@ function RamadanLanterns() {
 }
 
 // ─── CHRISTMAS TWINKLES ──────────────────────────────────────────
-function ChristmasTwinkles({ tod }: { tod: string }) {
+function ChristmasTwinkles() {
   const colors = ['#F4D03F', '#D48A70', '#A9B59D', '#7A6D8C', '#FAF7F1'];
   return (
     <>
@@ -285,7 +285,7 @@ function SpringBlossoms() {
 }
 
 // ─── EXAM WEEK STICKY NOTES ───────────────────────────────────────
-function ExamStickyNotes({ tod }: { tod: string }) {
+function ExamStickyNotes() {
   const notes = ['Study hard!', 'You can do it ✓', 'Almost there'];
   const colors = ['#F4D03F', '#A9B59D', '#D48A70'];
   return (
@@ -335,7 +335,7 @@ function SeasonalDecor({ season, tod }: { season: Season; tod: string }) {
 // CHAPTER 1 — ARRIVAL
 // Paper airplane lands. Clouds move. Ezi catches the notes.
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-function ChapterArrival({ docName, tod }: { docName: string; tod: string }) {
+function ChapterArrival({ tod }: { docName?: string; tod: string }) {
   const light = isLightMode(tod);
   const paperColor = light ? '#FAF7F1' : '#EAE4DD';
   const inkColor = light ? '#2A2928' : '#FAF7F1';
@@ -565,7 +565,7 @@ function ChapterPreparation({ tod }: { tod: string }) {
 // CHAPTER 3 — CARE
 // Binding. Bookmarks. Protective covers. Like something important.
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-function ChapterCare({ docName, tod }: { docName: string; tod: string }) {
+function ChapterCare({ tod }: { docName?: string; tod: string }) {
   const light = isLightMode(tod);
   const inkColor = light ? '#2A2928' : '#FAF7F1';
   const tableColor = light ? '#C4956A' : '#8B6340';
@@ -848,9 +848,9 @@ function ChapterRest({ tod, onClose }: { tod: string; onClose: () => void }) {
           Rest
         </p>
         <p className={`${styles.chapterText} ${light ? styles.chapterDarkText : styles.chapterLightText}`}>
-          They're ready when you are.
+          They&apos;re ready when you are.
           <br />
-          <span style={{ opacity: 0.4, fontSize: '0.88rem', fontStyle: 'italic' }}>You weren't waiting alone.</span>
+          <span style={{ opacity: 0.4, fontSize: '0.88rem', fontStyle: 'italic' }}>You weren&apos;t waiting alone.</span>
         </p>
       </div>
 
@@ -869,11 +869,10 @@ function ChapterRest({ tod, onClose }: { tod: string; onClose: () => void }) {
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 // THE JOURNEY — MAIN COMPONENT
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-export default function TheJourney({ docName, shopName, isNight, onClose }: TheJourneyProps) {
+export default function TheJourney({ docName, isNight, onClose }: TheJourneyProps) {
   const [chapter, setChapter] = useState(0); // 0-3
   const tod = isNight ? 'moonlitNight' : getTimeOfDay();
   const season = getSeason();
-  const light = isLightMode(tod);
 
   // Chapter auto-advance — every 9 seconds, stop at 3 (Rest stays forever)
   useEffect(() => {

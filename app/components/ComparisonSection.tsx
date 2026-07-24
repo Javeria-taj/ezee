@@ -85,7 +85,7 @@ export default function ComparisonSection() {
             margin: 0,
           }}
         >
-          This isn't about printing — it's about getting 45 minutes of your afternoon back.
+          This isn&apos;t about printing — it&apos;s about getting 45 minutes of your afternoon back.
         </p>
       </Reveal>
 

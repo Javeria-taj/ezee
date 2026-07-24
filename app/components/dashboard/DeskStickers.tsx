@@ -1,5 +1,5 @@
 'use client';
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 
 const STICKERS = [
   { id: 'coffee', svg: '<ellipse cx="30" cy="20" rx="24" ry="16" fill="transparent" stroke="#5C4033" stroke-width="3" stroke-dasharray="4 2 8 4" opacity="0.3"/>', w: 60, h: 40 },
@@ -16,16 +16,17 @@ interface PlacedSticker {
 }
 
 export default function DeskStickers() {
-  const [placed, setPlaced] = useState<PlacedSticker[]>([]);
+  const [placed, setPlaced] = useState<PlacedSticker[]>(() => {
+    if (typeof window !== 'undefined') {
+      try {
+        const stored = localStorage.getItem('ezee_desk_stickers');
+        if (stored) return JSON.parse(stored);
+      } catch {}
+    }
+    return [];
+  });
   const [dragging, setDragging] = useState<string | null>(null);
   const [showMenu, setShowMenu] = useState(false);
-
-  useEffect(() => {
-    try {
-      const stored = localStorage.getItem('ezee_desk_stickers');
-      if (stored) setPlaced(JSON.parse(stored));
-    } catch {}
-  }, []);
 
   const save = (newPlaced: PlacedSticker[]) => {
     setPlaced(newPlaced);
@@ -39,11 +40,13 @@ export default function DeskStickers() {
     }
     const desk = document.getElementById('student-desk-area');
     const bounds = desk ? desk.getBoundingClientRect() : { width: 400, height: 300 };
+    const offsetX = (placed.length * 19) % 40 - 20;
+    const offsetY = (placed.length * 23) % 40 - 20;
     save([...placed, {
-      uid: Math.random().toString(36).slice(2),
+      uid: `${id}-${placed.length + 1}`,
       id,
-      x: bounds.width / 2 - 20 + (Math.random() * 40 - 20),
-      y: bounds.height / 2 - 20 + (Math.random() * 40 - 20),
+      x: bounds.width / 2 - 20 + offsetX,
+      y: bounds.height / 2 - 20 + offsetY,
     }]);
     setShowMenu(false);
   };

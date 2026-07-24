@@ -2,21 +2,18 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { audio } from '../AudioEngine';
-import styles from '../../student/student.module.css';
-import { plantSVG, catSVG, SPINES } from '../../student/page';
 import type { ShelfFile } from '../../student/page';
 
 interface SettingsProps {
   onClose: () => void;
   initialTab?: 'settings' | 'history';
   shelfFiles: ShelfFile[];
-  plantStage: number;
-  newBookIdx: number;
+  plantStage?: number;
+  newBookIdx?: number;
   night: boolean;
   onToggleNight: () => void;
-  shelfOrders: number;
-  shelfPages: number;
+  shelfOrders?: number;
+  shelfPages?: number;
   onToast?: (msg: string) => void;
 }
 
@@ -24,12 +21,8 @@ export default function Settings({
   onClose,
   initialTab = 'settings',
   shelfFiles,
-  plantStage,
-  newBookIdx,
   night,
   onToggleNight,
-  shelfOrders,
-  shelfPages,
   onToast
 }: SettingsProps) {
   const [studentInfo, setStudentInfo] = useState({
@@ -41,7 +34,6 @@ export default function Settings({
   });
 
   const [activeTab, setActiveTab] = useState<'settings' | 'history'>(initialTab);
-  const [soundEnabled, setSoundEnabled] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
   const [showReport, setShowReport] = useState(false);
   const [reportText, setReportText] = useState('');
@@ -50,7 +42,8 @@ export default function Settings({
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
 
   useEffect(() => {
-    setActiveTab(initialTab);
+    const timer = setTimeout(() => setActiveTab(initialTab), 0);
+    return () => clearTimeout(timer);
   }, [initialTab]);
 
   const handleSave = (e: React.FormEvent) => {

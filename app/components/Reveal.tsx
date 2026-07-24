@@ -2,13 +2,21 @@
 import React from "react";
 import { motion } from "framer-motion";
 
+interface RevealProps {
+  children: React.ReactNode;
+  delay?: number;
+  className?: string;
+  style?: React.CSSProperties;
+  duration?: number | string;
+}
+
 export function Reveal({
   children,
   delay = 0,
   className = "",
   style = {},
   duration = 1.2,
-}: any) {
+}: RevealProps) {
   const parsedDuration = typeof duration === "string" ? parseFloat(duration.replace("s", "")) : duration;
   
   return (

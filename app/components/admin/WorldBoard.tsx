@@ -90,7 +90,7 @@ export default function WorldBoard() {
                 fill={isNight || v.status === 'busy' ? "#D4AF37" : "transparent"} 
                 initial={{ opacity: 0.6 }}
                 animate={{ opacity: (isNight || v.status === 'busy') ? [0.6, 1, 0.6] : 0 }}
-                transition={{ duration: Math.random() * 2 + 2, repeat: Infinity }}
+                transition={{ duration: ((v.x + v.y) % 2) + 2, repeat: Infinity }}
                 style={{ filter: 'blur(1px)' }}
               />
 
@@ -168,12 +168,11 @@ export default function WorldBoard() {
               initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 2 }}
               style={{ position: 'absolute', inset: 0, zIndex: 20, pointerEvents: 'none' }}
             >
-              {/* Extra glowing dots for Diwali */}
               {Array.from({length: 15}).map((_, i) => (
                 <motion.div
                   key={`diwali-${i}`}
-                  animate={{ opacity: [0.4, 1, 0.4] }} transition={{ duration: Math.random()*2+1, repeat: Infinity }}
-                  style={{ position: 'absolute', left: `${Math.random()*100}%`, top: `${Math.random()*100}%`, width: '4px', height: '4px', background: '#FFA500', borderRadius: '50%', boxShadow: '0 0 10px #FFA500' }}
+                  animate={{ opacity: [0.4, 1, 0.4] }} transition={{ duration: ((i * 17) % 2) + 1, repeat: Infinity }}
+                  style={{ position: 'absolute', left: `${(i * 23) % 100}%`, top: `${(i * 37) % 100}%`, width: '4px', height: '4px', background: '#FFA500', borderRadius: '50%', boxShadow: '0 0 10px #FFA500' }}
                 />
               ))}
             </motion.div>

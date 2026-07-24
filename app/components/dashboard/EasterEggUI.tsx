@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useMemo } from 'react';
+import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { audio } from '../AudioEngine';
 
@@ -263,11 +263,10 @@ const locationKeys = Object.keys(locations) as CatLocation[];
 export default function EasterEggUI({ onClose }: EasterEggUIProps) {
   const [purrActive, setPurrActive] = useState(false);
 
-  // Deterministic randomness: changes daily
-  const catLocation = useMemo<CatLocation>(() => {
+  const [catLocation] = useState<CatLocation>(() => {
     const dayOfYear = Math.floor(Date.now() / 86400000);
     return locationKeys[dayOfYear % locationKeys.length];
-  }, []);
+  });
 
   const { label, scene, caption } = locations[catLocation];
 

@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 
 import { useUniverse } from '../../universe/UniverseProvider';
 
@@ -21,8 +21,11 @@ export default function ObservatoryLogin() {
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
 
   useEffect(() => {
-    setMounted(true);
-    setUniverseState({ weather: 'rain', timeOfDay: 'night' });
+    const timer = setTimeout(() => {
+      setMounted(true);
+      setUniverseState({ weather: 'rain', timeOfDay: 'night' });
+    }, 0);
+    return () => clearTimeout(timer);
   }, [setUniverseState]);
 
   const handle2FAChange = (index: number, value: string) => {
@@ -72,14 +75,15 @@ export default function ObservatoryLogin() {
     setLoginState('idle');
   };
 
-  const dustParticles = mounted ? Array.from({ length: 30 }).map((_, i) => ({
-    id: i, x: Math.random() * 100, y: Math.random() * 100,
-    size: Math.random() * 2 + 1, duration: Math.random() * 10 + 10, delay: Math.random() * 5,
-  })) : [];
+  const dustParticles = useMemo(() => Array.from({ length: 30 }).map((_, i) => ({
+    id: i, x: (i * 17) % 100, y: (i * 23) % 100,
+    size: (i % 2) + 1, duration: (i % 10) + 10, delay: (i * 0.3) % 5,
+    driftX: (i % 5) * 4 - 10
+  })), []);
 
-  const rainDrops = mounted ? Array.from({ length: 100 }).map((_, i) => ({
-    id: `rain-${i}`, x: Math.random() * 100, delay: Math.random() * 2, duration: Math.random() * 0.5 + 0.5,
-  })) : [];
+  const rainDrops = useMemo(() => Array.from({ length: 100 }).map((_, i) => ({
+    id: `rain-${i}`, x: (i * 3.33) % 100, delay: (i * 0.1) % 2, duration: 0.5 + ((i % 5) * 0.1),
+  })), []);
 
   if (!mounted) return null;
 
@@ -105,7 +109,7 @@ export default function ObservatoryLogin() {
 
         {/* Dust Particles */}
         {dustParticles.map(p => (
-          <motion.div key={p.id} style={{ position: 'absolute', width: p.size, height: p.size, background: 'rgba(255,255,255,0.4)', borderRadius: '50%', left: `${p.x}%`, top: `${p.y}%` }} animate={{ y: [0, -50, 0], x: [0, Math.random() * 20 - 10, 0], opacity: [0, 0.5, 0] }} transition={{ duration: p.duration, delay: p.delay, repeat: Infinity, ease: "easeInOut" }} />
+          <motion.div key={p.id} style={{ position: 'absolute', width: p.size, height: p.size, background: 'rgba(255,255,255,0.4)', borderRadius: '50%', left: `${p.x}%`, top: `${p.y}%` }} animate={{ y: [0, -50, 0], x: [0, p.driftX, 0], opacity: [0, 0.5, 0] }} transition={{ duration: p.duration, delay: p.delay, repeat: Infinity, ease: "easeInOut" }} />
         ))}
 
         {/* Large Clock */}

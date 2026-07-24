@@ -119,32 +119,30 @@ let toastId = 0;
 export function WorkshopProvider({ children }: { children: ReactNode }) {
   const [mounted, setMounted] = useState(false);
   const [section, setSection] = useState('queue');
-  const [orders, setOrders] = useState<Order[]>([]);
-  const [stations, setStations] = useState<Station[]>([]);
-  const [stock, setStock] = useState<StockItem[]>([]);
+  const [orders, setOrders] = useState<Order[]>(() => initOrders());
+  const [stations, setStations] = useState<Station[]>(() => initStations());
+  const [stock, setStock] = useState<StockItem[]>(() => initStock());
   const [shopOpen, setShopOpen] = useState(true);
   const [toasts, setToasts] = useState<Toast[]>([]);
 
   useEffect(() => {
-    setOrders(initOrders());
-    setStations(initStations());
-    setStock(initStock());
-    setMounted(true);
+    const timer = setTimeout(() => setMounted(true), 0);
+    return () => clearTimeout(timer);
   }, []);
 
   const toggleOpen = useCallback(() => {
     setShopOpen(prev => !prev);
   }, []);
 
+  const removeToast = useCallback((id: number) => {
+    setToasts(prev => prev.filter(t => t.id !== id));
+  }, []);
+
   const addToast = useCallback((msg: string, icon = 'info', kind = 'neutral') => {
     const id = ++toastId;
     setToasts(prev => [...prev, { id, msg, icon, kind }]);
     setTimeout(() => removeToast(id), 4000);
-  }, []);
-
-  const removeToast = useCallback((id: number) => {
-    setToasts(prev => prev.filter(t => t.id !== id));
-  }, []);
+  }, [removeToast]);
 
   const counts = {
     new: orders.filter(o => o.status === 'new').length,

@@ -24,7 +24,23 @@ const EziSVG = ({ beretColor }: { beretColor: string }) => (
   </svg>
 );
 
-const testimonials = [
+interface Testimonial {
+  type: "polaroid" | "sticky";
+  rotate: string;
+  background?: string;
+  bgGradient?: string;
+  beretColor?: string;
+  quote: string;
+  author: string;
+  delay: number;
+  width: number;
+  imgHeight?: number;
+  marginTop?: number;
+  tapeStyle?: React.CSSProperties;
+  pinStyle?: React.CSSProperties;
+}
+
+const testimonials: Testimonial[] = [
   {
     type: "polaroid" as const,
     rotate: "-4deg",
@@ -208,7 +224,7 @@ export default function StoriesSection() {
               delay={t.delay}
               className="mobile-stories-card"
               style={{
-                marginTop: (t as any).marginTop ?? 0,
+                marginTop: t.marginTop ?? 0,
               }}
             >
               <div
@@ -233,22 +249,22 @@ export default function StoriesSection() {
                   e.currentTarget.style.transform = `rotate(${t.rotate})`;
                 }}
               >
-                {(t as any).tapeStyle && (
-                  <div style={{ position: "absolute", ...(t as any).tapeStyle }} />
+                {t.tapeStyle && (
+                  <div style={{ position: "absolute", ...t.tapeStyle }} />
                 )}
-                {(t as any).pinStyle && (
-                  <div style={{ position: "absolute", ...(t as any).pinStyle }} />
+                {t.pinStyle && (
+                  <div style={{ position: "absolute", ...t.pinStyle }} />
                 )}
                 <div
                   style={{
-                    height: (t as any).imgHeight,
+                    height: t.imgHeight,
                     borderRadius: 3,
-                    background: (t as any).bgGradient,
+                    background: t.bgGradient,
                     display: "grid",
                     placeItems: "center",
                   }}
                 >
-                  <EziSVG beretColor={(t as any).beretColor} />
+                  <EziSVG beretColor={t.beretColor || "#7A6D8C"} />
                 </div>
                 <p
                   style={{

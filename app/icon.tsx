@@ -27,6 +27,7 @@ export default function Icon() {
       >
         <img
           src={logoBase64}
+          alt="Ezee Logo"
           style={{ width: '100%', height: '100%', objectFit: 'cover' }}
         />
       </div>

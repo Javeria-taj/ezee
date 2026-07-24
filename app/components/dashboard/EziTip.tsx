@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useMemo } from 'react';
+import React from 'react';
 
 const TIPS = [
   { icon: '🌙', text: 'Pro tip: Upload your files the night before. Morning Ezi is ready when you are.' },
@@ -23,12 +23,13 @@ interface EziTipProps {
 
 export default function EziTip({ style }: EziTipProps) {
   // Same tip all day, new one tomorrow — based on date
-  const tip = useMemo(() => {
+  const [tip] = useState(() => {
+    const now = new Date();
     const dayOfYear = Math.floor(
-      (Date.now() - new Date(new Date().getFullYear(), 0, 0).getTime()) / 86400000
+      (now.getTime() - new Date(now.getFullYear(), 0, 0).getTime()) / 86400000
     );
     return TIPS[dayOfYear % TIPS.length];
-  }, []);
+  });
 
   return (
     <div
@@ -71,7 +72,7 @@ export default function EziTip({ style }: EziTipProps) {
             margin: '0 0 4px',
           }}
         >
-          Ezi's tip of the day
+          Ezi&apos;s tip of the day
         </p>
         <p
           style={{

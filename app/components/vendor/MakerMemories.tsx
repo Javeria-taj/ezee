@@ -16,11 +16,11 @@ export default function MakerMemories() {
       <div style={{ display: 'flex', flexDirection: 'column', gap: '0.8rem', fontFamily: 'Instrument Sans', fontSize: '0.85rem', color: '#555', fontStyle: 'italic' }}>
         <div>
           <span style={{ fontWeight: 'bold', color: '#2A2928', display: 'block', fontFamily: 'Space Grotesk', fontSize: '0.65rem' }}>LATE COFFEES</span>
-          "1,000 dreams printed. The placement season was heavy, but we pushed through."
+          &quot;1,000 dreams printed. The placement season was heavy, but we pushed through.&quot;
         </div>
         <div>
           <span style={{ fontWeight: 'bold', color: '#2A2928', display: 'block', fontFamily: 'Space Grotesk', fontSize: '0.65rem' }}>RAINY NIGHTS</span>
-          "500 resumes this week. We've seen a lot of hope pass through these machines."
+          &quot;500 resumes this week. We&apos;ve seen a lot of hope pass through these machines.&quot;
         </div>
       </div>
 

@@ -203,45 +203,7 @@ export default function CtaSection() {
           </svg>
         </Link>
 
-        <div
-          style={{
-            marginTop: 70,
-            paddingTop: 26,
-            borderTop: "1px solid rgba(250,247,241,.12)",
-            display: "flex",
-            flexDirection: "column",
-            gap: 12,
-            alignItems: "center",
-            justifyContent: "center",
-            fontSize: 13.5,
-            color: "#9a9085",
-          }}
-        >
-          <div style={{ display: "flex", flexWrap: "wrap", gap: 14, alignItems: "center", justifyContent: "center" }}>
-            <span
-              style={{
-                fontFamily: "'Space Grotesk', sans-serif",
-                fontWeight: 800,
-                fontSize: 16,
-                color: "#EAE4DD",
-                letterSpacing: ".02em"
-              }}
-            >
-              EZEE™
-            </span>
-            <span>·</span>
-            <span>Made in the study nook, one warm print at a time.</span>
-          </div>
-          <div style={{ display: "flex", flexWrap: "wrap", gap: 18, alignItems: "center", justifyContent: "center", fontSize: 12.5 }}>
-            <Link href="/privacy" style={{ color: "#9a9085", textDecoration: "none", transition: "color 0.2s" }} onMouseEnter={e => e.currentTarget.style.color = '#FAF7F1'} onMouseLeave={e => e.currentTarget.style.color = '#9a9085'}>Privacy Policy</Link>
-            <span>·</span>
-            <Link href="/terms" style={{ color: "#9a9085", textDecoration: "none", transition: "color 0.2s" }} onMouseEnter={e => e.currentTarget.style.color = '#FAF7F1'} onMouseLeave={e => e.currentTarget.style.color = '#9a9085'}>Terms &amp; Conditions</Link>
-            <span>·</span>
-            <Link href="/contact" style={{ color: "#9a9085", textDecoration: "none", transition: "color 0.2s" }} onMouseEnter={e => e.currentTarget.style.color = '#FAF7F1'} onMouseLeave={e => e.currentTarget.style.color = '#9a9085'}>Contact</Link>
-            <span>·</span>
-            <span>All trademarks acknowledged</span>
-          </div>
-        </div>
+
       </Reveal>
     </section>
   );

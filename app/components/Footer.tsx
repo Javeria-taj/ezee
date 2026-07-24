@@ -347,53 +347,58 @@ export default function Footer() {
         <div
           className="footer-bottom-row"
           style={{
+            borderTop: "1px solid rgba(250,247,241,.08)",
+            paddingTop: 26,
             display: "flex",
-            flexWrap: "wrap",
+            flexDirection: "column",
             gap: 12,
-            justifyContent: "space-between",
             alignItems: "center",
+            justifyContent: "center",
+            fontSize: 13.5,
+            color: "rgba(250,247,241,.4)",
             paddingBottom: 32,
           }}
         >
-          <p
-            style={{
-              fontFamily: "'Instrument Sans', sans-serif",
-              fontSize: 13,
-              color: "rgba(250,247,241,.3)",
-              margin: 0,
-            }}
-          >
-            © {new Date().getFullYear()} Ezee. All rights reserved.
-          </p>
-          <button
-            onClick={() => setShowTerms(true)}
-            style={{
-              fontFamily: "'Instrument Sans', sans-serif",
-              fontSize: 13,
-              color: "rgba(250,247,241,.4)",
-              background: "none",
-              border: "none",
-              cursor: "pointer",
-              padding: 0,
-              textDecoration: "underline",
-              transition: "color .2s ease",
-            }}
-            onMouseEnter={(e) => e.currentTarget.style.color = "#D48A70"}
-            onMouseLeave={(e) => e.currentTarget.style.color = "rgba(250,247,241,.4)"}
-          >
-            Terms & Conditions
-          </button>
-          <p
-            style={{
-              fontFamily: "'Instrument Sans', sans-serif",
-              fontSize: 13,
-              color: "rgba(250,247,241,.3)",
-              margin: 0,
-              fontStyle: "italic",
-            }}
-          >
-            Made with ☕ for students everywhere.
-          </p>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 14, alignItems: "center", justifyContent: "center" }}>
+            <span
+              style={{
+                fontFamily: "'Space Grotesk', sans-serif",
+                fontWeight: 800,
+                fontSize: 16,
+                color: "#FAF7F1",
+                letterSpacing: ".02em"
+              }}
+            >
+              EZEE™
+            </span>
+            <span>·</span>
+            <span style={{ fontFamily: "'Instrument Sans', sans-serif" }}>Made in the study nook, one warm print at a time.</span>
+          </div>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 18, alignItems: "center", justifyContent: "center", fontSize: 12.5, color: "rgba(250,247,241,.3)" }}>
+            <Link href="/privacy" style={{ color: "rgba(250,247,241,.4)", textDecoration: "none", transition: "color 0.2s" }} onMouseEnter={e => e.currentTarget.style.color = '#FAF7F1'} onMouseLeave={e => e.currentTarget.style.color = 'rgba(250,247,241,.4)'}>Privacy Policy</Link>
+            <span>·</span>
+            <button
+              onClick={() => setShowTerms(true)}
+              style={{
+                background: "none",
+                border: "none",
+                cursor: "pointer",
+                padding: 0,
+                color: "rgba(250,247,241,.4)",
+                fontFamily: "inherit",
+                fontSize: "12.5px",
+                transition: "color 0.2s"
+              }}
+              onMouseEnter={e => e.currentTarget.style.color = '#FAF7F1'}
+              onMouseLeave={e => e.currentTarget.style.color = 'rgba(250,247,241,.4)'}
+            >
+              Terms &amp; Conditions
+            </button>
+            <span>·</span>
+            <Link href="/contact" style={{ color: "rgba(250,247,241,.4)", textDecoration: "none", transition: "color 0.2s" }} onMouseEnter={e => e.currentTarget.style.color = '#FAF7F1'} onMouseLeave={e => e.currentTarget.style.color = 'rgba(250,247,241,.4)'}>Contact</Link>
+            <span>·</span>
+            <span>All trademarks acknowledged</span>
+          </div>
         </div>
       </div>
 

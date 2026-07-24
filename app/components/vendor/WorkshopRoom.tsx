@@ -311,6 +311,8 @@ const CSS = `
 @keyframes ws-chime{0%{box-shadow:0 0 0 0 rgba(122,109,140,.5)}100%{box-shadow:0 0 0 16px rgba(122,109,140,0)}}
 .ws-chiming{animation:ws-chime 1.4s ease-out}
 .ws-nav{display:flex;flex-direction:column;gap:2px;margin-top:2px}
+.ws-mobile-nav{display:none!important}
+.ws-desktop-nav{display:flex!important}
 .ws-nav button{display:flex;align-items:center;gap:11px;padding:9px 11px;border-radius:10px;
   font-size:14.5px;color:var(--ink-2);font-weight:600;transition:background var(--soft),color var(--soft);
   text-align:left;width:100%}
@@ -563,6 +565,8 @@ table.ws-table tbody tr:last-child td{border-bottom:none}
   }
 
   /* Fixed & Opaque Bottom Navigation */
+  .ws-desktop-nav { display: none !important; }
+  .ws-mobile-nav { display: flex !important; }
   .ws-nav{
     position:fixed!important;
     bottom:0!important;
@@ -1957,7 +1961,7 @@ export default function WorkshopRoom() {
             <div className="ws-ezi-say">{eziSayText}</div>
           </div>
 
-          <nav className="ws-nav">
+          <nav className="ws-nav ws-desktop-nav">
             {navItems.map(([ic, label, key]) => (
               <button key={key} className={section === key ? 'on' : ''} onClick={() => setSection(key)}>
                 <span className="ic"><Ic name={ic} /></span>
@@ -2059,6 +2063,17 @@ export default function WorkshopRoom() {
           </div>
         </main>
       </div>
+
+      {/* Mobile Bottom Navigation */}
+      <nav className="ws-nav ws-mobile-nav">
+        {navItems.map(([ic, label, key]) => (
+          <button key={key} className={section === key ? 'on' : ''} onClick={() => setSection(key)}>
+            <span className="ic"><Ic name={ic} /></span>
+            <span>{label}</span>
+            {key === 'queue' && <span className="ws-count">{counts.new}</span>}
+          </button>
+        ))}
+      </nav>
 
       {/* Scrim */}
       <div className={`ws-scrim${drawerOrder ? ' on' : ''}`} onClick={closeDrawer} />

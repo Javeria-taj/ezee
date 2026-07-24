@@ -516,31 +516,93 @@ table.ws-table tbody tr:last-child td{border-bottom:none}
 @media(max-width:820px){
   .ws-app,.ws-app.ws-closed{display:flex!important;flex-direction:column!important;height:auto!important;overflow:visible!important}
   
-  /* Make the sidebar a static top header */
-  .ws-rail{position:static!important;width:100%!important;height:auto!important;min-height:auto!important;border:none!important;padding:0!important;flex-shrink:0}
+  /* Hide sidebar rail on mobile */
+  .ws-rail{display:none!important}
+  .ws-main{margin-left:0!important;height:auto!important;min-height:0!important;overflow-x:hidden!important}
   
-  /* Top brand header */
-  .ws-brand{display:flex!important;justify-content:center!important;padding:16px!important;border-bottom:1px solid var(--paper-edge)!important}
-  .ws-brand button[aria-label="Workshop Brand"]{cursor:default!important} /* no need to toggle sidebar on mobile */
-  .ws-brand button[aria-label="Close sidebar"]{display:none!important} /* hide close button */
-  .ws-app.ws-closed .ws-brand div{display:block!important}
-  
-  /* Hide unnecessary sidebar items */
-  .ws-ezi-card{display:none!important}
-  .ws-rail-foot{display:none!important}
-  
-  /* Bottom Navigation */
-  .ws-nav{position:fixed!important;bottom:0!important;left:0!important;right:0!important;height:64px!important;background:rgba(255,255,255,.96)!important;backdrop-filter:blur(10px)!important;border-top:1px solid var(--paper-edge)!important;z-index:9000!important;display:flex!important;flex-direction:row!important;justify-content:space-around!important;align-items:center!important;padding:0 8px!important;margin:0!important;gap:0!important}
-  
-  .ws-nav button{flex:1!important;display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;height:100%!important;border-radius:0!important;background:none!important;gap:4px!important;padding:0!important;font-size:10px!important;color:var(--ink-3)!important;position:relative!important;white-space:nowrap!important}
+  /* Fixed & Opaque Topbar */
+  .ws-topbar{
+    position:fixed!important;
+    top:0!important;
+    left:0!important;
+    right:0!important;
+    height:60px!important;
+    z-index:900!important;
+    display:flex!important;
+    flex-direction:row!important;
+    align-items:center!important;
+    justify-content:space-between!important;
+    padding:0 14px!important;
+    gap:8px!important;
+    background:#FAF7F1!important;
+    border-bottom:1px solid var(--paper-edge)!important;
+    backdrop-filter:none!important;
+    opacity:1!important;
+  }
+
+  .ws-root.night .ws-topbar {
+    background:#23202D!important;
+    border-bottom:1px solid #4F4A5E!important;
+    backdrop-filter:none!important;
+    opacity:1!important;
+  }
+
+  .ws-topbar-title{display:none!important}
+  .ws-mobile-logo{display:flex!important}
+  .ws-mobile-page-header{display:block!important}
+
+  /* NO time in mobile view */
+  .ws-timechip{display:none!important}
+
+  .ws-statuschip {
+    padding:4px 8px!important;
+    font-size:11px!important;
+  }
+  .ws-statuschip span {
+    font-size:11px!important;
+  }
+
+  /* Fixed & Opaque Bottom Navigation */
+  .ws-nav{
+    position:fixed!important;
+    bottom:0!important;
+    left:0!important;
+    right:0!important;
+    height:62px!important;
+    background:#FAF7F1!important;
+    border-top:1px solid var(--paper-edge)!important;
+    z-index:9000!important;
+    display:flex!important;
+    flex-direction:row!important;
+    justify-content:space-around!important;
+    align-items:center!important;
+    padding:0 4px!important;
+    margin:0!important;
+    gap:0!important;
+    backdrop-filter:none!important;
+    opacity:1!important;
+  }
+
+  .ws-root.night .ws-nav {
+    background:#23202D!important;
+    border-top:1px solid #4F4A5E!important;
+    backdrop-filter:none!important;
+    opacity:1!important;
+  }
+
+  .ws-nav button{
+    flex:1!important;
+    display:flex!important;
+    flex-direction:column!important;align-items:center!important;justify-content:center!important;
+    height:100%!important;border-radius:0!important;background:none!important;
+    gap:3px!important;padding:2px 0!important;font-size:9.5px!important;
+    color:var(--ink-3)!important;position:relative!important;white-space:nowrap!important;
+  }
+
   .ws-nav button.on{color:var(--ink)!important;background:rgba(122,109,140,.12)!important}
   .ws-nav button.on .ic{color:var(--terracotta)!important}
   .ws-nav button .ic{width:17px!important;height:17px!important}
-  
-  .ws-root.night .ws-nav {
-    background: rgba(35, 32, 45, 0.96) !important;
-    border-top: 1px solid #4F4A5E !important;
-  }
+
   .ws-root.night .ws-nav button {
     color: #8A8392 !important;
   }
@@ -557,22 +619,10 @@ table.ws-table tbody tr:last-child td{border-bottom:none}
   .ws-app.ws-closed .ws-nav button{justify-content:center!important;padding:0!important}
   
   /* Nav badge (count) */
-  .ws-count{position:absolute!important;top:8px!important;right:calc(50% - 20px)!important;padding:2px 5px!important;font-size:9px!important}
+  .ws-count{position:absolute!important;top:6px!important;right:calc(50% - 18px)!important;padding:1px 4px!important;font-size:8.5px!important}
   
   /* Main content area */
-  .ws-main{margin-left:0!important;height:auto!important;overflow-y:visible!important;min-height:0!important;overflow-x:hidden;padding-bottom:80px!important} /* padding for bottom nav */
-  
-  /* Topbar (Title, clock, toggles) */
-  .ws-topbar{display:flex!important;flex-direction:row!important;flex-wrap:wrap!important;gap:12px!important;justify-content:flex-start!important;padding:16px!important;align-items:center!important}
-  .ws-topbar > div:first-child{width:100%!important} /* Title full width */
-  .ws-topbar > div:nth-child(2){display:none!important} /* Hide spacer */
-  .ws-sub{display:none!important}
-  
-  /* Toggles & Chips */
-  .ws-clockchip{font-size:12px!important;padding:6px 12px!important;border-radius:12px!important}
-  
-  /* Work canvas */
-  .ws-canvas{padding:16px 12px!important}
+  .ws-canvas{padding:74px 14px 80px!important}
   
   /* Stats grid */
   .ws-stats{grid-template-columns:1fr 1fr!important;gap:10px!important}
@@ -1877,7 +1927,7 @@ export default function WorkshopRoom() {
     <div className={`ws-root ${night ? 'night' : ''}`}>
       <div className="ws-grain" />
       <div className={`ws-app ${isMenuOpen ? '' : 'ws-closed'}`}>
-        {/* RAIL */}
+        {/* RAIL (Desktop Sidebar) */}
         <aside className="ws-rail">
           <div className="ws-brand" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '10px', padding: '4px 8px 14px' }}>
             <button 
@@ -1923,23 +1973,34 @@ export default function WorkshopRoom() {
         {/* MAIN */}
         <main className="ws-main">
           <div className="ws-topbar">
-            <div>
+            {/* Mobile Logo */}
+            <div className="ws-mobile-logo" style={{ display: 'none', alignItems: 'center', gap: '8px' }}>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src="/logo.png" alt="Ezee Logo" style={{ height: 32, width: 'auto', objectFit: 'contain' }} />
+            </div>
+
+            <div className="ws-topbar-title">
               <h1>{pageTitle}</h1>
               <div className="ws-sub">{pageSub}</div>
             </div>
+
             <div style={{ flex: 1 }} />
-            <div className="ws-clockchip">
+
+            {/* Time / Clock chip (Hidden on mobile) */}
+            <div className="ws-clockchip ws-timechip">
               <span>{wx}</span>
               <span className="mono">{clock}</span>
             </div>
+
             {/* Shop status toggle */}
-            <div className="ws-clockchip" style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '7px 12px' }}>
+            <div className="ws-clockchip ws-statuschip" style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '7px 12px' }}>
               <span style={{ fontWeight: 600, color: 'var(--ink)', fontFamily: 'Space Grotesk' }}>Shop Status</span>
               <button className={`ws-sw${shopOpen ? ' on' : ''}`} onClick={toggleOpen} aria-label="Toggle shop status" />
-              <span style={{ minWidth: '28px', fontSize: '12px', fontWeight: 700, color: shopOpen ? 'var(--sage)' : 'var(--ink-3)', fontFamily: 'Space Grotesk' }}>
+              <span style={{ minWidth: '24px', fontSize: '11px', fontWeight: 700, color: shopOpen ? 'var(--sage)' : 'var(--ink-3)', fontFamily: 'Space Grotesk' }}>
                 {shopOpen ? 'ON' : 'OFF'}
               </span>
             </div>
+
             {/* Lamp (night toggle) */}
             <button
               className="ws-btn icon-only"
@@ -1985,6 +2046,10 @@ export default function WorkshopRoom() {
           </div>
 
           <div className="ws-canvas">
+            <div className="ws-mobile-page-header" style={{ display: 'none', marginBottom: '16px' }}>
+              <h2 style={{ fontFamily: 'Space Grotesk', fontSize: '20px', fontWeight: 600, color: 'var(--ink)' }}>{pageTitle}</h2>
+              <div style={{ fontSize: '12.5px', color: 'var(--ink-3)', marginTop: '2px' }}>{pageSub}</div>
+            </div>
             {section === 'queue' && renderQueueView()}
             {section === 'stations' && renderStationsPage()}
             {section === 'stock' && renderStockPage()}

@@ -148,7 +148,13 @@ export function catSVG(night: boolean) {
 export default function StudentDesk() {
   /* --- State --- */
   const [night, setNight] = useState(false);
-  const [nightOverride, setNightOverride] = useState<boolean | null>(null);
+  const [nightOverride, setNightOverride] = useState<boolean | null>(() => {
+    if (typeof window !== 'undefined') {
+      const stored = localStorage.getItem('ezee_student_night_mode');
+      if (stored !== null) return stored === 'true';
+    }
+    return null;
+  });
   const [clock, setClock] = useState('—');
   const [wx, setWx] = useState('☀');
 
@@ -242,6 +248,8 @@ export default function StudentDesk() {
     return n;
   }, [nightOverride]);
 
+
+
   useEffect(() => {
     const timer = setTimeout(() => applyNight(), 0);
     return () => clearTimeout(timer);
@@ -250,6 +258,9 @@ export default function StudentDesk() {
   const toggleNight = () => {
     const next = !night;
     setNightOverride(next);
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('ezee_student_night_mode', String(next));
+    }
     toast(next ? 'Lamp on. The desk goes golden.' : 'Lamp off. Daylight it is.');
   };
 

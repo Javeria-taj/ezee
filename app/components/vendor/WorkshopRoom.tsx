@@ -989,7 +989,13 @@ export default function WorkshopRoom() {
   const [section, setSection] = useState<string>('queue');
   const [vendorTab, setVendorTab] = useState<string>('new');
   const [shopOpen, setShopOpen] = useState(true);
-  const [night, setNight] = useState(false);
+  const [night, setNight] = useState<boolean>(() => {
+    if (typeof window !== 'undefined') {
+      const stored = localStorage.getItem('ezee_vendor_night_mode');
+      return stored === 'true';
+    }
+    return false;
+  });
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeId, setActiveId] = useState<string | null>(null);
   const [drawerOrder, setDrawerOrder] = useState<Order | null>(null);
@@ -1079,7 +1085,9 @@ export default function WorkshopRoom() {
   };
 
   useEffect(() => {
-    const timer = setTimeout(() => setMounted(true), 0);
+    const timer = setTimeout(() => {
+      setMounted(true);
+    }, 0);
     return () => clearTimeout(timer);
   }, []);
 
@@ -2022,6 +2030,9 @@ export default function WorkshopRoom() {
               onClick={() => {
                 const next = !night;
                 setNight(next);
+                if (typeof window !== 'undefined') {
+                  localStorage.setItem('ezee_vendor_night_mode', String(next));
+                }
                 addToast(next ? 'Lamp on. The workshop goes golden.' : 'Lamp off. Daylight it is.', 'clock');
               }}
             >

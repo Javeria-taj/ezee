@@ -195,9 +195,13 @@ export default function StudentDesk() {
     }, 0);
     return () => clearTimeout(timer);
   }, []);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [journeyStep, setJourneyStep] = useState(-1);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [barWidth, setBarWidth] = useState(0);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [pickupCode, setPickupCode] = useState('');
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [orderConfirmed, setOrderConfirmed] = useState(false);
 
 

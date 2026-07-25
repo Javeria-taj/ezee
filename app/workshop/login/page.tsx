@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 import { useUniverse } from '../../universe/UniverseProvider';
@@ -101,10 +101,6 @@ export default function WorkshopLogin() {
     setAuthMode(prev => prev === 'login' ? 'signup' : 'login');
     setLoginState('idle');
   };
-
-  const rainDrops = useMemo(() => Array.from({ length: 50 }).map((_, i) => ({
-    id: `rain-${i}`, x: (i * 3.33) % 100, delay: (i * 0.1) % 2, duration: 0.5 + ((i % 5) * 0.1),
-  })), []);
 
   if (!mounted) return null;
 

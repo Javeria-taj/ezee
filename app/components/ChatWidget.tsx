@@ -1,7 +1,6 @@
-'use me';
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { MessageSquare, X, Send, Bot, User, Sparkles, RefreshCw, ChevronRight } from 'lucide-react';
 
@@ -10,7 +9,7 @@ interface Message {
   role: 'USER' | 'ASSISTANT';
   content: string;
   createdAt: string;
-  toolCalls?: Array<{ tool: string; args: any; result: any }>;
+  toolCalls?: Array<{ tool: string; args: Record<string, unknown>; result: unknown }>;
 }
 
 export default function ChatWidget() {
@@ -39,14 +38,7 @@ export default function ChatWidget() {
     }
   }, [messages, isOpen]);
 
-  // Initial welcome message if conversation empty
-  useEffect(() => {
-    if (isOpen && messages.length === 0 && !conversationId) {
-      initConversation();
-    }
-  }, [isOpen]);
-
-  const initConversation = async () => {
+  const initConversation = useCallback(async () => {
     try {
       const token = typeof window !== 'undefined' ? localStorage.getItem('token') || '' : '';
       const res = await fetch('/api/v1/chatbot/conversations', {
@@ -70,7 +62,7 @@ export default function ChatWidget() {
           },
         ]);
       }
-    } catch (err) {
+    } catch {
       // Fallback local chat mode
       setMessages([
         {
@@ -82,14 +74,29 @@ export default function ChatWidget() {
         },
       ]);
     }
-  };
+  }, []);
+
+  // Initial welcome message if conversation empty
+  useEffect(() => {
+    let ignore = false;
+    if (isOpen && messages.length === 0 && !conversationId) {
+      Promise.resolve().then(() => {
+        if (!ignore) {
+          initConversation();
+        }
+      });
+    }
+    return () => {
+      ignore = true;
+    };
+  }, [isOpen, messages.length, conversationId, initConversation]);
 
   const handleSendMessage = async (textToSend?: string) => {
     const text = textToSend || inputMessage;
     if (!text.trim() || isLoading) return;
 
     const userMsg: Message = {
-      id: Date.now().toString(),
+      id: typeof crypto !== 'undefined' && crypto.randomUUID ? crypto.randomUUID() : String(new Date().getTime()),
       role: 'USER',
       content: text,
       createdAt: new Date().toISOString(),
@@ -135,7 +142,7 @@ export default function ChatWidget() {
           setMessages((prev) => [
             ...prev,
             {
-              id: aiMsg.id || Date.now().toString(),
+              id: aiMsg.id || (typeof crypto !== 'undefined' && crypto.randomUUID ? crypto.randomUUID() : String(new Date().getTime())),
               role: 'ASSISTANT',
               content: aiMsg.content,
               createdAt: aiMsg.createdAt || new Date().toISOString(),
@@ -146,11 +153,11 @@ export default function ChatWidget() {
           throw new Error(data.message || 'Failed to get AI response');
         }
       }
-    } catch (err: any) {
+    } catch {
       setMessages((prev) => [
         ...prev,
         {
-          id: Date.now().toString(),
+          id: typeof crypto !== 'undefined' && crypto.randomUUID ? crypto.randomUUID() : String(new Date().getTime()),
           role: 'ASSISTANT',
           content:
             "I'm experiencing a quick connection hiccup. For immediate help, check your orders in the dashboard or reach out via the Support page!",

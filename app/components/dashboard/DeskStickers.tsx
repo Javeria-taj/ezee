@@ -16,17 +16,25 @@ interface PlacedSticker {
 }
 
 export default function DeskStickers() {
-  const [placed, setPlaced] = useState<PlacedSticker[]>(() => {
-    if (typeof window !== 'undefined') {
-      try {
-        const stored = localStorage.getItem('ezee_desk_stickers');
-        if (stored) return JSON.parse(stored);
-      } catch {}
-    }
-    return [];
-  });
+  const [placed, setPlaced] = useState<PlacedSticker[]>([]);
   const [dragging, setDragging] = useState<string | null>(null);
   const [showMenu, setShowMenu] = useState(false);
+
+  React.useEffect(() => {
+    let ignore = false;
+    try {
+      const stored = localStorage.getItem('ezee_desk_stickers');
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        Promise.resolve().then(() => {
+          if (!ignore) setPlaced(parsed);
+        });
+      }
+    } catch {}
+    return () => {
+      ignore = true;
+    };
+  }, []);
 
   const save = (newPlaced: PlacedSticker[]) => {
     setPlaced(newPlaced);

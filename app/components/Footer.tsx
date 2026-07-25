@@ -126,7 +126,7 @@ export default function Footer() {
                 alt="Ezee Logo"
                 width={88}
                 height={28}
-                style={{ height: 28, width: "auto", filter: "invert(1) brightness(1.8)" }}
+                style={{ height: "28px", width: "auto", filter: "invert(1) brightness(1.8)" }}
               />
             </div>
             <p

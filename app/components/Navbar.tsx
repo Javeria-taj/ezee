@@ -127,7 +127,7 @@ export default function Navbar() {
             height={30}
             style={{
               width: "auto",
-              height: 30,
+              height: "30px",
               objectFit: "contain",
               borderRadius: "6px",
               filter: "contrast(1.05)"

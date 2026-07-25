@@ -24,6 +24,7 @@ A side-scrolling, beautifully illustrated isometric room where students can mana
 - **Print Studio:** Upload, configure, and send documents to local campus print shops.
 - **Memory Library & Scrapbook:** A cozy diary that tracks print history, late-night study sessions, and memories.
 - **Dynamic Weather System:** Change the ambient weather (Sunny, Rainy, Sunset, Midnight) which affects the lighting and mood of the room.
+- **Ezi AI Assistant:** A floating conversational AI support widget powered by Gemini with live order lookup and support escalation.
 - **Ezi the Cat:** A hidden interactive easter egg companion that sleeps in different spots around the room based on the time of day.
 - **Ambient Audio Engine:** Lofi beats and environmental soundscapes tied directly to the room's current weather.
 

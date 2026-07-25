@@ -1,4 +1,5 @@
 import { Metadata } from 'next';
+import ChatWidget from '../components/ChatWidget';
 
 export const metadata: Metadata = {
   title: 'Your Desk — EZEE',
@@ -15,5 +16,11 @@ export default function StudentLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return <>{children}</>;
+  return (
+    <>
+      {children}
+      <ChatWidget />
+    </>
+  );
 }
+

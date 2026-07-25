@@ -71,6 +71,9 @@ const socialLinks = [
 
 export default function Footer() {
   const [showTerms, setShowTerms] = useState(false);
+  const [showPrivacy, setShowPrivacy] = useState(false);
+  const [showContact, setShowContact] = useState(false);
+  const [showPartnerAgreement, setShowPartnerAgreement] = useState(false);
   return (
     <footer
       style={{
@@ -236,34 +239,94 @@ export default function Footer() {
               Print Partners
             </p>
             <nav style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-              {[
-                { href: "/workshop/login", label: "Shop Dashboard" },
-                { href: "/workshop/login", label: "Become a Partner" },
-                { href: "#faq", label: "Partner FAQ" },
-              ].map(({ href, label }) => (
-                <Link
-                  key={label}
-                  href={href}
-                  style={{
-                    fontFamily: "'Instrument Sans', sans-serif",
-                    fontSize: 15,
-                    fontWeight: 500,
-                    color: "rgba(250,247,241,.6)",
-                    textDecoration: "none",
-                    transition: "color .2s ease, paddingLeft .2s ease",
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.color = "#A9B59D";
-                    e.currentTarget.style.paddingLeft = "4px";
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.color = "rgba(250,247,241,.6)";
-                    e.currentTarget.style.paddingLeft = "0";
-                  }}
-                >
-                  {label}
-                </Link>
-              ))}
+              <Link
+                href="/workshop/login"
+                style={{
+                  fontFamily: "'Instrument Sans', sans-serif",
+                  fontSize: 15,
+                  fontWeight: 500,
+                  color: "rgba(250,247,241,.6)",
+                  textDecoration: "none",
+                  transition: "color .2s ease, paddingLeft .2s ease",
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.color = "#A9B59D";
+                  e.currentTarget.style.paddingLeft = "4px";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.color = "rgba(250,247,241,.6)";
+                  e.currentTarget.style.paddingLeft = "0";
+                }}
+              >
+                Shop Dashboard
+              </Link>
+              <Link
+                href="/workshop/login"
+                style={{
+                  fontFamily: "'Instrument Sans', sans-serif",
+                  fontSize: 15,
+                  fontWeight: 500,
+                  color: "rgba(250,247,241,.6)",
+                  textDecoration: "none",
+                  transition: "color .2s ease, paddingLeft .2s ease",
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.color = "#A9B59D";
+                  e.currentTarget.style.paddingLeft = "4px";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.color = "rgba(250,247,241,.6)";
+                  e.currentTarget.style.paddingLeft = "0";
+                }}
+              >
+                Become a Partner
+              </Link>
+              <button
+                onClick={() => setShowPartnerAgreement(true)}
+                style={{
+                  background: "none",
+                  border: "none",
+                  cursor: "pointer",
+                  padding: 0,
+                  textAlign: "left",
+                  fontFamily: "'Instrument Sans', sans-serif",
+                  fontSize: 15,
+                  fontWeight: 500,
+                  color: "rgba(250,247,241,.6)",
+                  transition: "color .2s ease, paddingLeft .2s ease",
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.color = "#A9B59D";
+                  e.currentTarget.style.paddingLeft = "4px";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.color = "rgba(250,247,241,.6)";
+                  e.currentTarget.style.paddingLeft = "0";
+                }}
+              >
+                Partner Agreement
+              </button>
+              <a
+                href="#faq"
+                style={{
+                  fontFamily: "'Instrument Sans', sans-serif",
+                  fontSize: 15,
+                  fontWeight: 500,
+                  color: "rgba(250,247,241,.6)",
+                  textDecoration: "none",
+                  transition: "color .2s ease, paddingLeft .2s ease",
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.color = "#A9B59D";
+                  e.currentTarget.style.paddingLeft = "4px";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.color = "rgba(250,247,241,.6)";
+                  e.currentTarget.style.paddingLeft = "0";
+                }}
+              >
+                Partner FAQ
+              </a>
             </nav>
           </div>
 
@@ -375,7 +438,23 @@ export default function Footer() {
             <span style={{ fontFamily: "'Instrument Sans', sans-serif" }}>Made in the study nook, one warm print at a time.</span>
           </div>
           <div style={{ display: "flex", flexWrap: "wrap", gap: 18, alignItems: "center", justifyContent: "center", fontSize: 12.5, color: "rgba(250,247,241,.3)" }}>
-            <Link href="/privacy" style={{ color: "rgba(250,247,241,.4)", textDecoration: "none", transition: "color 0.2s" }} onMouseEnter={e => e.currentTarget.style.color = '#FAF7F1'} onMouseLeave={e => e.currentTarget.style.color = 'rgba(250,247,241,.4)'}>Privacy Policy</Link>
+            <button
+              onClick={() => setShowPrivacy(true)}
+              style={{
+                background: "none",
+                border: "none",
+                cursor: "pointer",
+                padding: 0,
+                color: "rgba(250,247,241,.4)",
+                fontFamily: "inherit",
+                fontSize: "12.5px",
+                transition: "color 0.2s"
+              }}
+              onMouseEnter={e => e.currentTarget.style.color = '#FAF7F1'}
+              onMouseLeave={e => e.currentTarget.style.color = 'rgba(250,247,241,.4)'}
+            >
+              Privacy Policy
+            </button>
             <span>·</span>
             <button
               onClick={() => setShowTerms(true)}
@@ -395,7 +474,41 @@ export default function Footer() {
               Terms &amp; Conditions
             </button>
             <span>·</span>
-            <Link href="/contact" style={{ color: "rgba(250,247,241,.4)", textDecoration: "none", transition: "color 0.2s" }} onMouseEnter={e => e.currentTarget.style.color = '#FAF7F1'} onMouseLeave={e => e.currentTarget.style.color = 'rgba(250,247,241,.4)'}>Contact</Link>
+            <button
+              onClick={() => setShowPartnerAgreement(true)}
+              style={{
+                background: "none",
+                border: "none",
+                cursor: "pointer",
+                padding: 0,
+                color: "rgba(250,247,241,.4)",
+                fontFamily: "inherit",
+                fontSize: "12.5px",
+                transition: "color 0.2s"
+              }}
+              onMouseEnter={e => e.currentTarget.style.color = '#FAF7F1'}
+              onMouseLeave={e => e.currentTarget.style.color = 'rgba(250,247,241,.4)'}
+            >
+              Partner Agreement
+            </button>
+            <span>·</span>
+            <button
+              onClick={() => setShowContact(true)}
+              style={{
+                background: "none",
+                border: "none",
+                cursor: "pointer",
+                padding: 0,
+                color: "rgba(250,247,241,.4)",
+                fontFamily: "inherit",
+                fontSize: "12.5px",
+                transition: "color 0.2s"
+              }}
+              onMouseEnter={e => e.currentTarget.style.color = '#FAF7F1'}
+              onMouseLeave={e => e.currentTarget.style.color = 'rgba(250,247,241,.4)'}
+            >
+              Contact
+            </button>
             <span>·</span>
             <span>All trademarks acknowledged</span>
           </div>
@@ -560,6 +673,481 @@ export default function Footer() {
               <div style={{ borderTop: "2px solid #D48A70", paddingTop: "20px", marginTop: "40px", textAlign: "center" }}>
                 <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 700, fontSize: "12px", color: "#FAF7F1", letterSpacing: "0.05em", margin: 0 }}>
                   BY USING THE PLATFORM, YOU ACKNOWLEDGE THAT YOU HAVE READ, UNDERSTOOD, AND AGREE TO BE BOUND BY THESE TERMS AND CONDITIONS IN THEIR ENTIRETY.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showPrivacy && (
+        <div
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            width: "100vw",
+            height: "100vh",
+            background: "rgba(15, 12, 11, 0.85)",
+            backdropFilter: "blur(12px)",
+            zIndex: 99999,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            padding: "20px",
+          }}
+          onClick={() => setShowPrivacy(false)}
+        >
+          <div
+            style={{
+              position: "relative",
+              width: "100%",
+              maxWidth: "850px",
+              height: "85vh",
+              background: "#1F1917",
+              border: "1px solid rgba(250, 247, 241, 0.1)",
+              borderRadius: "24px",
+              padding: "40px 32px 32px 40px",
+              display: "flex",
+              flexDirection: "column",
+              color: "#FAF7F1",
+              boxShadow: "0 24px 60px rgba(0, 0, 0, 0.6)",
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Close Button */}
+            <button
+              onClick={() => setShowPrivacy(false)}
+              style={{
+                position: "absolute",
+                top: "24px",
+                right: "24px",
+                background: "rgba(250, 247, 241, 0.05)",
+                border: "1px solid rgba(250, 247, 241, 0.1)",
+                color: "#FAF7F1",
+                width: "36px",
+                height: "36px",
+                borderRadius: "50%",
+                cursor: "pointer",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                transition: "all 0.2s ease",
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = "#D48A70";
+                e.currentTarget.style.color = "#211b19";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = "rgba(250, 247, 241, 0.05)";
+                e.currentTarget.style.color = "#FAF7F1";
+              }}
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                <line x1="18" y1="6" x2="6" y2="18" />
+                <line x1="6" y1="6" x2="18" y2="18" />
+              </svg>
+            </button>
+
+            {/* Header */}
+            <div style={{ marginBottom: "24px" }}>
+              <h2 style={{ fontFamily: "Space Grotesk, sans-serif", fontSize: "28px", fontWeight: 800, color: "#D48A70", margin: "0 0 6px 0", letterSpacing: "-0.02em" }}>
+                PRIVACY POLICY
+              </h2>
+              <p style={{ fontFamily: "Instrument Sans, sans-serif", fontSize: "14px", color: "rgba(250, 247, 241, 0.5)", margin: 0 }}>
+                EzeePrints — Online Printing Platform (Website, Android Application &amp; iOS Application)
+              </p>
+              <p style={{ fontFamily: "Instrument Sans, sans-serif", fontSize: "13px", color: "rgba(250, 247, 241, 0.6)", margin: "4px 0 0 0" }}>
+                Operated by Zarixa Infobytes Private Limited
+              </p>
+              <p style={{ fontFamily: "Instrument Sans, sans-serif", fontSize: "12px", color: "#A9B59D", margin: "4px 0 0 0", fontWeight: 500 }}>
+                Last Updated: 24 July 2026
+              </p>
+            </div>
+
+            {/* Scrollable Content Container */}
+            <div
+              style={{
+                flex: 1,
+                overflowY: "auto",
+                paddingRight: "16px",
+                fontFamily: "Instrument Sans, sans-serif",
+                fontSize: "14.5px",
+                lineHeight: "1.7",
+                color: "rgba(250, 247, 241, 0.8)",
+              }}
+            >
+              <p style={{ fontStyle: "italic", marginBottom: "24px" }}>
+                Zarixa Infobytes Private Limited (operating as &quot;EzeePrints&quot;) is committed to protecting the privacy of Users who access or use the Platform. This Privacy Policy describes the manner in which personal data is collected, used, disclosed, transferred, retained and otherwise processed by the Company in connection with the Platform.
+              </p>
+
+              {/* Jump Nav */}
+              <div style={{ background: "rgba(250, 247, 241, 0.03)", border: "1px solid rgba(250, 247, 241, 0.06)", borderRadius: "14px", padding: "16px", marginBottom: "32px" }}>
+                <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 700, fontSize: "12px", color: "#A9B59D", margin: "0 0 10px 0", letterSpacing: "0.08em", textTransform: "uppercase" }}>
+                  Quick Navigation
+                </p>
+                <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
+                  {[
+                    { id: 1, label: "1. Definitions" },
+                    { id: 2, label: "2. Personal Data We Collect" },
+                    { id: 3, label: "3. How We Use Data" },
+                    { id: 4, label: "4. Sharing Data" },
+                    { id: 5, label: "5. Confidentiality" },
+                    { id: 6, label: "6. Retention" },
+                    { id: 7, label: "7. Security" },
+                    { id: 14, label: "14. Grievance Officer" },
+                    { id: 17, label: "17. Contact" }
+                  ].map(link => (
+                    <button
+                      key={link.id}
+                      onClick={() => document.getElementById(`privacy-sec-${link.id}`)?.scrollIntoView({ behavior: "smooth" })}
+                      style={{
+                        background: "rgba(250, 247, 241, 0.05)",
+                        border: "1px solid rgba(250, 247, 241, 0.08)",
+                        borderRadius: "8px",
+                        color: "rgba(250, 247, 241, 0.7)",
+                        padding: "6px 12px",
+                        fontSize: "12.5px",
+                        cursor: "pointer",
+                        transition: "all 0.2s ease"
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.borderColor = "#D48A70";
+                        e.currentTarget.style.color = "#D48A70";
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.borderColor = "rgba(250, 247, 241, 0.08)";
+                        e.currentTarget.style.color = "rgba(250, 247, 241, 0.7)";
+                      }}
+                    >
+                      {link.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Sections */}
+              <div style={{ display: "flex", flexDirection: "column", gap: "32px", paddingBottom: "40px" }}>
+                {privacySections.map((sec, idx) => (
+                  <div key={idx} id={`privacy-sec-${idx + 1}`} style={{ scrollMarginTop: "20px" }}>
+                    <h3 style={{ fontFamily: "Space Grotesk, sans-serif", fontSize: "16px", fontWeight: 700, color: "#D48A70", borderBottom: "1px solid rgba(250, 247, 241, 0.08)", paddingBottom: "8px", marginBottom: "14px" }}>
+                      {sec.title}
+                    </h3>
+                    <div style={{ color: "rgba(250, 247, 241, 0.75)" }}>{sec.content}</div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Final notice */}
+              <div style={{ borderTop: "2px solid #D48A70", paddingTop: "20px", marginTop: "40px", textAlign: "center" }}>
+                <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 700, fontSize: "12px", color: "#FAF7F1", letterSpacing: "0.05em", margin: 0 }}>
+                  BY USING THE PLATFORM, YOU ACKNOWLEDGE THAT YOU HAVE READ, UNDERSTOOD, AND CONSENT TO THIS PRIVACY POLICY.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showContact && (
+        <div
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            width: "100vw",
+            height: "100vh",
+            background: "rgba(15, 12, 11, 0.85)",
+            backdropFilter: "blur(12px)",
+            zIndex: 99999,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            padding: "20px",
+          }}
+          onClick={() => setShowContact(false)}
+        >
+          <div
+            style={{
+              position: "relative",
+              width: "100%",
+              maxWidth: "850px",
+              maxHeight: "85vh",
+              background: "#1F1917",
+              border: "1px solid rgba(250, 247, 241, 0.1)",
+              borderRadius: "24px",
+              padding: "40px 32px 32px 40px",
+              display: "flex",
+              flexDirection: "column",
+              color: "#FAF7F1",
+              boxShadow: "0 24px 60px rgba(0, 0, 0, 0.6)",
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Close Button */}
+            <button
+              onClick={() => setShowContact(false)}
+              style={{
+                position: "absolute",
+                top: "24px",
+                right: "24px",
+                background: "rgba(250, 247, 241, 0.05)",
+                border: "1px solid rgba(250, 247, 241, 0.1)",
+                color: "#FAF7F1",
+                width: "36px",
+                height: "36px",
+                borderRadius: "50%",
+                cursor: "pointer",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                transition: "all 0.2s ease",
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = "#D48A70";
+                e.currentTarget.style.color = "#211b19";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = "rgba(250, 247, 241, 0.05)";
+                e.currentTarget.style.color = "#FAF7F1";
+              }}
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                <line x1="18" y1="6" x2="6" y2="18" />
+                <line x1="6" y1="6" x2="18" y2="18" />
+              </svg>
+            </button>
+
+            {/* Header */}
+            <div style={{ marginBottom: "24px" }}>
+              <h2 style={{ fontFamily: "Space Grotesk, sans-serif", fontSize: "28px", fontWeight: 800, color: "#D48A70", margin: "0 0 6px 0", letterSpacing: "-0.02em" }}>
+                CONTACT DETAILS
+              </h2>
+              <p style={{ fontFamily: "Instrument Sans, sans-serif", fontSize: "14px", color: "rgba(250, 247, 241, 0.5)", margin: 0 }}>
+                EzeePrints — Online Printing Platform (Website, Android Application &amp; iOS Application)
+              </p>
+              <p style={{ fontFamily: "Instrument Sans, sans-serif", fontSize: "13px", color: "rgba(250, 247, 241, 0.6)", margin: "4px 0 0 0" }}>
+                Operated by Zarixa Infobytes Private Limited
+              </p>
+            </div>
+
+            {/* Content Container */}
+            <div
+              style={{
+                flex: 1,
+                overflowY: "auto",
+                paddingRight: "16px",
+                fontFamily: "Instrument Sans, sans-serif",
+                fontSize: "14.5px",
+                lineHeight: "1.75",
+                color: "rgba(250, 247, 241, 0.8)",
+                display: "flex",
+                flexDirection: "column",
+                gap: "20px",
+              }}
+            >
+              <p style={{ margin: 0 }}>
+                For any questions, clarifications, complaints or grievances relating to these Terms, the Policies, or the Platform, Users may contact the Company through the following channels:
+              </p>
+
+              <div style={{ background: "rgba(250, 247, 241, 0.03)", border: "1px solid rgba(250, 247, 241, 0.08)", borderRadius: "16px", padding: "24px" }}>
+                <ul style={{ listStyleType: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: "14px" }}>
+                  <li style={{ display: "flex", flexWrap: "wrap", gap: "6px" }}>
+                    <strong style={{ color: "#FAF7F1", minWidth: "220px" }}>• Customer Support Email:</strong>
+                    <a href="mailto:support@ezeeprints.com" style={{ color: "#D48A70", textDecoration: "underline" }}>support@ezeeprints.com</a>
+                  </li>
+                  <li style={{ display: "flex", flexWrap: "wrap", gap: "6px" }}>
+                    <strong style={{ color: "#FAF7F1", minWidth: "220px" }}>• Grievance Officer Email:</strong>
+                    <a href="mailto:grievance@ezeeprints.com" style={{ color: "#D48A70", textDecoration: "underline" }}>grievance@ezeeprints.com</a>
+                  </li>
+                  <li style={{ display: "flex", flexWrap: "wrap", gap: "6px" }}>
+                    <strong style={{ color: "#FAF7F1", minWidth: "220px" }}>• Registered / Corporate Office Address:</strong>
+                    <span>Zarixa Infobytes Private Limited, #42, Cozy Lane, 3rd Block, Koramangala, Bengaluru, Karnataka, India - 560034</span>
+                  </li>
+                  <li style={{ display: "flex", flexWrap: "wrap", gap: "6px" }}>
+                    <strong style={{ color: "#FAF7F1", minWidth: "220px" }}>• Support Hours:</strong>
+                    <span>Monday to Saturday, 9:00 AM to 7:00 PM IST</span>
+                  </li>
+                  <li style={{ display: "flex", flexWrap: "wrap", gap: "6px" }}>
+                    <strong style={{ color: "#FAF7F1", minWidth: "220px" }}>• In-App Support:</strong>
+                    <span>Available through the &quot;Help &amp; Support&quot; section of the Website, Android application and iOS application.</span>
+                  </li>
+                </ul>
+              </div>
+
+              <p style={{ margin: 0 }}>
+                The Company shall endeavour to acknowledge all User grievances within forty-eight (48) hours of receipt and to resolve the same within the timelines prescribed under Applicable Law, including the Information Technology (Intermediary Guidelines and Digital Media Ethics Code) Rules, 2021, as applicable.
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showPartnerAgreement && (
+        <div
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            width: "100vw",
+            height: "100vh",
+            background: "rgba(15, 12, 11, 0.85)",
+            backdropFilter: "blur(12px)",
+            zIndex: 99999,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            padding: "20px",
+          }}
+          onClick={() => setShowPartnerAgreement(false)}
+        >
+          <div
+            style={{
+              position: "relative",
+              width: "100%",
+              maxWidth: "850px",
+              height: "85vh",
+              background: "#1F1917",
+              border: "1px solid rgba(250, 247, 241, 0.1)",
+              borderRadius: "24px",
+              padding: "40px 32px 32px 40px",
+              display: "flex",
+              flexDirection: "column",
+              color: "#FAF7F1",
+              boxShadow: "0 24px 60px rgba(0, 0, 0, 0.6)",
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Close Button */}
+            <button
+              onClick={() => setShowPartnerAgreement(false)}
+              style={{
+                position: "absolute",
+                top: "24px",
+                right: "24px",
+                background: "rgba(250, 247, 241, 0.05)",
+                border: "1px solid rgba(250, 247, 241, 0.1)",
+                color: "#FAF7F1",
+                width: "36px",
+                height: "36px",
+                borderRadius: "50%",
+                cursor: "pointer",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                transition: "all 0.2s ease",
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = "#D48A70";
+                e.currentTarget.style.color = "#211b19";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = "rgba(250, 247, 241, 0.05)";
+                e.currentTarget.style.color = "#FAF7F1";
+              }}
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                <line x1="18" y1="6" x2="6" y2="18" />
+                <line x1="6" y1="6" x2="18" y2="18" />
+              </svg>
+            </button>
+
+            {/* Header */}
+            <div style={{ marginBottom: "24px" }}>
+              <h2 style={{ fontFamily: "Space Grotesk, sans-serif", fontSize: "28px", fontWeight: 800, color: "#D48A70", margin: "0 0 6px 0", letterSpacing: "-0.02em" }}>
+                PRINT PARTNER AGREEMENT
+              </h2>
+              <p style={{ fontFamily: "Instrument Sans, sans-serif", fontSize: "14px", color: "rgba(250, 247, 241, 0.5)", margin: 0 }}>
+                EzeePrints — Marketplace Platform for On-Demand Printing Services
+              </p>
+              <p style={{ fontFamily: "Instrument Sans, sans-serif", fontSize: "13px", color: "rgba(250, 247, 241, 0.6)", margin: "4px 0 0 0" }}>
+                Between Zarixa Infobytes Private Limited and Onboarded Print Partners
+              </p>
+              <p style={{ fontFamily: "Instrument Sans, sans-serif", fontSize: "12px", color: "#A9B59D", margin: "4px 0 0 0", fontWeight: 500 }}>
+                Template Version Dated: 24 July 2026
+              </p>
+            </div>
+
+            {/* Scrollable Content Container */}
+            <div
+              style={{
+                flex: 1,
+                overflowY: "auto",
+                paddingRight: "16px",
+                fontFamily: "Instrument Sans, sans-serif",
+                fontSize: "14.5px",
+                lineHeight: "1.7",
+                color: "rgba(250, 247, 241, 0.8)",
+              }}
+            >
+              <p style={{ fontStyle: "italic", marginBottom: "24px" }}>
+                THIS PRINT PARTNER AGREEMENT (&quot;Agreement&quot;) governs the onboarding, order routing, payment settlement, quality service levels, and operational standards between Zarixa Infobytes Private Limited (operating &quot;EzeePrints&quot;) and independent print shops and vendors (&quot;Print Partners&quot;).
+              </p>
+
+              {/* Jump Nav */}
+              <div style={{ background: "rgba(250, 247, 241, 0.03)", border: "1px solid rgba(250, 247, 241, 0.06)", borderRadius: "14px", padding: "16px", marginBottom: "32px" }}>
+                <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 700, fontSize: "12px", color: "#A9B59D", margin: "0 0 10px 0", letterSpacing: "0.08em", textTransform: "uppercase" }}>
+                  Quick Navigation
+                </p>
+                <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
+                  {[
+                    { id: 1, label: "1. Definitions" },
+                    { id: 2, label: "2. Appointment" },
+                    { id: 3, label: "3. Onboarding" },
+                    { id: 4, label: "4. Fulfilment" },
+                    { id: 5, label: "5. Pricing & Commission" },
+                    { id: 6, label: "6. Payments & Settlement" },
+                    { id: 7, label: "7. Taxes & Invoicing" },
+                    { id: 8, label: "8. Quality & SLAs" },
+                    { id: 9, label: "9. Confidentiality" },
+                    { id: 12, label: "12. Term & Termination" },
+                    { id: 15, label: "15. Dispute Resolution" },
+                    { id: 17, label: "Schedule A" }
+                  ].map(link => (
+                    <button
+                      key={link.id}
+                      onClick={() => document.getElementById(`partner-sec-${link.id}`)?.scrollIntoView({ behavior: "smooth" })}
+                      style={{
+                        background: "rgba(250, 247, 241, 0.05)",
+                        border: "1px solid rgba(250, 247, 241, 0.08)",
+                        borderRadius: "8px",
+                        color: "rgba(250, 247, 241, 0.7)",
+                        padding: "6px 12px",
+                        fontSize: "12.5px",
+                        cursor: "pointer",
+                        transition: "all 0.2s ease"
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.borderColor = "#D48A70";
+                        e.currentTarget.style.color = "#D48A70";
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.borderColor = "rgba(250, 247, 241, 0.08)";
+                        e.currentTarget.style.color = "rgba(250, 247, 241, 0.7)";
+                      }}
+                    >
+                      {link.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Sections */}
+              <div style={{ display: "flex", flexDirection: "column", gap: "32px", paddingBottom: "40px" }}>
+                {partnerAgreementSections.map((sec, idx) => (
+                  <div key={idx} id={`partner-sec-${idx + 1}`} style={{ scrollMarginTop: "20px" }}>
+                    <h3 style={{ fontFamily: "Space Grotesk, sans-serif", fontSize: "16px", fontWeight: 700, color: "#D48A70", borderBottom: "1px solid rgba(250, 247, 241, 0.08)", paddingBottom: "8px", marginBottom: "14px" }}>
+                      {sec.title}
+                    </h3>
+                    <div style={{ color: "rgba(250, 247, 241, 0.75)" }}>{sec.content}</div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Final notice */}
+              <div style={{ borderTop: "2px solid #D48A70", paddingTop: "20px", marginTop: "40px", textAlign: "center" }}>
+                <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 700, fontSize: "12px", color: "#FAF7F1", letterSpacing: "0.05em", margin: 0 }}>
+                  BY ONBOARDING AS A PRINT PARTNER, YOU ACKNOWLEDGE THAT YOU HAVE READ, UNDERSTOOD, AND AGREE TO BE BOUND BY THIS AGREEMENT.
                 </p>
               </div>
             </div>
@@ -1005,3 +1593,376 @@ const termsSections = [
     )
   }
 ];
+
+const privacySections = [
+  {
+    title: "1. DEFINITIONS",
+    content: (
+      <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+        <p>In this Privacy Policy, unless the context otherwise requires, the following expressions shall have the meanings assigned to them below. All other capitalised terms used but not defined in this Privacy Policy, including “Account”, “App”, “Applicable Law”, “Company”, “Content”, “Delivery Partner”, “Institution”, “Order”, “Payment Gateway”, “Platform”, “Print Partner”, “Services”, “User”, “Wallet” and “Wallet Credit”, shall have the meanings assigned to such terms in the Terms and Conditions.</p>
+        <ul style={{ listStyleType: "disc", paddingLeft: "20px", display: "flex", flexDirection: "column", gap: "8px" }}>
+          <li><strong>&quot;Consent&quot;</strong> means the free, specific, informed and unambiguous indication of a User’s wishes by which the User, by a clear affirmative action, signifies agreement to the processing of personal data relating to them.</li>
+          <li><strong>&quot;Cookies&quot;</strong> means small text files or similar tracking technologies placed on a User’s device to store information relating to preferences, sessions, and usage of the Platform.</li>
+          <li><strong>&quot;Data Protection Board&quot;</strong> means the Data Protection Board of India constituted under the Digital Personal Data Protection Act, 2023.</li>
+          <li><strong>&quot;Grievance Officer&quot;</strong> means the officer appointed by the Company under Clause 14 of this Privacy Policy and Clause 29 of the Terms and Conditions to address grievances relating to personal data.</li>
+          <li><strong>&quot;Personal Data&quot;</strong> means any data about a User by or in relation to which the User is identifiable, whether directly or indirectly, including but not limited to name, contact details, financial information, Content, and device and location data.</li>
+          <li><strong>&quot;Processing&quot;</strong> means any operation performed on Personal Data, whether automated or not, including collection, recording, organisation, storage, adaptation, retrieval, use, disclosure, restriction, erasure or destruction.</li>
+          <li><strong>&quot;Sensitive Personal Data or Information&quot; or &quot;SPDI&quot;</strong> has the meaning assigned to it under the Information Technology (Reasonable Security Practices and Procedures and Sensitive Personal Data or Information) Rules, 2011, and includes passwords and financial information such as bank account or payment instrument details.</li>
+        </ul>
+      </div>
+    )
+  },
+  {
+    title: "2. THE PERSONAL DATA WE COLLECT",
+    content: (
+      <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+        <p><strong>2.1 Account Data</strong>: When You register for an Account, We collect Your name, mobile number, email address, and, where applicable, institutional or business affiliation. Where You register using a third-party sign-in service, We receive such basic profile information as that service makes available to Us, subject to Your permissions on that service.</p>
+        <p><strong>2.2 Order Data</strong>: When You place an Order, We collect the Content You upload for printing, Your selected print specifications, Your delivery or pickup address, and details of the fulfilment method You choose.</p>
+        <p><strong>2.3 Payment-Related Data</strong>: We receive limited transaction metadata from the Payment Gateway, including the Order Value, payment status, and any Coupon or Wallet Credit applied. The Company does not collect, store, or have access to Your complete card, UPI, or other payment instrument details; such information is collected and processed directly by the Payment Gateway in accordance with its own privacy policy and applicable data security standards, including the Payment Card Industry Data Security Standard.</p>
+        <p><strong>2.4 Communications Data</strong>: We collect records of Your interactions with Our customer support and Grievance Officer, including the content of Your queries, complaints, and correspondence with Us.</p>
+        <p><strong>2.5 Device and Usage Data</strong>: We automatically collect certain technical information when You use the Platform, including Your IP address, device identifiers, operating system and browser type, App version, and log data relating to Your use of the Platform’s features.</p>
+        <p><strong>2.6 Location Data</strong>: Where relevant to serviceability, delivery routing, or fraud prevention, We may collect Your approximate or precise location, subject to the permissions You grant on Your device.</p>
+        <p><strong>2.7 Cookies</strong>: The Website uses Cookies and similar tracking technologies as described in Clause 9 below.</p>
+      </div>
+    )
+  },
+  {
+    title: "3. HOW WE USE YOUR PERSONAL DATA",
+    content: (
+      <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+        <p><strong>3.1</strong> We use Personal Data for the following purposes: (a) creating and administering Your Account; (b) processing, routing, producing and fulfilling Your Orders, including quality assurance; (c) processing payments and administering Wallet Credit and Coupons; (d) coordinating pickup and delivery of Orders; (e) providing customer support and resolving grievances; (f) preventing fraud, abuse, and unauthorised use of the Platform; (g) complying with Applicable Law, including tax record-keeping and responding to lawful requests from governmental or regulatory authorities; (h) improving and personalising the Platform and Our Services; and (i) sending You transactional communications relating to Your Account and Orders, and, subject to Your consent and right to opt out, promotional communications.</p>
+        <p><strong>3.2</strong> We process Personal Data on the basis of Your Consent, where processing is necessary to perform the contract represented by an Order, where processing is necessary to comply with a legal obligation, and, in limited circumstances, on the basis of Our legitimate interest in maintaining the security and integrity of the Platform, balanced against Your rights as a data principal.</p>
+      </div>
+    )
+  },
+  {
+    title: "4. HOW WE SHARE YOUR PERSONAL DATA",
+    content: (
+      <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+        <p><strong>4.1</strong> With Print Partners, to the extent necessary to fulfil Your Order, including access to Content and relevant Order details.</p>
+        <p><strong>4.2</strong> With Delivery Partners, including Your name, contact number, and delivery address, to the extent necessary to complete delivery of Your Order.</p>
+        <p><strong>4.3</strong> With the Payment Gateway, to process payment for Your Order.</p>
+        <p><strong>4.4</strong> With an Institution, where You access the Platform pursuant to an institutional arrangement under Clause 4.5 of the Terms and Conditions.</p>
+        <p><strong>4.5</strong> With Our professional advisors, auditors, and service providers who are bound by confidentiality obligations and process Personal Data solely on Our instructions.</p>
+        <p><strong>4.6</strong> With governmental, regulatory, or law enforcement authorities, or courts of competent jurisdiction, where required under Applicable Law or a valid legal process.</p>
+        <p><strong>4.7</strong> With a successor entity, in connection with a merger, acquisition, corporate reorganisation, or sale of assets, as contemplated under Clause 32.4 of the Terms and Conditions.</p>
+        <p><strong>4.8</strong> We do not sell Your Personal Data to third parties for their own independent marketing purposes.</p>
+      </div>
+    )
+  },
+  {
+    title: "5. CONFIDENTIALITY OF CONTENT",
+    content: (
+      <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+        <p><strong>5.1</strong> Content uploaded by You is treated as confidential and is accessed only by authorised personnel of the Company and, where applicable, the assigned Print Partner, solely for the purpose of production, quality assurance, and legal compliance.</p>
+        <p><strong>5.2</strong> Print Partners and Delivery Partners are contractually bound to use Content and Personal Data shared with them solely for the purpose of fulfilling Your Order, and to implement reasonable security safeguards.</p>
+        <p><strong>5.3</strong> The licence granted by You in respect of Content under Clause 10.2 of the Terms and Conditions automatically terminates on completion or valid cancellation of the relevant Order, save to the extent retention is otherwise required.</p>
+      </div>
+    )
+  },
+  {
+    title: "6. DATA RETENTION",
+    content: (
+      <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+        <p><strong>6.1</strong> We retain Personal Data and Content only for as long as is reasonably necessary to fulfil the purposes described in this Privacy Policy, including provision of the Services, compliance with Applicable Law (including applicable limitation periods and tax record-keeping requirements), and resolution of disputes.</p>
+        <p><strong>6.2</strong> Content is retained only for such period as is reasonably necessary to fulfil the relevant Order and to address any post-Order query or dispute, following which it is deleted or anonymised in accordance with Our data retention schedule.</p>
+        <p><strong>6.3</strong> Account data is retained for as long as Your Account remains active, and for a reasonable period thereafter to address legal, regulatory, or dispute-resolution requirements.</p>
+      </div>
+    )
+  },
+  {
+    title: "7. DATA SECURITY",
+    content: (
+      <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+        <p><strong>7.1</strong> We implement reasonable technical and organisational security measures designed to protect Personal Data against unauthorised access, alteration, disclosure, or destruction, in accordance with the Information Technology (Reasonable Security Practices and Procedures and Sensitive Personal Data or Information) Rules, 2011.</p>
+        <p><strong>7.2</strong> No method of electronic transmission or storage is entirely secure, and while We strive to protect Your Personal Data, We cannot guarantee its absolute security.</p>
+      </div>
+    )
+  },
+  {
+    title: "8. CROSS-BORDER TRANSFER OF PERSONAL DATA",
+    content: (
+      <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+        <p><strong>8.1</strong> Where We use cloud infrastructure, analytics, or customer support tools hosted outside India, Your Personal Data may be transferred to, stored, and processed in a jurisdiction outside India.</p>
+        <p><strong>8.2</strong> We undertake any such transfer in accordance with Applicable Law, including the Information Technology (Reasonable Security Practices and Procedures and Sensitive Personal Data or Information) Rules, 2011 and, once its relevant provisions come into force, the Digital Personal Data Protection Act, 2023, under which transfers are permitted to all countries other than those specifically restricted by the Central Government by notification.</p>
+      </div>
+    )
+  },
+  {
+    title: "9. COOKIES AND TRACKING TECHNOLOGIES",
+    content: (
+      <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+        <p><strong>9.1</strong> The Website may use essential Cookies (necessary for the Website to function), functional Cookies (to remember Your preferences), and analytics Cookies (to help Us understand how the Website is used).</p>
+        <p><strong>9.2</strong> You may control Cookie preferences through Your browser settings. Disabling certain Cookies may affect the functionality of the Website.</p>
+      </div>
+    )
+  },
+  {
+    title: "10. CHILDREN’S PRIVACY",
+    content: (
+      <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+        <p><strong>10.1</strong> The Platform is intended for use only by persons who have attained the age of eighteen (18) years, in accordance with Clause 3.1 of the Terms and Conditions.</p>
+        <p><strong>10.2</strong> We do not knowingly collect Personal Data from persons below eighteen (18) years of age. If We become aware that We have collected Personal Data from a minor without appropriate consent, We will take reasonable steps to delete such data and, where applicable, suspend the relevant Account in accordance with Clause 3.4 of the Terms and Conditions.</p>
+        <p><strong>10.3</strong> Where processing of a child’s personal data becomes applicable to the Platform, We will implement verifiable parental consent and related safeguards as required under Section 9 of the Digital Personal Data Protection Act, 2023, as and when its relevant provisions come into force.</p>
+      </div>
+    )
+  },
+  {
+    title: "11. YOUR RIGHTS",
+    content: (
+      <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+        <p><strong>11.1</strong> Subject to Applicable Law, You may: (a) request access to the Personal Data We hold about You; (b) request correction of inaccurate or incomplete Personal Data; (c) withdraw Your Consent to processing, prospectively, without affecting the lawfulness of processing before such withdrawal; (d) request erasure of Your Personal Data, subject to Our legal retention requirements under Clause 6; and (e) raise a grievance in accordance with Clause 14 below.</p>
+        <p><strong>11.2</strong> Additional rights available to a data principal under the Digital Personal Data Protection Act, 2023, including the right to nominate another individual to exercise these rights in the event of Your death or incapacity, will be made available progressively as the relevant provisions of that Act come into force.</p>
+        <p><strong>11.3</strong> To exercise any of the above rights, please contact Us using the details in Clause 17 below. We may take reasonable steps to verify Your identity before acting on Your request.</p>
+      </div>
+    )
+  },
+  {
+    title: "12. MARKETING COMMUNICATIONS",
+    content: (
+      <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+        <p><strong>12.1</strong> We may send You promotional communications relating to Our Services, subject to Your right to opt out at any time by using the unsubscribe mechanism provided in such communication, adjusting Your notification preferences on the Platform, or writing to Us at the contact details in Clause 17.</p>
+        <p><strong>12.2</strong> You will continue to receive essential transactional and service-related communications concerning Your Account and Orders notwithstanding such opt-out.</p>
+      </div>
+    )
+  },
+  {
+    title: "13. DATA BREACH NOTIFICATION",
+    content: (
+      <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+        <p>In the event of a breach affecting Your Personal Data, We will notify You and, where required, the Data Protection Board or other appropriate regulatory authority, in accordance with the timelines and manner prescribed under Applicable Law.</p>
+      </div>
+    )
+  },
+  {
+    title: "14. GRIEVANCE OFFICER AND GRIEVANCE REDRESSAL",
+    content: (
+      <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+        <p><strong>14.1</strong> In accordance with the Information Technology Act, 2000 and the rules made thereunder, the Company has appointed a Grievance Officer to address grievances relating to the processing of Personal Data. The Grievance Officer may be contacted at <a href="mailto:grievance@ezeeprints.com" style={{ color: "#D48A70", textDecoration: "underline" }}>grievance@ezeeprints.com</a>.</p>
+        <p><strong>14.2</strong> The Grievance Officer shall acknowledge a grievance within twenty-four (24) hours of receipt and shall endeavour to resolve it within fifteen (15) days from the date of receipt, in accordance with the Information Technology (Intermediary Guidelines and Digital Media Ethics Code) Rules, 2021.</p>
+        <p><strong>14.3</strong> Additional grievance-redressal rights and timelines available under the Digital Personal Data Protection Act, 2023 will apply as its relevant provisions come into force.</p>
+      </div>
+    )
+  },
+  {
+    title: "15. CHANGES TO THIS PRIVACY POLICY",
+    content: (
+      <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+        <p><strong>15.1</strong> We reserve the right to amend, modify, update, or revise this Privacy Policy at any time, to reflect changes in Applicable Law, Platform functionality, or Our data-processing practices.</p>
+        <p><strong>15.2</strong> Material amendments will be notified through reasonable means, including a notice on the Platform, an in-app notification, or an email to Your registered email address, and the “Last Updated” date at the top of this Privacy Policy will be revised accordingly.</p>
+        <p><strong>15.3</strong> Continued use of the Platform following the effective date of any amendment constitutes Your acceptance of the amended Privacy Policy.</p>
+      </div>
+    )
+  },
+  {
+    title: "16. GOVERNING LAW AND DISPUTE RESOLUTION",
+    content: (
+      <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+        <p><strong>16.1</strong> This Privacy Policy shall be governed by and construed in accordance with the laws of the Republic of India.</p>
+        <p><strong>16.2</strong> Any dispute, controversy, or claim arising out of or in connection with this Privacy Policy shall be resolved in accordance with the dispute resolution mechanism set out in Clause 29 of the Terms and Conditions (including the preservation of a User’s rights as a “consumer” under the Consumer Protection Act, 2019), which is incorporated herein by reference.</p>
+      </div>
+    )
+  },
+  {
+    title: "17. CONTACT US",
+    content: (
+      <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+        <p>For any questions, clarifications, or grievances relating to this Privacy Policy or the processing of Your Personal Data, You may contact Us through the following channels:</p>
+        <ul style={{ listStyleType: "disc", paddingLeft: "20px", display: "flex", flexDirection: "column", gap: "8px" }}>
+          <li><strong>Customer Support Email</strong>: <a href="mailto:support@ezeeprints.com" style={{ color: "#D48A70", textDecoration: "underline" }}>support@ezeeprints.com</a></li>
+          <li><strong>Grievance Officer Email</strong>: <a href="mailto:grievance@ezeeprints.com" style={{ color: "#D48A70", textDecoration: "underline" }}>grievance@ezeeprints.com</a></li>
+          <li><strong>Registered / Corporate Office Address</strong>: Zarixa Infobytes Private Limited, #42, Cozy Lane, 3rd Block, Koramangala, Bengaluru, Karnataka, India - 560034</li>
+          <li><strong>Support Hours</strong>: Monday to Saturday, 9:00 AM to 6:00 PM IST</li>
+          <li><strong>In-App Support</strong>: Available through the “Help & Support” section of the Website, Android application and iOS application.</li>
+        </ul>
+      </div>
+    )
+  }
+];
+
+const partnerAgreementSections = [
+  {
+    title: "1. DEFINITIONS",
+    content: (
+      <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+        <p><strong>1.1 Commission</strong>: Means the fee payable by the Partner to the Company on each Order, as set out in Schedule A.</p>
+        <p><strong>1.2 Fulfilment Centre</strong>: Means the Partner&apos;s premises to which Orders are routed for production, as referenced in the Terms and Conditions.</p>
+        <p><strong>1.3 Onboarding Documents</strong>: Means the KYC, business registration, GST registration, and other documents required by the Company or the Payment Gateway to activate the Partner on the Platform.</p>
+        <p><strong>1.4 Settlement Cycle</strong>: Means the periodic cycle on which the Partner&apos;s dues are paid out, as set out in Schedule A.</p>
+        <p><strong>1.5 Service Levels</strong>: Means the turnaround time and quality standards set out in Schedule A.</p>
+        <p><strong>1.6 Capitalised Terms</strong>: Capitalised terms used but not defined in this Agreement, including &quot;Applicable Law&quot;, &quot;Content&quot;, &quot;Order&quot;, &quot;Order Value&quot;, &quot;Payment Gateway&quot;, &quot;Platform&quot;, &quot;Services&quot; and &quot;User&quot;, shall have the meanings assigned to such terms in the Terms and Conditions published on the Platform.</p>
+      </div>
+    )
+  },
+  {
+    title: "2. APPOINTMENT AND RELATIONSHIP",
+    content: (
+      <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+        <p><strong>2.1</strong> The Company hereby appoints the Partner, on a non-exclusive basis, to receive and fulfil Orders placed by Users through the Platform, and the Partner accepts such appointment, subject to the terms of this Agreement.</p>
+        <p><strong>2.2 Independent Contractors</strong>: The relationship between the Company and the Partner is that of independent contracting parties. Nothing in this Agreement shall be construed as creating a relationship of employer-employee, principal-agent, partnership, or joint venture between the Parties. The Partner shall be solely responsible for its own personnel, equipment, and business operations.</p>
+        <p><strong>2.3 No Authority to Bind</strong>: Save as expressly agreed in writing, neither Party shall have the authority to bind the other or to make any representation or commitment on the other&apos;s behalf.</p>
+        <p><strong>2.4 Non-Exclusive</strong>: This Agreement is non-exclusive. Either Party may enter into similar arrangements with other counterparties, including, in the case of the Partner, other online or offline platforms.</p>
+      </div>
+    )
+  },
+  {
+    title: "3. ONBOARDING AND ELIGIBILITY",
+    content: (
+      <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+        <p><strong>3.1 Documents Required</strong>: The Partner shall, prior to activation on the Platform, furnish such Onboarding Documents as the Company or its Payment Gateway may reasonably require, including proof of business registration, GST registration certificate, PAN, bank account details, and any Know Your Customer (&quot;KYC&quot;) documentation required for payment settlement under Applicable Law.</p>
+        <p><strong>3.2 Licences and Approvals</strong>: The Partner represents and warrants that it holds all licences, registrations, and approvals necessary to operate its printing business and to fulfil Orders under Applicable Law.</p>
+        <p><strong>3.3 Right to Suspend Onboarding</strong>: The Company reserves the right, acting reasonably, to decline or suspend onboarding where the Partner fails to furnish satisfactory Onboarding Documents or does not meet the Company&apos;s quality or capacity criteria.</p>
+      </div>
+    )
+  },
+  {
+    title: "4. ORDER FULFILMENT",
+    content: (
+      <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+        <p><strong>4.1 Acceptance Window</strong>: The Partner shall accept or decline Orders routed to its Fulfilment Centre within such time as may be specified on the Platform.</p>
+        <p><strong>4.2 Order Specifications</strong>: The Partner shall fulfil accepted Orders in accordance with the specifications submitted by the User and the Service Levels set out in Schedule A.</p>
+        <p><strong>4.3 Delay Notifications</strong>: The Partner shall promptly notify the Company of any delay, defect, or inability to fulfil an Order, to enable the Company to communicate with the affected User in accordance with the Terms and Conditions.</p>
+        <p><strong>4.4 Confidentiality of Content</strong>: The Partner shall not use Content for any purpose other than fulfilling the Order for which it was submitted, and shall treat all Content and User information as confidential in accordance with Clause 9.</p>
+      </div>
+    )
+  },
+  {
+    title: "5. PRICING AND COMMISSION",
+    content: (
+      <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+        <p><strong>5.1 Rate Card</strong>: The Partner shall price its Services in accordance with the rate card agreed with the Company from time to time.</p>
+        <p><strong>5.2 Commission Fee</strong>: The Company shall be entitled to a commission of [Insert Commission Percentage]% of the Order Value on each Order fulfilled by the Partner through the Platform (&quot;Commission&quot;), or such other amount as may be agreed in writing between the Parties, as set out in Schedule A.</p>
+        <p><strong>5.3 Transaction Fees</strong>: The Company may, in addition to the Commission, charge payment-gateway or transaction processing fees actually incurred, as disclosed to the Partner from time to time.</p>
+      </div>
+    )
+  },
+  {
+    title: "6. PAYMENTS AND SETTLEMENT",
+    content: (
+      <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+        <p><strong>6.1 Collection</strong>: Payments for Orders shall be collected from Users through the Payment Gateway integrated with the Platform.</p>
+        <p><strong>6.2 Settlement Dues</strong>: Subject to the Partner completing the KYC and onboarding requirements of the Payment Gateway, the Partner&apos;s dues (being the Order Value less the Commission and any applicable fees) shall be settled to the Partner&apos;s designated bank account on the Settlement Cycle set out in Schedule A, in accordance with Applicable Law governing payment aggregation and settlement.</p>
+        <p><strong>6.3 Split Settlement Onboarding</strong>: Where the Payment Gateway&apos;s settlement mechanism requires the Partner to be independently onboarded and KYC-verified as a merchant for split settlement, the Partner shall cooperate with such onboarding, failing which the Company may withhold or suspend activation of the Partner on the Platform.</p>
+        <p><strong>6.4 Taxes</strong>: All amounts payable under this Agreement are exclusive of applicable taxes unless otherwise stated.</p>
+      </div>
+    )
+  },
+  {
+    title: "7. TAXES AND INVOICING",
+    content: (
+      <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+        <p><strong>7.1 Supplier Responsibility</strong>: The Partner is the supplier of printing and related Services to the User for the purposes of the Central Goods and Services Tax Act, 2017 and corresponding State or Union Territory legislation, and shall be solely responsible for its own GST registration and for issuing a GST-compliant tax invoice to the User in respect of each Order fulfilled by it.</p>
+        <p><strong>7.2 Tax Collected at Source (TCS)</strong>: The Company, as an &quot;electronic commerce operator&quot; within the meaning of Section 2(45) of the Central Goods and Services Tax Act, 2017, shall collect tax at source (&quot;TCS&quot;) on the net value of taxable supplies made by the Partner through the Platform, at the rate prescribed under Section 52 of that Act, and shall remit the same to the appropriate government authority and reflect it in the Partner&apos;s electronic cash ledger in accordance with Applicable Law.</p>
+        <p><strong>7.3 GSTIN Provision</strong>: The Partner shall promptly provide the Company with its GST registration number and such other information as is reasonably required for the Company to comply with its obligations under this Clause 7.</p>
+      </div>
+    )
+  },
+  {
+    title: "8. QUALITY, RATINGS AND SERVICE LEVELS",
+    content: (
+      <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+        <p><strong>8.1 Service Levels</strong>: The Partner shall maintain the quality and turnaround standards set out in Schedule A.</p>
+        <p><strong>8.2 Ratings & Feedback</strong>: Users may rate and provide feedback on Orders fulfilled by the Partner. The Company may display aggregated ratings, and the parameters used to determine any ranking of Print Partners on the Platform, to Users in accordance with Applicable Law.</p>
+        <p><strong>8.3 Performance Impact</strong>: Repeated failure to meet the Service Levels, or a material decline in ratings, may result in reduced Order allocation, suspension, or termination in accordance with Clause 12.</p>
+      </div>
+    )
+  },
+  {
+    title: "9. CONFIDENTIALITY AND DATA PROTECTION",
+    content: (
+      <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+        <p><strong>9.1 Confidentiality</strong>: The Partner shall treat all Content, User personal data, and other information shared with it through the Platform as strictly confidential, and shall use the same solely for fulfilling Orders.</p>
+        <p><strong>9.2 Security Safeguards</strong>: The Partner shall implement reasonable security safeguards to protect Content and User personal data against unauthorised access, use, or disclosure, consistent with the Company&apos;s Privacy Policy and Applicable Law, including the Information Technology Act, 2000 and rules made thereunder.</p>
+        <p><strong>9.3 Content Disposal</strong>: The Partner shall delete or securely dispose of Content and any physical or digital copies thereof promptly upon completion of the relevant Order, save to the extent retention is required under Applicable Law or this Agreement.</p>
+        <p><strong>9.4 No Marketing Use</strong>: The Partner shall not use, disclose, or retain Content or User information for any purpose other than fulfilling the relevant Order, including for its own marketing purposes, without the Company&apos;s prior written consent.</p>
+        <p><strong>9.5 Survival</strong>: This Clause 9 shall survive termination of this Agreement.</p>
+      </div>
+    )
+  },
+  {
+    title: "10. INTELLECTUAL PROPERTY AND BRANDING",
+    content: (
+      <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+        <p><strong>10.1 Content Rights</strong>: Nothing in this Agreement transfers any right, title, or interest in Content to the Partner, save a limited, non-exclusive licence to use Content solely to fulfil the relevant Order.</p>
+        <p><strong>10.2 Brand Usage</strong>: The Partner may use the Company&apos;s name, logo, and the &quot;EzeePrints&quot; brand solely to the extent, and in the manner, expressly authorised by the Company in writing, including for the purpose of identifying itself as a Print Partner on the Platform.</p>
+        <p><strong>10.3 IP Ownership</strong>: Each Party retains all right, title, and interest in its own intellectual property, and nothing in this Agreement shall be construed to grant either Party any right in the other&apos;s intellectual property save as expressly stated.</p>
+      </div>
+    )
+  },
+  {
+    title: "11. REPRESENTATIONS, WARRANTIES AND INDEMNITY",
+    content: (
+      <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+        <p><strong>11.1 Authority</strong>: Each Party represents and warrants that it has full power and authority to enter into and perform this Agreement.</p>
+        <p><strong>11.2 Non-Infringement</strong>: The Partner represents and warrants that its fulfilment of Orders will not infringe the intellectual property, privacy, or other rights of any third party, and will comply with Applicable Law.</p>
+        <p><strong>11.3 Indemnity</strong>: Each Party shall indemnify and hold harmless the other Party from and against any claims, losses, or liabilities arising from the indemnifying Party&apos;s breach of this Agreement, negligence, or wilful misconduct.</p>
+      </div>
+    )
+  },
+  {
+    title: "12. TERM AND TERMINATION",
+    content: (
+      <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+        <p><strong>12.1 Term</strong>: This Agreement shall commence on the Effective Date and shall continue until terminated in accordance with this Clause 12.</p>
+        <p><strong>12.2 Termination for Convenience</strong>: Either Party may terminate this Agreement for convenience by providing thirty (30) days prior written notice to the other Party.</p>
+        <p><strong>12.3 Immediate Termination for Cause</strong>: The Company may suspend or terminate the Partner&apos;s access to the Platform with immediate effect, by written notice, in the event of: (a) a material breach of this Agreement that remains uncured for fifteen (15) days after notice; (b) repeated failure to meet the Service Levels; (c) fraud, misrepresentation, or conduct harmful to Users or the Company&apos;s reputation; or (d) a requirement under Applicable Law.</p>
+        <p><strong>12.4 Post-Termination Orders</strong>: On termination, the Partner shall complete any Orders already accepted (unless the Company directs otherwise), and each Party shall return or destroy the other&apos;s confidential information.</p>
+        <p><strong>12.5 Survival</strong>: Clauses 7, 9, 11, 13, 15 and 16 shall survive termination of this Agreement.</p>
+      </div>
+    )
+  },
+  {
+    title: "13. LIMITATION OF LIABILITY",
+    content: (
+      <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+        <p><strong>13.1 Cap on Liability</strong>: Save in respect of a Party&apos;s indemnification obligations, breach of Clause 9 (Confidentiality and Data Protection), fraud, or wilful misconduct, neither Party&apos;s aggregate liability arising out of or in connection with this Agreement shall exceed the aggregate Commission paid or payable by the Partner to the Company in the three (3) months preceding the event giving rise to the claim.</p>
+        <p><strong>13.2 Consequential Losses</strong>: Neither Party shall be liable to the other for any indirect, incidental, or consequential loss.</p>
+      </div>
+    )
+  },
+  {
+    title: "14. FORCE MAJEURE",
+    content: (
+      <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+        <p>Neither Party shall be liable for any failure or delay in performance under this Agreement to the extent caused by circumstances beyond its reasonable control, including natural disasters, pandemic or epidemic, strikes, governmental action, or failure of internet or power infrastructure, provided the affected Party promptly notifies the other and uses reasonable efforts to mitigate the impact.</p>
+      </div>
+    )
+  },
+  {
+    title: "15. DISPUTE RESOLUTION",
+    content: (
+      <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+        <p><strong>15.1 Negotiations</strong>: The Parties shall first attempt to resolve any dispute arising out of or in connection with this Agreement through good-faith negotiation between their authorised representatives within fifteen (15) days of a Party raising the dispute in writing.</p>
+        <p><strong>15.2 Arbitration</strong>: If the dispute is not resolved under Clause 15.1, it shall be referred to and finally resolved by arbitration under the Arbitration and Conciliation Act, 1996, seated and venued at Bengaluru, Karnataka, and conducted in the English language, by a sole arbitrator to be mutually appointed by the Parties within thirty (30) days.</p>
+        <p><strong>15.3 Jurisdiction</strong>: This Agreement shall be governed by and construed in accordance with the laws of India, and, subject to Clause 15.2, the courts at Bengaluru, Karnataka shall have exclusive jurisdiction.</p>
+      </div>
+    )
+  },
+  {
+    title: "16. GENERAL",
+    content: (
+      <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+        <p><strong>16.1 Assignment</strong>: Neither Party may assign this Agreement without the other&apos;s prior written consent, save that the Company may assign this Agreement to a successor in connection with a merger, acquisition, or sale of substantially all its assets.</p>
+        <p><strong>16.2 Notices</strong>: Notices under this Agreement shall be in writing and delivered to the addresses or email addresses of the Parties set out in this Agreement or the Partner&apos;s onboarding record.</p>
+        <p><strong>16.3 Amendments</strong>: This Agreement, including Schedule A, may be amended by the Company on reasonable prior notice to the Partner to reflect changes in the Company&apos;s business practices or Applicable Law.</p>
+        <p><strong>16.4 Severability</strong>: If any provision of this Agreement is held invalid or unenforceable, the remaining provisions shall continue in full force and effect.</p>
+        <p><strong>16.5 Entire Agreement</strong>: This Agreement, together with Schedule A and any onboarding documentation, constitutes the entire agreement between the Parties.</p>
+      </div>
+    )
+  },
+  {
+    title: "SCHEDULE A — SERVICE LEVELS AND COMMERCIAL TERMS",
+    content: (
+      <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+        <ul style={{ listStyleType: "disc", paddingLeft: "20px", display: "flex", flexDirection: "column", gap: "10px" }}>
+          <li><strong>Turnaround Time</strong>: Standard documents — same Business Day; bulk or bound printing — within agreed schedule window.</li>
+          <li><strong>Quality / Rework Policy</strong>: Free reprint where a print defect is attributable to the Partner and reported within the reporting window in the Refund and Cancellation Policy.</li>
+          <li><strong>Commission</strong>: Standard percentage of Order Value as agreed per partner rate card.</li>
+          <li><strong>Settlement Cycle</strong>: T+2 Business Days from Order completion directly to bank account.</li>
+          <li><strong>Order Acceptance Window</strong>: Thirty (30) minutes from routing to the Fulfilment Centre.</li>
+        </ul>
+      </div>
+    )
+  }
+];
+
